@@ -1,0 +1,36 @@
+
+1. Character -> char
+2. final -> readonly
+
+HashMap -> Dictionary<K, V> (new Dictionary<char, char>(16))
+Map
+charMap.get
+Map.put
+
+Arrays
+Arrays.binarySearch
+
+IllegalArgumentException
+
+synchronized
+
+
+
+viterbi
+BufferedReader
+IOException
+InputStream
+InputStreamReader
+import java.nio.charset.Charset;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.Collections;
+
+System.currentTimeMillis() // value ? DateTime.Now.Millisecond
+
+resources
+"/prob_emit.txt";
