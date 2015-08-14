@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 
-namespace JiebaNet.Segmenter
+namespace JiebaNet.Segmenter.Viterbi
 {
     public class FinalSeg
     {
@@ -18,7 +21,6 @@ namespace JiebaNet.Segmenter
         {
         }
 
-
         // TODO: synchronized
         public static FinalSeg getInstance()
         {
@@ -30,7 +32,6 @@ namespace JiebaNet.Segmenter
             return singleInstance;
         }
 
-
         private void loadModel()
         {
             long s = DateTime.Now.Millisecond;
@@ -40,209 +41,209 @@ namespace JiebaNet.Segmenter
             prevStatus['S'] = new char[] {'S', 'E'};
             prevStatus['E'] = new char[] {'B', 'M'};
 
-            start = new HashMap<char, Double>();
-            start.put('B', -0.26268660809250016);
-            start.put('E', -3.14e+100);
-            start.put('M', -3.14e+100);
-            start.put('S', -1.4652633398537678);
+            start = new Dictionary<char, Double>();
+            start['B'] = -0.26268660809250016;
+            start['E'] = -3.14e+100;
+            start['M'] = -3.14e+100;
+            start['S'] = -1.4652633398537678;
 
-            trans = new HashMap<char, Map<char, Double>>();
-            Map<char, Double> transB = new HashMap<char, Double>();
-            transB.put('E', -0.510825623765990);
-            transB.put('M', -0.916290731874155);
-            trans.put('B', transB);
-            Map<char, Double> transE = new HashMap<char, Double>();
-            transE.put('B', -0.5897149736854513);
-            transE.put('S', -0.8085250474669937);
-            trans.put('E', transE);
-            Map<char, Double> transM = new HashMap<char, Double>();
-            transM.put('E', -0.33344856811948514);
-            transM.put('M', -1.2603623820268226);
-            trans.put('M', transM);
-            Map<char, Double> transS = new HashMap<char, Double>();
-            transS.put('B', -0.7211965654669841);
-            transS.put('S', -0.6658631448798212);
-            trans.put('S', transS);
+            trans = new Dictionary<char, IDictionary<char, Double>>();
+            IDictionary<char, Double> transB = new Dictionary<char, Double>();
+            transB['E'] = -0.510825623765990;
+            transB['M'] = -0.916290731874155;
+            trans['B'] = transB;
 
-            InputStream is  = this.getClass().getResourceAsStream(PROB_EMIT);
+            IDictionary<char, Double> transE = new Dictionary<char, Double>();
+            transE['B'] = -0.5897149736854513;
+            transE['S'] = -0.8085250474669937;
+            trans['E'] = transE;
+
+            IDictionary<char, Double> transM = new Dictionary<char, Double>();
+            transM['E'] = -0.33344856811948514;
+            transM['M'] = -1.2603623820268226;
+            trans['M'] = transM;
+
+            IDictionary<char, Double> transS = new Dictionary<char, Double>();
+            transS['B'] = -0.7211965654669841;
+            transS['S'] = -0.6658631448798212;
+            trans['S'] = transS;
+
+            var prob_emit_path = PROB_EMIT;
+
+            IDictionary<char, IDictionary<char, double>> emit = new Dictionary<char, IDictionary<char, double>>();
+            IDictionary<char, double> values = null;
+
             try
             {
-                BufferedReader br = new BufferedReader(new InputStreamReader( is , Charset.forName("UTF-8")))
-                ;
-                emit = new HashMap<char, Map<char, Double>>();
-                Map<char, Double> values = null;
-                while (br.ready())
+                var lines = File.ReadAllLines(prob_emit_path, Encoding.UTF8);
+                foreach (var line in lines)
                 {
-                    String line = br.readLine();
-                    String[] tokens = line.split("\t");
-                    if (tokens.length == 1)
+                    var tokens = line.Split('\t');
+                    if (tokens.Length == 1)
                     {
-                        values = new HashMap<char, Double>();
-                        emit.put(tokens[0].charAt(0), values);
+                        values = new Dictionary<char, double>();
+                        emit[tokens[0][0]] = values;
                     }
                     else
                     {
-                        values.put(tokens[0].charAt(0), Double.valueOf(tokens[1]));
+                        values[tokens[0][0]] = double.Parse(tokens[1]);
                     }
                 }
-            }
-            catch (IOException e)
-            {
-                System.err.println(String.format(Locale.getDefault(), "%s: load model failure!", PROB_EMIT));
-            }
-            finally
-            {
-                try
-                {
-                    if (null != is)
-                    is.
-                    close();
-                }
-                catch (IOException e)
-                {
-                    System.err.println(String.format(Locale.getDefault(), "%s: close failure!", PROB_EMIT));
-                }
-            }
-            System.out.
-            println(String.format(Locale.getDefault(), "model load finished, time elapsed %d ms.",
-                System.currentTimeMillis() - s));
-        }
 
+                Console.WriteLine(emit.Count);
+                Console.WriteLine(values.Count);
+            }
+            catch (IOException ex)
+            {
+                Console.Error.WriteLine("{0}: loading model from file {1} failure!", ex.Message, prob_emit_path);
+            }
+
+            Console.WriteLine("model loading finished, time elapsed {0} ms.", DateTime.Now.Millisecond - s);
+        }
 
         public void cut(String sentence, List<String> tokens)
         {
             StringBuilder chinese = new StringBuilder();
             StringBuilder other = new StringBuilder();
-            for (int i = 0; i < sentence.length(); ++i)
+            for (int i = 0; i < sentence.Length; ++i)
             {
-                char ch = sentence.charAt(i);
-                if (charUtil.isChineseLetter(ch))
+                char ch = sentence[i];
+                if (CharacterUtil.isChineseLetter(ch))
                 {
-                    if (other.length() > 0)
+                    if (other.Length > 0)
                     {
-                        processOtherUnknownWords(other.toString(), tokens);
+                        processOtherUnknownWords(other.ToString(), tokens);
                         other = new StringBuilder();
                     }
-                    chinese.append(ch);
+                    chinese.Append(ch);
                 }
                 else
                 {
-                    if (chinese.length() > 0)
+                    if (chinese.Length > 0)
                     {
-                        viterbi(chinese.toString(), tokens);
+                        viterbi(chinese.ToString(), tokens);
                         chinese = new StringBuilder();
                     }
-                    other.append(ch);
+                    other.Append(ch);
                 }
-
             }
-            if (chinese.length() > 0)
-                viterbi(chinese.toString(), tokens);
+            if (chinese.Length > 0)
+                viterbi(chinese.ToString(), tokens);
             else
             {
-                processOtherUnknownWords(other.toString(), tokens);
+                processOtherUnknownWords(other.ToString(), tokens);
             }
         }
 
-
         public void viterbi(String sentence, List<String> tokens)
         {
-            Vector<Map<char, Double>> v = new Vector<Map<char, Double>>();
-            Map<char, Node> path = new HashMap<char, Node>();
+            var v = new List<IDictionary<char, Double>>();
+            IDictionary<char, Node> path = new Dictionary<char, Node>();
 
-            v.add(new HashMap<char, Double>());
-            for (char state : states)
+            v.Add(new Dictionary<char, Double>());
+            foreach (var state in states)
             {
-                Double emP = emit.get(state).get(sentence.charAt(0));
-                if (null == emP)
-                    emP = MIN_FLOAT;
-                v.get(0).put(state, start.get(state) + emP);
-                path.put(state, new Node(state, null));
+                var sd = emit[state];
+                double emP = double.MinValue;
+                if (sd.ContainsKey(sentence[0]))
+                    emP = sd[sentence[0]];
+                v[0][state] = start[state] + emP;
+                path[state] = new Node(state, null);
             }
 
-            for (int i = 1; i < sentence.length(); ++i)
+            for (int i = 1; i < sentence.Length; ++i)
             {
-                Map<char, Double> vv = new HashMap<char, Double>();
-                v.add(vv);
-                Map<char, Node> newPath = new HashMap<char, Node>();
-                for (char y : states)
+                IDictionary<char, Double> vv = new Dictionary<char, Double>();
+                v.Add(vv);
+                IDictionary<char, Node> newPath = new Dictionary<char, Node>();
+                foreach (var y in states)
                 {
-                    Double emp = emit.get(y).get(sentence.charAt(i));
-                    if (emp == null)
-                        emp = MIN_FLOAT;
+                    var sd = emit[y];
+                    double emp = double.MinValue;
+                    if (sd.ContainsKey(sentence[i]))
+                        emp = sd[sentence[i]];
+
                     Pair<char> candidate = null;
-                    for (char y0 : prevStatus.get(y))
+                    foreach (char y0 in prevStatus[y])
                     {
-                        Double tranp = trans.get(y0).get(y);
-                        if (null == tranp)
-                            tranp = MIN_FLOAT;
-                        tranp += (emp + v.get(i - 1).get(y0));
+                        double tranp = double.MinValue;
+                        if (trans[y0].ContainsKey(y))
+                        {
+                            tranp = trans[y0][y];
+                        }
+                        
+                        tranp += (emp + v[i - 1][y0]);
                         if (null == candidate)
+                        {
                             candidate = new Pair<char>(y0, tranp);
+                        }
                         else if (candidate.freq <= tranp)
                         {
                             candidate.freq = tranp;
                             candidate.key = y0;
                         }
                     }
-                    vv.put(y, candidate.freq);
-                    newPath.put(y, new Node(y, path.get(candidate.key)));
+                    vv[y] = candidate.freq;
+                    newPath[y] = new Node(y, path[candidate.key]);
                 }
                 path = newPath;
             }
-            double probE = v.get(sentence.length() - 1).get('E');
-            double probS = v.get(sentence.length() - 1).get('S');
-            Vector<char> posList = new Vector<char>(sentence.length());
+
+            double probE = v[sentence.Length - 1]['E'];
+            double probS = v[sentence.Length - 1]['S'];
+            List<char> posList = new List<char>(sentence.Length);
+            
             Node win;
             if (probE < probS)
-                win = path.get('S');
+                win = path['S'];
             else
-                win = path.get('E');
+                win = path['E'];
 
             while (win != null)
             {
-                posList.add(win.value);
+                posList.Add(win.value);
                 win = win.parent;
             }
-            Collections.reverse(posList);
+            posList.Reverse();
 
             int begin = 0, next = 0;
-            for (int i = 0; i < sentence.length(); ++i)
+            for (int i = 0; i < sentence.Length; ++i)
             {
-                char pos = posList.get(i);
+                char pos = posList[i];
                 if (pos == 'B')
                     begin = i;
                 else if (pos == 'E')
                 {
-                    tokens.add(sentence.substring(begin, i + 1));
+                    tokens.Add(sentence.Substring(begin, i + 1));
                     next = i + 1;
                 }
                 else if (pos == 'S')
                 {
-                    tokens.add(sentence.substring(i, i + 1));
+                    tokens.Add(sentence.Substring(i, i + 1));
                     next = i + 1;
                 }
             }
-            if (next < sentence.length())
-                tokens.add(sentence.substring(next));
+            if (next < sentence.Length)
+                tokens.Add(sentence.Substring(next));
         }
-
 
         private void processOtherUnknownWords(String other, List<String> tokens)
         {
-            Matcher mat = charUtil.reSkip.matcher(other);
+            var mat = CharacterUtil.reSkip.Matches(other);
             int offset = 0;
-            while (mat.find())
+            foreach (Match m in mat)
             {
-                if (mat.start() > offset)
+                if (m.Index > offset)
                 {
-                    tokens.add(other.substring(offset, mat.start()));
+                    tokens.Add(other.Substring(offset, m.Index));
                 }
-                tokens.add(mat.group());
-                offset = mat.end();
+                tokens.Add(m.Value);
+                offset = m.Length;
             }
-            if (offset < other.length())
-                tokens.add(other.substring(offset));
+            if (offset < other.Length)
+            {
+                tokens.Add(other.Substring(offset));
+            }
         }
     }
 }
