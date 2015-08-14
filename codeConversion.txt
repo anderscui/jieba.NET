@@ -32,5 +32,18 @@ import java.util.Collections;
 
 System.currentTimeMillis() // value ? DateTime.Now.Millisecond
 
+Vector<T> -> List<T>
+Collections.reverse -> List.Reverse()
+
+WordDict
+2 finals
+Set<T> -> ISet<T>
+
+Path -> 
+
+word.trim().toLowerCase(Locale.getDefault());
+
 resources
 "/prob_emit.txt";
+
+

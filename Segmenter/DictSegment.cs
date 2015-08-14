@@ -28,7 +28,7 @@ namespace JiebaNet.Segmenter
         // 当前DictSegment状态 ,默认 0 , 1表示从根节点到当前节点的路径表示一个词
         private int nodeState = 0;
 
-        DictSegment(char nodeChar)
+        internal DictSegment(char nodeChar)
         {
             //if (nodeChar == null) {
             //    throw new ArgumentNullException("nodeChar", "参数为空异常，字符不能为空");
@@ -68,7 +68,7 @@ namespace JiebaNet.Segmenter
          * @param length
          * @return Hit
          */
-        Hit match(char[] charArray, int begin, int length)
+        internal Hit match(char[] charArray, int begin, int length)
         {
             return this.match(charArray, begin, length, null);
         }
@@ -82,7 +82,7 @@ namespace JiebaNet.Segmenter
          * @param searchHit
          * @return Hit
          */
-        Hit match(char[] charArray, int begin, int length, Hit searchHit)
+        internal Hit match(char[] charArray, int begin, int length, Hit searchHit)
         {
 
             if (searchHit == null)
@@ -162,7 +162,7 @@ namespace JiebaNet.Segmenter
          * 
          * @param charArray
          */
-        void fillSegment(char[] charArray)
+        internal void fillSegment(char[] charArray)
         {
             this.fillSegment(charArray, 0, charArray.Length, 1);
         }

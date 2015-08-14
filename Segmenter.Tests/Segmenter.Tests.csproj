@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}</ProjectGuid>
+    <ProjectGuid>{77A71258-2175-4868-8539-D1EDFB5B7AB0}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>JiebaNet.Segmenter</RootNamespace>
-    <AssemblyName>JiebaNet.Segmenter</AssemblyName>
+    <RootNamespace>JiebaNet.Segmenter.Tests</RootNamespace>
+    <AssemblyName>JiebaNet.Segmenter.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,27 +42,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Pair.cs" />
+    <Compile Include="FCL\TestRegex.cs" />
+    <Compile Include="FCL\TestIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SegToken.cs" />
-    <Compile Include="Viterbi\FinalSeg.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CharacterUtil.cs" />
+    <Content Include="prob.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Hit.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="DictSegment.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="WordDictionary.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="JiebaSegmenter.cs" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
