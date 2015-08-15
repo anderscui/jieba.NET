@@ -45,12 +45,20 @@
     <Compile Include="FCL\TestRegex.cs" />
     <Compile Include="FCL\TestIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestExtensions.cs" />
+    <Compile Include="TestSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="prob.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Segmenter\Segmenter.csproj">
+      <Project>{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}</Project>
+      <Name>Segmenter</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

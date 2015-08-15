@@ -9,7 +9,7 @@ namespace JiebaNet.Segmenter.Viterbi
     public class FinalSeg
     {
         private static FinalSeg singleInstance;
-        private static readonly string PROB_EMIT = "/prob_emit.txt";
+        private static readonly string PROB_EMIT = @"D:\andersc\github\jieba.NET\Segmenter\Resources\prob_emit.txt";
         private static char[] states = new char[] {'B', 'M', 'E', 'S'};
         private static IDictionary<char, IDictionary<char, Double>> emit;
         private static IDictionary<char, Double> start;
@@ -70,7 +70,7 @@ namespace JiebaNet.Segmenter.Viterbi
 
             var prob_emit_path = PROB_EMIT;
 
-            IDictionary<char, IDictionary<char, double>> emit = new Dictionary<char, IDictionary<char, double>>();
+            emit = new Dictionary<char, IDictionary<char, double>>();
             IDictionary<char, double> values = null;
 
             try
@@ -214,12 +214,12 @@ namespace JiebaNet.Segmenter.Viterbi
                     begin = i;
                 else if (pos == 'E')
                 {
-                    tokens.Add(sentence.Substring(begin, i + 1));
+                    tokens.Add(sentence.Sub(begin, i + 1));
                     next = i + 1;
                 }
                 else if (pos == 'S')
                 {
-                    tokens.Add(sentence.Substring(i, i + 1));
+                    tokens.Add(sentence.Sub(i, i + 1));
                     next = i + 1;
                 }
             }
@@ -235,7 +235,7 @@ namespace JiebaNet.Segmenter.Viterbi
             {
                 if (m.Index > offset)
                 {
-                    tokens.Add(other.Substring(offset, m.Index));
+                    tokens.Add(other.Sub(offset, m.Index));
                 }
                 tokens.Add(m.Value);
                 offset = m.Length;

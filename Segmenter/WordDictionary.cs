@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace JiebaNet.Segmenter
@@ -8,11 +9,11 @@ namespace JiebaNet.Segmenter
     public class WordDictionary
     {
         private static WordDictionary singleton;
-        private static readonly string MAIN_DICT = "/dict.txt";
+        private static readonly string MAIN_DICT = @"D:\andersc\github\jieba.NET\Segmenter\Resources\dict.txt";
         private static string USER_DICT_SUFFIX = ".dict";
 
         // TODO: 2 final fields
-        public  IDictionary<string, double> freqs = new Dictionary<string, double>();
+        public IDictionary<string, double> freqs = new Dictionary<string, double>();
         public ISet<string> loadedPath = new HashSet<string>();
         private double minFreq = double.MaxValue;
         private double total = 0.0;
@@ -23,6 +24,9 @@ namespace JiebaNet.Segmenter
         private WordDictionary()
         {
             this.loadDict();
+
+            Console.WriteLine("{0} words", freqs.Count);
+            Console.WriteLine(freqs[freqs.Keys.First()]);
         }
 
         // TODO: synchronized
@@ -80,7 +84,7 @@ namespace JiebaNet.Segmenter
         public void loadDict()
         {
             _dict = new DictSegment((char)0);
-            
+
             try
             {
                 var lines = File.ReadAllLines(MAIN_DICT, Encoding.UTF8);
@@ -88,7 +92,7 @@ namespace JiebaNet.Segmenter
                 long s = DateTime.Now.Millisecond;
                 foreach (var line in lines)
                 {
-                    string[] tokens = line.Split("[\t ]+".ToCharArray());
+                    string[] tokens = line.Split("\t ".ToCharArray());
                     if (tokens.Length < 2)
                         continue;
 
@@ -100,10 +104,10 @@ namespace JiebaNet.Segmenter
                 }
 
                 // normalize
-                foreach (var freq in freqs)
+                foreach (var freqKey in freqs.Keys.ToList())
                 {
-                    freqs[freq.Key] = Math.Log(freq.Value/total);
-                    minFreq = Math.Min(freq.Value, minFreq);
+                    freqs[freqKey] = Math.Log(freqs[freqKey]/total);
+                    minFreq = Math.Min(freqs[freqKey], minFreq);
                 }
 
                 Console.WriteLine("main dict load finished, time elapsed {0} ms", DateTime.Now.Millisecond - s);
@@ -111,6 +115,10 @@ namespace JiebaNet.Segmenter
             catch (IOException e)
             {
                 Console.Error.WriteLine("{0} load failure!", MAIN_DICT);
+            }
+            catch (FormatException fe)
+            {
+                Console.Error.WriteLine(fe.Message);
             }
         }
 
@@ -140,7 +148,7 @@ namespace JiebaNet.Segmenter
                 int count = 0;
                 foreach (var line in lines)
                 {
-                    string[] tokens = line.Split("[\t ]+".ToCharArray());
+                    string[] tokens = line.Split("\t ".ToCharArray());
 
                     if (tokens.Length < 2)
                         continue;

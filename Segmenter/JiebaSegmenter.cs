@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using JiebaNet.Segmenter.Viterbi;
 
@@ -75,7 +76,7 @@ namespace JiebaNet.Segmenter
                 Pair<int> candidate = null;
                 foreach (int x in dag[i])
                 {
-                    double freq = wordDict.getFreq(sentence.Substring(i, x + 1)) + route[x + 1].freq;
+                    double freq = wordDict.getFreq(sentence.Sub(i, x + 1)) + route[x + 1].freq;
                     if (null == candidate)
                     {
                         candidate = new Pair<int>(x, freq);
@@ -123,7 +124,7 @@ namespace JiebaNet.Segmenter
                                     int j = 0;
                                     for (; j < token.Length - 1; ++j)
                                     {
-                                        gram2 = token.Substring(j, j + 2);
+                                        gram2 = token.Sub(j, j + 2);
                                         if (wordDict.containsWord(gram2))
                                             tokens.Add(new SegToken(gram2, offset + j, offset + j + 2));
                                     }
@@ -134,7 +135,7 @@ namespace JiebaNet.Segmenter
                                     int j = 0;
                                     for (; j < token.Length - 2; ++j)
                                     {
-                                        gram3 = token.Substring(j, j + 3);
+                                        gram3 = token.Sub(j, j + 3);
                                         if (wordDict.containsWord(gram3))
                                             tokens.Add(new SegToken(gram3, offset + j, offset + j + 3));
                                     }
@@ -145,10 +146,10 @@ namespace JiebaNet.Segmenter
                         sb = new StringBuilder();
                         offset = i;
                     }
-                    if (wordDict.containsWord(paragraph.Substring(i, i + 1)))
-                        tokens.Add(new SegToken(paragraph.Substring(i, i + 1), offset, ++offset));
+                    if (wordDict.containsWord(paragraph.Sub(i, i + 1)))
+                        tokens.Add(new SegToken(paragraph.Sub(i, i + 1), offset, ++offset));
                     else
-                        tokens.Add(new SegToken(paragraph.Substring(i, i + 1), offset, ++offset));
+                        tokens.Add(new SegToken(paragraph.Sub(i, i + 1), offset, ++offset));
                 }
             }
             if (sb.Length > 0)
@@ -169,7 +170,7 @@ namespace JiebaNet.Segmenter
                             int j = 0;
                             for (; j < token.Length - 1; ++j)
                             {
-                                gram2 = token.Substring(j, j + 2);
+                                gram2 = token.Sub(j, j + 2);
                                 if (wordDict.containsWord(gram2))
                                     tokens.Add(new SegToken(gram2, offset + j, offset + j + 2));
                             }
@@ -180,7 +181,7 @@ namespace JiebaNet.Segmenter
                             int j = 0;
                             for (; j < token.Length - 2; ++j)
                             {
-                                gram3 = token.Substring(j, j + 3);
+                                gram3 = token.Sub(j, j + 3);
                                 if (wordDict.containsWord(gram3))
                                     tokens.Add(new SegToken(gram3, offset + j, offset + j + 3));
                             }
@@ -192,7 +193,7 @@ namespace JiebaNet.Segmenter
             return tokens;
         }
 
-        public List<String> sentenceProcess(String sentence)
+        public List<string> sentenceProcess(String sentence)
         {
             List<String> tokens = new List<String>();
             int N = sentence.Length;
@@ -206,7 +207,7 @@ namespace JiebaNet.Segmenter
             while (x < N)
             {
                 y = route[x].key + 1;
-                string lWord = sentence.Substring(x, y);
+                string lWord = sentence.Sub(x, y);
                 if (y - x == 1)
                     sb.Append(lWord);
                 else
@@ -253,9 +254,14 @@ namespace JiebaNet.Segmenter
                         finalSeg.cut(buf, tokens);
                     }
                 }
-
             }
             return tokens;
+        }
+
+        public List<string> cut(string paragraph, SegMode mode = SegMode.SEARCH)
+        {
+            var tokens = process(paragraph, mode);
+            return tokens.Select(t => paragraph.Sub(t.startOffset, t.endOffset)).ToList();
         }
     }
 }

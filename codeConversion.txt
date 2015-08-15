@@ -43,7 +43,11 @@ Path ->
 
 word.trim().toLowerCase(Locale.getDefault());
 
+
+
 resources
 "/prob_emit.txt";
 
+line.Split("[\t ]+") -> line.Split("\t ")
 
+String.substring(start, end) -> string.Substring(start, end - start);

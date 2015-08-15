@@ -122,7 +122,10 @@ namespace JiebaNet.Segmenter
             else if (segmentMap != null)
             {
                 // 在map中查找
-                ds = segmentMap[keyChar];
+                if (segmentMap.ContainsKey(keyChar))
+                {
+                    ds = segmentMap[keyChar];
+                }
             }
 
             // STEP2 找到DictSegment，判断词的匹配状态，是否继续递归，还是返回结果

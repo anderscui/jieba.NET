@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.Remoting.Messaging;
 
 namespace JiebaNet.Segmenter
 {
@@ -12,6 +13,11 @@ namespace JiebaNet.Segmenter
         public static char ToChar(this int i)
         {
             return (char) i;
+        }
+
+        public static string Sub(this string s, int startIndex, int endIndex)
+        {
+            return s.Substring(startIndex, endIndex - startIndex);
         }
     }
 }
