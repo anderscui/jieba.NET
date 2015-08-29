@@ -8,24 +8,6 @@ namespace JiebaNet.Segmenter.Tests
     [TestFixture]
     public class TestSegmenter
     {
-        private List<string> GetTestSentences()
-        {
-            return new List<string>()
-            {
-                "我需要廉租房",
-                "据说这位语言学家去参加神马学术会议了",
-                "小明硕士毕业于中国科学院计算所，后在日本京都大学深造",
-                "他来到了网易杭研大厦",
-                "他说的确实在理",
-                "我购买了道具和服装，为了出演罗密欧与朱丽叶",
-                "工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作",
-
-                "我他我买演件了为不知所云",
-                "小明不知何许人也，最近才学习机器学习知识",
-                "通过结巴分词这个library，我们可以看到概率论在自然语言处理中的大量应用。"
-            };
-        }
-
         [TestCase]
         public void TestGetDAG()
         {
@@ -85,40 +67,54 @@ namespace JiebaNet.Segmenter.Tests
         public void TestCut()
         {
             var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutThenPrint(seg, sentence);
-            }
+
+            TestCutThenPrint(seg, "我需要廉租房");
+            TestCutThenPrint(seg, "据说这位语言学家去参加神马学术会议了");
+            TestCutThenPrint(seg, "小明硕士毕业于中国科学院计算所，后在日本京都大学深造");
+            TestCutThenPrint(seg, "他来到了网易杭研大厦");
+            TestCutThenPrint(seg, "他说的确实在理");
+            TestCutThenPrint(seg, "我购买了道具和服装，为了出演罗密欧与朱丽叶");
+            TestCutThenPrint(seg, "工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作");
+
+            TestCutThenPrint(seg, "我他我买演件了为不知所云");
+            TestCutThenPrint(seg, "小明不知何许人也，最近才学习机器学习知识");
+            TestCutThenPrint(seg, "通过结巴分词这个library，我们可以看到概率论在自然语言处理中的大量应用。");
         }
 
         [TestCase]
         public void TestCutAll()
         {
             var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutAllThenPrint(seg, sentence);
-            }
+
+            TestCutAllThenPrint(seg, "我需要廉租房");
+            TestCutAllThenPrint(seg, "据说这位语言学家去参加神马学术会议了");
+            TestCutAllThenPrint(seg, "小明硕士毕业于中国科学院计算所，后在日本京都大学深造");
+            TestCutAllThenPrint(seg, "他来到了网易杭研大厦");
+            TestCutAllThenPrint(seg, "他说的确实在理");
+            TestCutAllThenPrint(seg, "我购买了道具和服装，为了出演罗密欧与朱丽叶");
+            TestCutAllThenPrint(seg, "工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作");
+
+            TestCutAllThenPrint(seg, "我他我买演件了为不知所云");
+            TestCutAllThenPrint(seg, "小明不知何许人也，最近才学习机器学习知识");
+            TestCutAllThenPrint(seg, "通过结巴分词这个library，我们可以看到概率论在自然语言处理中的大量应用。");
         }
 
         [TestCase]
         public void TestCutWithoutHmm()
         {
             var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutWithoutHmm(seg, sentence);
-            }
-        }
 
-        [TestCase]
-        public void TestCutForSearch()
-        {
-            var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutForSearch(seg, sentence);
-            }
+            TestCutWithoutHmm(seg, "我需要廉租房");
+            TestCutWithoutHmm(seg, "据说这位语言学家去参加神马学术会议了");
+            TestCutWithoutHmm(seg, "小明硕士毕业于中国科学院计算所，后在日本京都大学深造");
+            TestCutWithoutHmm(seg, "他来到了网易杭研大厦");
+            TestCutWithoutHmm(seg, "他说的确实在理");
+            TestCutWithoutHmm(seg, "我购买了道具和服装，为了出演罗密欧与朱丽叶");
+            TestCutWithoutHmm(seg, "工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作");
+
+            TestCutWithoutHmm(seg, "我他我买演件了为不知所云");
+            TestCutWithoutHmm(seg, "小明不知何许人也，最近才学习机器学习知识");
+            TestCutWithoutHmm(seg, "通过结巴分词这个library，我们可以看到概率论在自然语言处理中的大量应用。");
         }
 
         private static void TestCutThenPrint(JiebaSegmenter segmenter, string s)
@@ -134,11 +130,6 @@ namespace JiebaNet.Segmenter.Tests
         private static void TestCutWithoutHmm(JiebaSegmenter segmenter, string s)
         {
             Console.WriteLine(string.Join("/ ", segmenter.Cut(s, hmm: false)));
-        }
-
-        private static void TestCutForSearch(JiebaSegmenter segmenter, string s)
-        {
-            Console.WriteLine(string.Join("/ ", segmenter.CutForSearch(s)));
         }
 
         [TestCase]

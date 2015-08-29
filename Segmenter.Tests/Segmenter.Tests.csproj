@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -42,16 +43,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FCL\TestEnumerable.cs" />
+    <Compile Include="FCL\TestDictionary.cs" />
     <Compile Include="FCL\TestRegex.cs" />
     <Compile Include="FCL\TestIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestExtensions.cs" />
+    <Compile Include="TestDict.cs" />
     <Compile Include="TestSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="prob.txt" />
+    <Content Include="Resources\prob_emit.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\test_dict.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\test_dict_0.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

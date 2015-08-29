@@ -7,7 +7,7 @@ namespace JiebaNet.Segmenter
     {
         public static int ToInt32(this char ch)
         {
-            return (int) Char.GetNumericValue(ch);
+            return ch;
         }
 
         public static char ToChar(this int i)

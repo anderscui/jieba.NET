@@ -51,3 +51,8 @@ resources
 line.Split("[\t ]+") -> line.Split("\t ")
 
 String.substring(start, end) -> string.Substring(start, end - start);
+
+
+
+
+double.MinValue

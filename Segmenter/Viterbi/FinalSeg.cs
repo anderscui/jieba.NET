@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -8,8 +9,7 @@ namespace JiebaNet.Segmenter.Viterbi
 {
     public class FinalSeg
     {
-        private static FinalSeg singleInstance;
-        private static readonly string PROB_EMIT = @"D:\andersc\github\jieba.NET\Segmenter\Resources\prob_emit.txt";
+        private static readonly Lazy<FinalSeg> lazy = new Lazy<FinalSeg>(() => new FinalSeg());
         private static char[] states = new char[] {'B', 'M', 'E', 'S'};
         private static IDictionary<char, IDictionary<char, Double>> emit;
         private static IDictionary<char, Double> start;
@@ -19,20 +19,18 @@ namespace JiebaNet.Segmenter.Viterbi
 
         private FinalSeg()
         {
+            LoadModel();
+
+            Console.WriteLine(emit.Count);
         }
 
         // TODO: synchronized
-        public static FinalSeg getInstance()
+        public static FinalSeg Instance
         {
-            if (null == singleInstance)
-            {
-                singleInstance = new FinalSeg();
-                singleInstance.loadModel();
-            }
-            return singleInstance;
+            get { return lazy.Value; }
         }
 
-        private void loadModel()
+        private void LoadModel()
         {
             long s = DateTime.Now.Millisecond;
             prevStatus = new Dictionary<char, char[]>();
@@ -68,17 +66,18 @@ namespace JiebaNet.Segmenter.Viterbi
             transS['S'] = -0.6658631448798212;
             trans['S'] = transS;
 
-            var prob_emit_path = PROB_EMIT;
-
+            var probEmitPath = ConfigManager.ProbEmitFile;
             emit = new Dictionary<char, IDictionary<char, double>>();
-            IDictionary<char, double> values = null;
 
             try
             {
-                var lines = File.ReadAllLines(prob_emit_path, Encoding.UTF8);
+                var lines = File.ReadAllLines(probEmitPath, Encoding.UTF8);
+
+                IDictionary<char, double> values = null;
                 foreach (var line in lines)
                 {
                     var tokens = line.Split('\t');
+                    // If a new state starts.
                     if (tokens.Length == 1)
                     {
                         values = new Dictionary<char, double>();
@@ -89,13 +88,10 @@ namespace JiebaNet.Segmenter.Viterbi
                         values[tokens[0][0]] = double.Parse(tokens[1]);
                     }
                 }
-
-                Console.WriteLine(emit.Count);
-                Console.WriteLine(values.Count);
             }
             catch (IOException ex)
             {
-                Console.Error.WriteLine("{0}: loading model from file {1} failure!", ex.Message, prob_emit_path);
+                Console.Error.WriteLine("{0}: loading model from file {1} failure!", ex.Message, probEmitPath);
             }
 
             Console.WriteLine("model loading finished, time elapsed {0} ms.", DateTime.Now.Millisecond - s);

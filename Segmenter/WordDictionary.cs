@@ -8,51 +8,43 @@ namespace JiebaNet.Segmenter
 {
     public class WordDictionary
     {
-        private static WordDictionary singleton;
-        private static readonly string MAIN_DICT = @"D:\andersc\github\jieba.NET\Segmenter\Resources\dict.txt";
+        private static readonly Lazy<WordDictionary> lazy = new Lazy<WordDictionary>(() => new WordDictionary());
+
+        private static readonly string MAIN_DICT = ConfigManager.MainDictFile;
         private static string USER_DICT_SUFFIX = ".dict";
 
-        // TODO: 2 final fields
-        public IDictionary<string, double> freqs = new Dictionary<string, double>();
+        public IDictionary<string, int> Trie = new Dictionary<string, int>();
         public ISet<string> loadedPath = new HashSet<string>();
         private double minFreq = double.MaxValue;
-        private double total = 0.0;
+
+        /// <summary>
+        /// total occurrence of all words.
+        /// </summary>
+        public double Total { get; set; }
+
         private DictSegment _dict;
 
         private static readonly object locker = new object();
 
         private WordDictionary()
         {
-            this.loadDict();
+            LoadDict();
 
-            Console.WriteLine("{0} words", freqs.Count);
-            Console.WriteLine(freqs[freqs.Keys.First()]);
+            Console.WriteLine("{0} words", Trie.Count);
+            Console.WriteLine("total freq: {0}", Total);
         }
 
-        // TODO: synchronized
-        public static WordDictionary getInstance()
+        public static WordDictionary Instance
         {
-            if (singleton == null)
-            {
-                lock(locker)
-                {
-                    if (singleton == null)
-                    {
-                        singleton = new WordDictionary();
-                        return singleton;
-                    }
-                }
-            }
-            return singleton;
+            get { return lazy.Value; }
         }
 
         // TODO: synchronized
-        /**
-         * for ES to initialize the user dictionary.
-         * 
-         * @param configFile
-         */
-        public void init(string configFile)
+        /// <summary>
+        /// Loads user dictionaries.
+        /// </summary>
+        /// <param name="configFile"></param>
+        private void init(string configFile)
         {
             // TODO: normalize/configurable path
             string abspath = configFile;
@@ -68,53 +60,54 @@ namespace JiebaNet.Segmenter
                     var dictFiles = Directory.GetFiles(abspath, "*" + USER_DICT_SUFFIX);
                     foreach (var dictFile in dictFiles)
                     {
-                        singleton.loadUserDict(dictFile);
+                        //_instance.loadUserDict(dictFile);
                     }
                     loadedPath.Add(abspath);
                 }
                 catch (IOException e)
                 {
-                    // TODO: Auto-generated catch block
-                    // e.printStackTrace();
                     Console.Error.WriteLine("{0}: load user dict failure!", configFile);
                 }
             }
         }
 
-        public void loadDict()
+        private void LoadDict()
         {
-            _dict = new DictSegment((char)0);
-
             try
             {
-                var lines = File.ReadAllLines(MAIN_DICT, Encoding.UTF8);
+                var startTime = DateTime.Now.Millisecond;
 
-                long s = DateTime.Now.Millisecond;
+                var lines = File.ReadAllLines(MAIN_DICT, Encoding.UTF8);
                 foreach (var line in lines)
                 {
-                    string[] tokens = line.Split("\t ".ToCharArray());
+                    var tokens = line.Split('\t', ' ');
                     if (tokens.Length < 2)
+                    {
+                        Console.Error.WriteLine("Invalid line: {0}", line);
                         continue;
+                    }
 
-                    string word = tokens[0];
-                    double freq = double.Parse(tokens[1]);
-                    total += freq;
-                    word = addWord(word);
-                    freqs[word] = freq;
+                    var word = tokens[0];
+                    var freq = int.Parse(tokens[1]);
+
+                    Trie[word] = freq;
+                    Total += freq;
+
+                    foreach (var ch in Enumerable.Range(0, word.Length))
+                    {
+                        var wfrag = word.Sub(0, ch + 1);
+                        if (!Trie.ContainsKey(wfrag))
+                        {
+                            Trie[wfrag] = 0;
+                        }
+                    }
                 }
 
-                // normalize
-                foreach (var freqKey in freqs.Keys.ToList())
-                {
-                    freqs[freqKey] = Math.Log(freqs[freqKey]/total);
-                    minFreq = Math.Min(freqs[freqKey], minFreq);
-                }
-
-                Console.WriteLine("main dict load finished, time elapsed {0} ms", DateTime.Now.Millisecond - s);
+                Console.WriteLine("main dict load finished, time elapsed {0} ms", DateTime.Now.Millisecond - startTime);
             }
             catch (IOException e)
             {
-                Console.Error.WriteLine("{0} load failure!", MAIN_DICT);
+                Console.Error.WriteLine("{0} load failure, reason: {1}", MAIN_DICT, e.Message);
             }
             catch (FormatException fe)
             {
@@ -122,68 +115,62 @@ namespace JiebaNet.Segmenter
             }
         }
 
-        private string addWord(string word)
+        //public void loadUserDict(string userDict)
+        //{
+        //    loadUserDict(userDict, Encoding.UTF8);
+        //}
+
+        //public void loadUserDict(string userDict, Encoding charset)
+        //{
+        //    try
+        //    {
+        //        var lines = File.ReadAllLines(userDict, charset);
+        //        long s = DateTime.Now.Millisecond;
+        //        int count = 0;
+        //        foreach (var line in lines)
+        //        {
+        //            string[] tokens = line.Split("\t ".ToCharArray());
+
+        //            if (tokens.Length < 2)
+        //                continue;
+
+        //            string word = tokens[0];
+        //            double freq = double.Parse(tokens[1]);
+        //            word = addWord(word);
+        //            Freq[word] = Math.Log(freq/Total);
+        //            count++;
+        //        }
+        //        Console.WriteLine("user dict {0} load finished, total words :{1}, time elapsed: {2} ms",
+        //            userDict, count, DateTime.Now.Millisecond - s);
+        //    }
+        //    catch (IOException e)
+        //    {
+        //        Console.Error.WriteLine("{0}: load user dict failure!", userDict);
+        //    }
+        //}
+
+        public bool ContainsWord(string word)
         {
-            if (!string.IsNullOrWhiteSpace(word))
-            {
-                string key = word.Trim().ToLower();
-                _dict.fillSegment(key.ToCharArray());
-                return key;
-            }
+            return Trie.ContainsKey(word) && Trie[word] > 0;
+        }
+
+        public int GetFreqOrDefault(string key)
+        {
+            if (ContainsWord(key))
+                return Trie[key];
             else
-                return null;
+                return 1;
         }
 
-        public void loadUserDict(string userDict)
+        public void AddWord(string word, int freq = 0, string tag = null)
         {
-            loadUserDict(userDict, Encoding.UTF8);
+            
         }
 
-        public void loadUserDict(string userDict, Encoding charset)
+        public int SuggestFreq(string segment, bool tune = false)
         {
-            try
-            {
-                var lines = File.ReadAllLines(userDict, charset);
-                long s = DateTime.Now.Millisecond;
-                int count = 0;
-                foreach (var line in lines)
-                {
-                    string[] tokens = line.Split("\t ".ToCharArray());
-
-                    if (tokens.Length < 2)
-                        continue;
-
-                    string word = tokens[0];
-                    double freq = double.Parse(tokens[1]);
-                    word = addWord(word);
-                    freqs[word] = Math.Log(freq/total);
-                    count++;
-                }
-                Console.WriteLine("user dict {0} load finished, total words :{1}, time elapsed: {2} ms",
-                    userDict, count, DateTime.Now.Millisecond - s);
-            }
-            catch (IOException e)
-            {
-                Console.Error.WriteLine("{0}: load user dict failure!", userDict);
-            }
-        }
-
-        public DictSegment getTrie()
-        {
-            return this._dict;
-        }
-
-        public bool containsWord(string word)
-        {
-            return freqs.ContainsKey(word);
-        }
-
-        public double getFreq(string key)
-        {
-            if (containsWord(key))
-                return freqs[key];
-            else
-                return minFreq;
+            var freq = 1;
+            return 0;
         }
     }
 }

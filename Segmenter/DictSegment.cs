@@ -160,14 +160,13 @@ namespace JiebaNet.Segmenter
             return searchHit;
         }
 
-        /**
-         * 加载填充词典片段
-         * 
-         * @param charArray
-         */
+        /// <summary>
+        /// 加载填充词典片段
+        /// </summary>
+        /// <param name="charArray"></param>
         internal void fillSegment(char[] charArray)
         {
-            this.fillSegment(charArray, 0, charArray.Length, 1);
+            fillSegment(charArray, 0, charArray.Length, 1);
         }
 
         /**

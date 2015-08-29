@@ -13,7 +13,7 @@ namespace Segmenter.Tests.FCL
         [TestCase]
         public void TestMatches()
         {
-            Regex re = new Regex("\\d+");
+            Regex re = new Regex(@"\d+");
             var input = "12 34 567";
             var mat = re.Matches(input);
             foreach (Match m in mat)

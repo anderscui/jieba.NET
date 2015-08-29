@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -39,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigManager.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pair.cs" />
@@ -62,8 +64,15 @@
     <Compile Include="JiebaSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\dict.txt" />
-    <Content Include="Resources\prob_emit.txt" />
+    <Content Include="Resources\dict.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\prob_emit.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
