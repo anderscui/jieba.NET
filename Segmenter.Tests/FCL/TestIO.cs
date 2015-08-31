@@ -35,5 +35,12 @@ namespace Segmenter.Tests.FCL
             Console.WriteLine(emit.Count);
             Console.WriteLine(values.Count);
         }
+
+        [TestCase]
+        public void TestNormalizePath()
+        {
+            var p = @"..\test.txt";
+            Console.WriteLine(Path.GetFullPath(p));
+        }
     }
 }

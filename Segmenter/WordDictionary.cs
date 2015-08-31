@@ -9,20 +9,15 @@ namespace JiebaNet.Segmenter
     public class WordDictionary
     {
         private static readonly Lazy<WordDictionary> lazy = new Lazy<WordDictionary>(() => new WordDictionary());
-
-        private static readonly string MAIN_DICT = ConfigManager.MainDictFile;
-        private static string USER_DICT_SUFFIX = ".dict";
+        private static readonly string MainDict = ConfigManager.MainDictFile;
 
         public IDictionary<string, int> Trie = new Dictionary<string, int>();
-        public ISet<string> loadedPath = new HashSet<string>();
-        private double minFreq = double.MaxValue;
+        public ISet<string> LoadedPath = new HashSet<string>();
 
         /// <summary>
         /// total occurrence of all words.
         /// </summary>
         public double Total { get; set; }
-
-        private DictSegment _dict;
 
         private static readonly object locker = new object();
 
@@ -43,30 +38,64 @@ namespace JiebaNet.Segmenter
         /// <summary>
         /// Loads user dictionaries.
         /// </summary>
-        /// <param name="configFile"></param>
-        private void init(string configFile)
+        /// <param name="userDictFile"></param>
+        public void LoadUserDict(string userDictFile)
         {
-            // TODO: normalize/configurable path
-            string abspath = configFile;
-            Console.WriteLine("initialize user dictionary: " + abspath);
+            var dictFullPath = Path.GetFullPath(userDictFile);
+            Console.WriteLine("Initializing user dictionary: " + userDictFile);
 
             lock(locker)
             {
-                if (loadedPath.Contains(abspath))
+                if (LoadedPath.Contains(dictFullPath))
                     return;
 
                 try
                 {
-                    var dictFiles = Directory.GetFiles(abspath, "*" + USER_DICT_SUFFIX);
-                    foreach (var dictFile in dictFiles)
+                    var startTime = DateTime.Now.Millisecond;
+
+                    var lines = File.ReadAllLines(dictFullPath, Encoding.UTF8);
+                    foreach (var line in lines)
                     {
-                        //_instance.loadUserDict(dictFile);
+                        if (string.IsNullOrWhiteSpace(line))
+                        {
+                            continue;
+                        }
+
+                        var tokens = line.Trim().Split('\t', ' ');
+                        var word = tokens[0];
+                        // TODO: calc freq;
+                        var freq = 5;
+                        var tag = string.Empty;
+                        if (tokens.Length == 2)
+                        {
+                            if (tokens[1].IsInt32())
+                            {
+                                freq = int.Parse(tokens[1]);
+                            }
+                            else
+                            {
+                                tag = tokens[1];
+                            }
+                        }
+                        else if (tokens.Length > 2)
+                        {
+                            freq = int.Parse(tokens[1]);
+                            tag = tokens[2];
+                        }
+                        
+                        AddWord(word, freq, tag);
                     }
-                    loadedPath.Add(abspath);
+
+                    Console.WriteLine("user dict '{0}' load finished, time elapsed {1} ms", 
+                        dictFullPath, DateTime.Now.Millisecond - startTime);
                 }
                 catch (IOException e)
                 {
-                    Console.Error.WriteLine("{0}: load user dict failure!", configFile);
+                    Console.Error.WriteLine("'{0}' load failure, reason: {1}", dictFullPath, e.Message);
+                }
+                catch (FormatException fe)
+                {
+                    Console.Error.WriteLine(fe.Message);
                 }
             }
         }
@@ -77,7 +106,7 @@ namespace JiebaNet.Segmenter
             {
                 var startTime = DateTime.Now.Millisecond;
 
-                var lines = File.ReadAllLines(MAIN_DICT, Encoding.UTF8);
+                var lines = File.ReadAllLines(MainDict, Encoding.UTF8);
                 foreach (var line in lines)
                 {
                     var tokens = line.Split('\t', ' ');
@@ -107,47 +136,13 @@ namespace JiebaNet.Segmenter
             }
             catch (IOException e)
             {
-                Console.Error.WriteLine("{0} load failure, reason: {1}", MAIN_DICT, e.Message);
+                Console.Error.WriteLine("{0} load failure, reason: {1}", MainDict, e.Message);
             }
             catch (FormatException fe)
             {
                 Console.Error.WriteLine(fe.Message);
             }
         }
-
-        //public void loadUserDict(string userDict)
-        //{
-        //    loadUserDict(userDict, Encoding.UTF8);
-        //}
-
-        //public void loadUserDict(string userDict, Encoding charset)
-        //{
-        //    try
-        //    {
-        //        var lines = File.ReadAllLines(userDict, charset);
-        //        long s = DateTime.Now.Millisecond;
-        //        int count = 0;
-        //        foreach (var line in lines)
-        //        {
-        //            string[] tokens = line.Split("\t ".ToCharArray());
-
-        //            if (tokens.Length < 2)
-        //                continue;
-
-        //            string word = tokens[0];
-        //            double freq = double.Parse(tokens[1]);
-        //            word = addWord(word);
-        //            Freq[word] = Math.Log(freq/Total);
-        //            count++;
-        //        }
-        //        Console.WriteLine("user dict {0} load finished, total words :{1}, time elapsed: {2} ms",
-        //            userDict, count, DateTime.Now.Millisecond - s);
-        //    }
-        //    catch (IOException e)
-        //    {
-        //        Console.Error.WriteLine("{0}: load user dict failure!", userDict);
-        //    }
-        //}
 
         public bool ContainsWord(string word)
         {
@@ -164,13 +159,37 @@ namespace JiebaNet.Segmenter
 
         public void AddWord(string word, int freq = 0, string tag = null)
         {
-            
+            if (ContainsWord(word))
+            {
+                return;
+            }
+
+            Trie[word] = freq;
+            Total += freq;
+            for (var i = 0; i < word.Length; i++)
+            {
+                var wfrag = word.Substring(0, i + 1);
+                if (!Trie.ContainsKey(wfrag))
+                {
+                    Trie[wfrag] = 0;
+                }
+            }
         }
 
-        public int SuggestFreq(string segment, bool tune = false)
+        public void DeleteWord(string word)
         {
-            var freq = 1;
-            return 0;
+            AddWord(word, 0);
+        }
+
+        public int SuggestFreq(string word, IEnumerable<string> segments, bool tune = false)
+        {
+            double freq = 1;
+            foreach (var seg in segments)
+            {
+                freq *= GetFreqOrDefault(seg) / Total;
+            }
+
+            return Math.Max((int)(freq * Total) + 1, GetFreqOrDefault(word));
         }
     }
 }

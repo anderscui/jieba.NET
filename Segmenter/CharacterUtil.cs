@@ -5,7 +5,7 @@ namespace JiebaNet.Segmenter
 {
     public class CharacterUtil
     {
-        public static readonly Regex reSkip = new Regex("(\\d+\\.\\d+|[a-zA-Z0-9]+)", RegexOptions.Compiled);
+        public static readonly Regex RegexSkip = new Regex("(\\d+\\.\\d+|[a-zA-Z0-9]+)", RegexOptions.Compiled);
         private static readonly char[] connectors = new char[] { '+', '#', '&', '.', '_', '-' };
 
         public static Boolean isChineseLetter(char ch)

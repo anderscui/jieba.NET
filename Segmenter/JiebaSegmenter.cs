@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using JiebaNet.Segmenter.Viterbi;
 
@@ -353,6 +354,33 @@ namespace JiebaNet.Segmenter
             return result;
         }
 
+        public void LoadUserDict(string dictFile)
+        {
+            wordDict.LoadUserDict(dictFile);
+        }
 
+        public void AddWord(string word, int freq = 0, string tag = null)
+        {
+            if (freq <= 0)
+            {
+                freq = SuggestFreq(word);
+            }
+            wordDict.AddWord(word, freq);
+        }
+
+        public void DeleteWord(string word)
+        {
+            wordDict.DeleteWord(word);
+        }
+
+        public int SuggestFreq(string word, bool tune = false)
+        {
+            var freq = wordDict.SuggestFreq(word, Cut(word), tune);
+            if (tune)
+            {
+                AddWord(word, freq);
+            }
+            return freq;
+        }
     }
 }

@@ -225,7 +225,7 @@ namespace JiebaNet.Segmenter.Viterbi
 
         private void processOtherUnknownWords(String other, List<String> tokens)
         {
-            var mat = CharacterUtil.reSkip.Matches(other);
+            var mat = CharacterUtil.RegexSkip.Matches(other);
             int offset = 0;
             foreach (Match m in mat)
             {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using NUnit.Framework;
 
@@ -139,6 +140,38 @@ namespace JiebaNet.Segmenter.Tests
         private static void TestCutForSearch(JiebaSegmenter segmenter, string s)
         {
             Console.WriteLine(string.Join("/ ", segmenter.CutForSearch(s)));
+        }
+
+        [TestCase]
+        public void TestAddWord()
+        {
+            var seg = new JiebaSegmenter();
+            TestCutThenPrint(seg, "小明最近在学习机器学习和自然语言处理");
+            seg.AddWord("机器学习");
+            TestCutThenPrint(seg, "小明最近在学习机器学习和自然语言处理");
+        }
+
+        [TestCase]
+        public void TestSuggestFreq()
+        {
+            var seg = new JiebaSegmenter();
+            TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
+            seg.AddWord("机器学习");
+            seg.SuggestFreq("自然语言处理", true);
+            seg.AddWord("云计算");
+            seg.SuggestFreq("大数据", true);
+            TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
+        }
+
+        [TestCase]
+        public void TestUserDict()
+        {
+            var dict = @"Resources\user_dict.txt";
+            var seg = new JiebaSegmenter();
+
+            TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
+            seg.LoadUserDict(dict);
+            TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
         }
 
         [TestCase]
