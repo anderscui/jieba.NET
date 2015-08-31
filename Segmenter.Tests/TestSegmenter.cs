@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
+using System.IO;
 using System.Linq;
 using NUnit.Framework;
 
@@ -9,22 +9,9 @@ namespace JiebaNet.Segmenter.Tests
     [TestFixture]
     public class TestSegmenter
     {
-        private List<string> GetTestSentences()
+        private string[] GetTestSentences()
         {
-            return new List<string>()
-            {
-                "我需要廉租房",
-                "据说这位语言学家去参加神马学术会议了",
-                "小明硕士毕业于中国科学院计算所，后在日本京都大学深造",
-                "他来到了网易杭研大厦",
-                "他说的确实在理",
-                "我购买了道具和服装，为了出演罗密欧与朱丽叶",
-                "工信处女干事每月经过下属科室都要亲口交代24口交换机等技术性器件的安装工作",
-
-                "我他我买演件了为不知所云",
-                "小明不知何许人也，最近才学习机器学习知识",
-                "通过结巴分词这个library，我们可以看到概率论在自然语言处理中的大量应用。"
-            };
+            return File.ReadAllLines(@"Cases\jieba_test.txt");
         }
 
         [TestCase]
@@ -85,31 +72,19 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestCut()
         {
-            var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutThenPrint(seg, sentence);
-            }
+            TestCutFunction((new JiebaSegmenter()).Cut, false, true, @"Cases\accurate_hmm.txt");
         }
 
         [TestCase]
         public void TestCutAll()
         {
-            var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutAllThenPrint(seg, sentence);
-            }
+            TestCutFunction((new JiebaSegmenter()).Cut, true, false, @"Cases\cut_all.txt");
         }
 
         [TestCase]
         public void TestCutWithoutHmm()
         {
-            var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutWithoutHmm(seg, sentence);
-            }
+            TestCutFunction((new JiebaSegmenter()).Cut, false, false, @"Cases\accurate_no_hmm.txt");
         }
 
         [TestCase]
@@ -142,16 +117,6 @@ namespace JiebaNet.Segmenter.Tests
         private static void TestCutThenPrint(JiebaSegmenter segmenter, string s)
         {
             Console.WriteLine(string.Join("/ ", segmenter.Cut(s)));
-        }
-
-        private static void TestCutAllThenPrint(JiebaSegmenter segmenter, string s)
-        {
-            Console.WriteLine(string.Join("/ ", segmenter.Cut(s, true)));
-        }
-
-        private static void TestCutWithoutHmm(JiebaSegmenter segmenter, string s)
-        {
-            Console.WriteLine(string.Join("/ ", segmenter.Cut(s, hmm: false)));
         }
 
         private static void TestCutForSearch(JiebaSegmenter segmenter, string s)
@@ -205,5 +170,24 @@ namespace JiebaNet.Segmenter.Tests
                 Console.WriteLine(part);
             }
         }
+
+        #region Private Helpers
+
+        private void TestCutFunction(Func<string, bool, bool, IEnumerable<string>> method,
+                                     bool cutAll, bool useHmm,
+                                     string testResultFile)
+        {
+            var testCases = GetTestSentences();
+            var testResults = File.ReadAllLines(testResultFile);
+            Assert.That(testCases.Length, Is.EqualTo(testResults.Length));
+            for (int i = 0; i < testCases.Length; i++)
+            {
+                var testCase = testCases[i];
+                var testResult = testResults[i];
+                Assert.That(method(testCase, cutAll, useHmm).Join("/ "), Is.EqualTo(testResult));
+            }
+        }
+
+        #endregion
     }
 }

@@ -37,5 +37,10 @@ namespace JiebaNet.Segmenter
             }
             return defaultValue;
         }
+
+        public static string Join(this IEnumerable<string> inputs, string separator = ", ")
+        {
+            return string.Join(separator, inputs);
+        }
     }
 }

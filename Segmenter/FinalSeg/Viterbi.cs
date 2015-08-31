@@ -147,7 +147,7 @@ namespace JiebaNet.Segmenter.FinalSeg
                     {
                         var tranp = _transProbs[y0].GetDefault(y, Constants.MinProb);
                         tranp = v[i - 1][y0] + tranp + emp;
-                        if (candidate.freq < tranp)
+                        if (candidate.freq <= tranp)
                         {
                             candidate.freq = tranp;
                             candidate.key = y0;

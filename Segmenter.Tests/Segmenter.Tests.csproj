@@ -53,6 +53,18 @@
     <Compile Include="TestSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Cases\accurate_hmm.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cases\accurate_no_hmm.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cases\cut_all.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Cases\jieba_test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="prob.txt" />
     <Content Include="Resources\prob_emit.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
