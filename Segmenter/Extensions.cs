@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Runtime.Remoting.Messaging;
 using System.Text.RegularExpressions;
 
@@ -26,6 +27,15 @@ namespace JiebaNet.Segmenter
         public static bool IsInt32(this string s)
         {
             return RegexDigits.IsMatch(s);
+        }
+
+        public static TValue GetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
+        {
+            if (dict.ContainsKey(key))
+            {
+                return dict[key];
+            }
+            return defaultValue;
         }
     }
 }

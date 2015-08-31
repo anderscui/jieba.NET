@@ -122,6 +122,23 @@ namespace JiebaNet.Segmenter.Tests
             }
         }
 
+        [TestCase]
+        public void TestTokenize()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("机器学习");
+            seg.AddWord("自然语言处理");
+            foreach (var token in seg.Tokenize("小明最近在学习机器学习、自然语言处理、云计算和大数据"))
+            {
+                Console.WriteLine(token);
+            }
+
+            foreach (var token in seg.Tokenize("小明最近在学习机器学习、自然语言处理、云计算和大数据", TokenizerMode.Search))
+            {
+                Console.WriteLine(token);
+            }
+        }
+
         private static void TestCutThenPrint(JiebaSegmenter segmenter, string s)
         {
             Console.WriteLine(string.Join("/ ", segmenter.Cut(s)));

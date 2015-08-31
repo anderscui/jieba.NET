@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
-using JiebaNet.Segmenter.Viterbi;
+using JiebaNet.Segmenter.FinalSeg;
 
 namespace JiebaNet.Segmenter
 {
     public class JiebaSegmenter
     {
-        private static WordDictionary wordDict = WordDictionary.Instance;
-        private static FinalSeg finalSeg = FinalSeg.Instance;
+        private static readonly WordDictionary WordDict = WordDictionary.Instance;
+        private static readonly IFinalSeg FinalSeg = Viterbi.Instance;
 
         public static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
         
@@ -27,7 +26,7 @@ namespace JiebaNet.Segmenter
         public IDictionary<int, List<int>> GetDAG(string sentence)
         {
             var dag = new Dictionary<int, List<int>>();
-            var trie = wordDict.Trie;
+            var trie = WordDict.Trie;
 
             var N = sentence.Length;
             for (var k = 0; k < sentence.Length; k++)
@@ -66,13 +65,13 @@ namespace JiebaNet.Segmenter
             var route = new Dictionary<int, Pair<int>>();
             route[N] = new Pair<int>(0, 0.0);
 
-            var logtotal = Math.Log(wordDict.Total);
+            var logtotal = Math.Log(WordDict.Total);
             for (var i = N - 1; i > -1; i--)
             {
                 var candidate = new Pair<int>(-1, double.MinValue);
                 foreach (int x in dag[i])
                 {
-                    var freq = Math.Log(wordDict.GetFreqOrDefault(sentence.Sub(i, x + 1))) - logtotal + route[x + 1].freq;
+                    var freq = Math.Log(WordDict.GetFreqOrDefault(sentence.Sub(i, x + 1))) - logtotal + route[x + 1].freq;
                     if (candidate.freq < freq)
                     {
                         candidate.freq = freq;
@@ -121,82 +120,37 @@ namespace JiebaNet.Segmenter
             var dag = GetDAG(sentence);
             var route = Calc(sentence, dag);
 
-            var words = new List<string>();
+            var tokens = new List<string>();
 
             var x = 0;
-            string buf = string.Empty;
-            var N = sentence.Length;
-            var y = -1;
-            while (x < N)
+            var n = sentence.Length;
+            var buf = string.Empty;
+            while (x < n)
             {
-                y = route[x].key + 1;
-                string l_word = sentence.Substring(x, y - x);
+                var y = route[x].key + 1;
+                var w = sentence.Substring(x, y - x);
                 if (y - x == 1)
                 {
-                    buf += l_word;
+                    buf += w;
                 }
                 else
                 {
-                    // TODO:
                     if (buf.Length > 0)
                     {
-                        if (buf.Length == 1)
-                        {
-                            words.Add(buf);
-                            buf = string.Empty;
-                        }
-                        else
-                        {
-                            if (!wordDict.ContainsWord(buf))
-                            {
-                                var tokens = new List<string>();
-                                finalSeg.cut(buf, tokens);
-                                foreach (var token in tokens)
-                                {
-                                    words.Add(token);
-                                }
-                            }
-                            else
-                            {
-                                foreach (var elem in buf)
-                                {
-                                    words.Add(elem.ToString());
-                                }
-                            }
-                            buf = string.Empty;
-                        }
+                        AddBufferToWordList(tokens, buf);
+                        buf = string.Empty;
                     }
-                    words.Add(l_word);
+                    tokens.Add(w);
                 }
                 x = y;
             }
 
-            // TODO:
             if (buf.Length > 0)
             {
-                if (buf.Length == 1)
-                {
-                    words.Add(buf);
-                }
-                else if (!wordDict.ContainsWord(buf))
-                {
-                    var tokens = new List<string>();
-                    finalSeg.cut(buf, tokens);
-                    foreach (var token in tokens)
-                    {
-                        words.Add(token);
-                    }
-                }
-                else
-                {
-                    foreach (var elem in buf)
-                    {
-                        words.Add(elem.ToString());
-                    }
-                }
+                AddBufferToWordList(tokens, buf);
             }
 
-            return words;
+            return tokens;
         }
 
         public IEnumerable<string> CutDAGWithoutHmm(string sentence)
@@ -329,7 +283,7 @@ namespace JiebaNet.Segmenter
                     foreach (var i in Enumerable.Range(0, w.Length - 1))
                     {
                         var gram2 = w.Substring(i, 2);
-                        if (wordDict.ContainsWord(gram2))
+                        if (WordDict.ContainsWord(gram2))
                         {
                             result.Add(gram2);
                         }
@@ -341,7 +295,7 @@ namespace JiebaNet.Segmenter
                     foreach (var i in Enumerable.Range(0, w.Length - 2))
                     {
                         var gram3 = w.Substring(i, 3);
-                        if (wordDict.ContainsWord(gram3))
+                        if (WordDict.ContainsWord(gram3))
                         {
                             result.Add(gram3);
                         }
@@ -354,9 +308,61 @@ namespace JiebaNet.Segmenter
             return result;
         }
 
+        public IEnumerable<Token> Tokenize(string text, TokenizerMode mode = TokenizerMode.Default, bool hmm = true)
+        {
+            var result = new List<Token>();
+
+            var start = 0;
+            if (mode == TokenizerMode.Default)
+            {
+                foreach (var w in Cut(text, hmm: hmm))
+                {
+                    var width = w.Length;
+                    result.Add(new Token(w, start, start+width));
+                    start += width;
+                }
+            }
+            else
+            {
+                foreach (var w in Cut(text, hmm: hmm))
+                {
+                    var width = w.Length;
+                    if (width > 2)
+                    {
+                        for (int i = 0; i < width - 1; i++)
+                        {
+                            var gram2 = w.Substring(i, 2);
+                            if (WordDict.ContainsWord(gram2))
+                            {
+                                result.Add(new Token(gram2, start+i, start+i+2));
+                            }
+                        }
+                    }
+                    if (width > 3)
+                    {
+                        for (int i = 0; i < width - 2; i++)
+                        {
+                            var gram3 = w.Substring(i, 3);
+                            if (WordDict.ContainsWord(gram3))
+                            {
+                                result.Add(new Token(gram3, start + i, start + i + 3));
+                            }
+                        }
+                    }
+
+                    result.Add(new Token(w, start, start + width));
+                    start += width;
+                }
+            }
+
+            return result;
+        }
+
+        #region Extend Main Dict
+
         public void LoadUserDict(string dictFile)
         {
-            wordDict.LoadUserDict(dictFile);
+            WordDict.LoadUserDict(dictFile);
         }
 
         public void AddWord(string word, int freq = 0, string tag = null)
@@ -365,22 +371,54 @@ namespace JiebaNet.Segmenter
             {
                 freq = SuggestFreq(word);
             }
-            wordDict.AddWord(word, freq);
+            WordDict.AddWord(word, freq);
         }
 
         public void DeleteWord(string word)
         {
-            wordDict.DeleteWord(word);
+            WordDict.DeleteWord(word);
         }
 
         public int SuggestFreq(string word, bool tune = false)
         {
-            var freq = wordDict.SuggestFreq(word, Cut(word), tune);
+            var freq = WordDict.SuggestFreq(word, Cut(word), tune);
             if (tune)
             {
                 AddWord(word, freq);
             }
             return freq;
         }
+
+        #endregion
+
+        #region Private Helpers
+
+        private void AddBufferToWordList(List<string> words, string buf)
+        {
+            if (buf.Length == 1)
+            {
+                words.Add(buf);
+            }
+            else
+            {
+                if (!WordDict.ContainsWord(buf))
+                {
+                    var tokens = FinalSeg.Cut(buf);
+                    words.AddRange(tokens);
+                }
+                else
+                {
+                    words.AddRange(buf.Select(ch => ch.ToString()));
+                }
+            }
+        }
+
+        #endregion
+    }
+
+    public enum TokenizerMode
+    {
+        Default,
+        Search
     }
 }
