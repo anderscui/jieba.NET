@@ -64,7 +64,7 @@ namespace JiebaNet.Segmenter
                         var tokens = line.Trim().Split('\t', ' ');
                         var word = tokens[0];
                         // TODO: calc freq;
-                        var freq = 5;
+                        var freq = 3;
                         var tag = string.Empty;
                         if (tokens.Length == 2)
                         {
@@ -157,11 +157,11 @@ namespace JiebaNet.Segmenter
                 return 1;
         }
 
-        public void AddWord(string word, int freq = 0, string tag = null)
+        public void AddWord(string word, int freq, string tag = null)
         {
             if (ContainsWord(word))
             {
-                return;
+                Total -= Trie[word];
             }
 
             Trie[word] = freq;
@@ -181,7 +181,7 @@ namespace JiebaNet.Segmenter
             AddWord(word, 0);
         }
 
-        public int SuggestFreq(string word, IEnumerable<string> segments, bool tune = false)
+        internal int SuggestFreq(string word, IEnumerable<string> segments)
         {
             double freq = 1;
             foreach (var seg in segments)

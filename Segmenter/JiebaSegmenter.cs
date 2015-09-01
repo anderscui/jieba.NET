@@ -12,7 +12,7 @@ namespace JiebaNet.Segmenter
         private static readonly IFinalSeg FinalSeg = Viterbi.Instance;
 
         public static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
-        
+
         /// <summary>
         /// Whitespace or new line.
         /// </summary>
@@ -105,7 +105,7 @@ namespace JiebaNet.Segmenter
                     {
                         if (j > k)
                         {
-                            words.Add(sentence.Substring(k, j+1-k));
+                            words.Add(sentence.Substring(k, j + 1 - k));
                             old_j = j;
                         }
                     }
@@ -318,7 +318,7 @@ namespace JiebaNet.Segmenter
                 foreach (var w in Cut(text, hmm: hmm))
                 {
                     var width = w.Length;
-                    result.Add(new Token(w, start, start+width));
+                    result.Add(new Token(w, start, start + width));
                     start += width;
                 }
             }
@@ -334,7 +334,7 @@ namespace JiebaNet.Segmenter
                             var gram2 = w.Substring(i, 2);
                             if (WordDict.ContainsWord(gram2))
                             {
-                                result.Add(new Token(gram2, start+i, start+i+2));
+                                result.Add(new Token(gram2, start + i, start + i + 2));
                             }
                         }
                     }
@@ -369,7 +369,7 @@ namespace JiebaNet.Segmenter
         {
             if (freq <= 0)
             {
-                freq = SuggestFreq(word);
+                freq = WordDict.SuggestFreq(word, Cut(word, hmm: false));
             }
             WordDict.AddWord(word, freq);
         }
@@ -377,16 +377,6 @@ namespace JiebaNet.Segmenter
         public void DeleteWord(string word)
         {
             WordDict.DeleteWord(word);
-        }
-
-        public int SuggestFreq(string word, bool tune = false)
-        {
-            var freq = WordDict.SuggestFreq(word, Cut(word), tune);
-            if (tune)
-            {
-                AddWord(word, freq);
-            }
-            return freq;
         }
 
         #endregion

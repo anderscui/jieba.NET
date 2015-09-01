@@ -1,2 +1,94 @@
-# jieba.NET
-“结巴”中文分词的.NET版本
+jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
+
+当前版本是初始版本，基于jieba 0.37，目标是提供与jieba一致的功能与接口，但以后可能会在jieba基础上提供其它扩展功能。
+
+## 特点
+
+* 支持三种分词模式：
+    - 精确模式，试图将句子最精确地切开，适合文本分析；
+    - 全模式，把句子中所有的可以成词的词语都扫描出来, 速度非常快，但是不能解决歧义。具体来说，分词过程不会借助于词频查找最大概率路径，亦不会使用HMM；
+    - 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+* 支持繁体分词（的词典）
+* 支持添加自定义词典和自定义词
+* MIT 授权协议
+
+## 算法
+
+* 基于前缀词典实现高效的词图扫描，生成句子中汉字所有可能成词情况所构成的有向无环图 (DAG)
+* 采用了动态规划查找最大概率路径, 找出基于词频的最大切分组合
+* 对于未登录词，采用了基于汉字成词能力的[HMM模型](http://yanyiwu.com/work/2014/04/07/hmm-segment-xiangjie.html)，使用了Viterbi算法
+
+## 安装和配置
+
+当前版本基于.NET Framework 4.5。暂不支持NuGet方式安装，须手动引用项目或程序集。在app.config或web.config中添加两个配置项：
+
+```xml
+<appSettings>
+    <add key="MainDictFile" value="Resources\dict.txt" />
+    <add key="ProbEmitFile" value="Resources\prob_emit.txt" />
+</appSettings>
+```
+
+## 主要功能
+
+### 1. 分词
+
+* `JiebaSegmenter.Cut`方法接受三个输入参数，text为待分词的字符串；cutAll指定是否采用全模式；hmm指定使用是否使用hmm模型切分未登录词；返回类型为`IEnumerable<string>`
+* `JiebaSegmenter.CutForSearch`方法接受两个输入参数，text为待分词的字符串；hmm指定使用是否使用hmm模型；返回类型为`IEnumerable<string>`
+
+代码示例
+
+```c#
+var segmenter = new JiebaSegmenter();
+var segments = segmenter.Cut("我来到北京清华大学", cutAll: true);
+Console.WriteLine("【全模式】：{0}", string.Join("/ ", segments));
+
+segments = segmenter.Cut("我来到北京清华大学");  // 默认为精确模式
+Console.WriteLine("【精确模式】：{0}", string.Join("/ ", segments));
+
+segments = segmenter.Cut("他来到了网易杭研大厦");  // 默认为精确模式，同时也使用HMM模型
+Console.WriteLine("【新词识别】：{0}", string.Join(", ", segments));
+
+segments = segmenter.CutForSearch("小明硕士毕业于中国科学院计算所，后在日本京都大学深造"); // 搜索引擎模式
+Console.WriteLine("【搜索引擎模式】：{0}", string.Join(", ", segments));
+```
+
+输出
+
+```
+【全模式】：我/ 来到/ 北京/ 清华/ 清华大学/ 华大/ 大学
+【精确模式】：我/ 来到/ 北京/ 清华大学
+【新词识别】：他, 来到, 了, 网易, 杭研, 大厦
+【搜索引擎模式】：小明, 硕士, 毕业, 于, 中国, 科学, 学院, 科学院, 中国科学院, 计算, 计算所, ，, 后, 在, 日本, 京都, 大学, 日本京都大学, 深造
+```
+
+
+### 2. 添加自定义词典
+
+#### 加载词典
+
+* 开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率
+* `JiebaSegmenter.LoadUserDict("user_dict_file_path")`
+* 词典格式与主词典格式相同，即一行包含：词、词频（可省略）、词性（可省略），用空格隔开
+* 词频省略时，分词器将使用自动计算出的词频保证该词被分出
+
+如
+
+```
+创新办 3 i
+云计算 5
+凱特琳 nz
+台中
+机器学习 3
+```
+
+#### 调整词典
+
+* 使用`JiebaSegmenter.AddWord(word, freq=0, tag=null)`可添加一个新词，或调整已知词的词频；若`freq`为非正数，则使用自动计算出的词频
+* 使用`JiebaSegmenter.DeleteWord(word)`可移除一个词，使其不能被分出来
+
+### 3. 关键词提取（暂未实现）
+### 4. 词性标注（暂未实现）
+### 5. 并行分词（暂未实现）
+### 6. Tokenize：返回词语在原文的起止位置（暂未实现）
+### 7. 命令行分词（暂未实现）

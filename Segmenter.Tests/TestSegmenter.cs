@@ -90,11 +90,13 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestCutForSearch()
         {
-            var seg = new JiebaSegmenter();
-            foreach (var sentence in GetTestSentences())
-            {
-                TestCutForSearch(seg, sentence);
-            }
+            TestCutSearchFunction((new JiebaSegmenter()).CutForSearch, true, @"Cases\cut_search_hmm.txt");
+        }
+
+        [TestCase]
+        public void TestCutForSearchWithoutHmm()
+        {
+            TestCutSearchFunction((new JiebaSegmenter()).CutForSearch, false, @"Cases\cut_search_no_hmm.txt");
         }
 
         [TestCase]
@@ -119,11 +121,6 @@ namespace JiebaNet.Segmenter.Tests
             Console.WriteLine(string.Join("/ ", segmenter.Cut(s)));
         }
 
-        private static void TestCutForSearch(JiebaSegmenter segmenter, string s)
-        {
-            Console.WriteLine(string.Join("/ ", segmenter.CutForSearch(s)));
-        }
-
         [TestCase]
         public void TestAddWord()
         {
@@ -134,15 +131,12 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
-        public void TestSuggestFreq()
+        public void TestCutTraditionalChinese()
         {
             var seg = new JiebaSegmenter();
-            TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
-            seg.AddWord("机器学习");
-            seg.SuggestFreq("自然语言处理", true);
-            seg.AddWord("云计算");
-            seg.SuggestFreq("大数据", true);
-            TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
+            TestCutThenPrint(seg, "小明最近在學習機器學習和自然語言處理");
+            //seg.AddWord("机器学习");
+            //TestCutThenPrint(seg, "小明最近在学习机器学习和自然语言处理");
         }
 
         [TestCase]
@@ -185,6 +179,21 @@ namespace JiebaNet.Segmenter.Tests
                 var testCase = testCases[i];
                 var testResult = testResults[i];
                 Assert.That(method(testCase, cutAll, useHmm).Join("/ "), Is.EqualTo(testResult));
+            }
+        }
+
+        private void TestCutSearchFunction(Func<string, bool, IEnumerable<string>> method,
+                                     bool useHmm,
+                                     string testResultFile)
+        {
+            var testCases = GetTestSentences();
+            var testResults = File.ReadAllLines(testResultFile);
+            Assert.That(testCases.Length, Is.EqualTo(testResults.Length));
+            for (int i = 0; i < testCases.Length; i++)
+            {
+                var testCase = testCases[i];
+                var testResult = testResults[i];
+                Assert.That(method(testCase, useHmm).Join("/ "), Is.EqualTo(testResult));
             }
         }
 
