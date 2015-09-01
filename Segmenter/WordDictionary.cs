@@ -12,14 +12,11 @@ namespace JiebaNet.Segmenter
         private static readonly string MainDict = ConfigManager.MainDictFile;
 
         public IDictionary<string, int> Trie = new Dictionary<string, int>();
-        public ISet<string> LoadedPath = new HashSet<string>();
 
         /// <summary>
         /// total occurrence of all words.
         /// </summary>
         public double Total { get; set; }
-
-        private static readonly object locker = new object();
 
         private WordDictionary()
         {
@@ -32,72 +29,6 @@ namespace JiebaNet.Segmenter
         public static WordDictionary Instance
         {
             get { return lazy.Value; }
-        }
-
-        // TODO: synchronized
-        /// <summary>
-        /// Loads user dictionaries.
-        /// </summary>
-        /// <param name="userDictFile"></param>
-        public void LoadUserDict(string userDictFile)
-        {
-            var dictFullPath = Path.GetFullPath(userDictFile);
-            Console.WriteLine("Initializing user dictionary: " + userDictFile);
-
-            lock(locker)
-            {
-                if (LoadedPath.Contains(dictFullPath))
-                    return;
-
-                try
-                {
-                    var startTime = DateTime.Now.Millisecond;
-
-                    var lines = File.ReadAllLines(dictFullPath, Encoding.UTF8);
-                    foreach (var line in lines)
-                    {
-                        if (string.IsNullOrWhiteSpace(line))
-                        {
-                            continue;
-                        }
-
-                        var tokens = line.Trim().Split('\t', ' ');
-                        var word = tokens[0];
-                        // TODO: calc freq;
-                        var freq = 3;
-                        var tag = string.Empty;
-                        if (tokens.Length == 2)
-                        {
-                            if (tokens[1].IsInt32())
-                            {
-                                freq = int.Parse(tokens[1]);
-                            }
-                            else
-                            {
-                                tag = tokens[1];
-                            }
-                        }
-                        else if (tokens.Length > 2)
-                        {
-                            freq = int.Parse(tokens[1]);
-                            tag = tokens[2];
-                        }
-                        
-                        AddWord(word, freq, tag);
-                    }
-
-                    Console.WriteLine("user dict '{0}' load finished, time elapsed {1} ms", 
-                        dictFullPath, DateTime.Now.Millisecond - startTime);
-                }
-                catch (IOException e)
-                {
-                    Console.Error.WriteLine("'{0}' load failure, reason: {1}", dictFullPath, e.Message);
-                }
-                catch (FormatException fe)
-                {
-                    Console.Error.WriteLine(fe.Message);
-                }
-            }
         }
 
         private void LoadDict()

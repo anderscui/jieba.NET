@@ -147,14 +147,14 @@ namespace JiebaNet.Segmenter.FinalSeg
                     {
                         var tranp = _transProbs[y0].GetDefault(y, Constants.MinProb);
                         tranp = v[i - 1][y0] + tranp + emp;
-                        if (candidate.freq <= tranp)
+                        if (candidate.Freq <= tranp)
                         {
-                            candidate.freq = tranp;
-                            candidate.key = y0;
+                            candidate.Freq = tranp;
+                            candidate.Key = y0;
                         }
                     }
-                    vv[y] = candidate.freq;
-                    newPath[y] = new Node(y, path[candidate.key]);
+                    vv[y] = candidate.Freq;
+                    newPath[y] = new Node(y, path[candidate.Key]);
                 }
                 path = newPath;
             }
@@ -166,8 +166,8 @@ namespace JiebaNet.Segmenter.FinalSeg
             var posList = new List<char>(sentence.Length);
             while (finalPath != null)
             {
-                posList.Add(finalPath.value);
-                finalPath = finalPath.parent;
+                posList.Add(finalPath.Value);
+                finalPath = finalPath.Parent;
             }
             posList.Reverse();
 

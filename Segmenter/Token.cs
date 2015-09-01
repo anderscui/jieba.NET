@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace JiebaNet.Segmenter
+﻿namespace JiebaNet.Segmenter
 {
     public class Token
     {
@@ -15,7 +13,7 @@ namespace JiebaNet.Segmenter
             EndIndex = endIndex;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return string.Format("[{0}, ({1}, {2})]", Word, StartIndex, EndIndex);
         }

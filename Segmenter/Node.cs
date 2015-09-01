@@ -2,13 +2,13 @@
 {
     public class Node
     {
-        public char value;
-        public Node parent;
+        public char Value { get; private set; }
+        public Node Parent { get; private set; }
 
         public Node(char value, Node parent)
         {
-            this.value = value;
-            this.parent = parent;
+            Value = value;
+            Parent = parent;
         }
     }
 }

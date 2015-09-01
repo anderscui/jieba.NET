@@ -15,10 +15,10 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
-        public void TestGetDAG()
+        public void TestGetDag()
         {
             JiebaSegmenter seg = new JiebaSegmenter();
-            var dag = seg.GetDAG("语言学家参加学术会议");
+            var dag = seg.GetDag("语言学家参加学术会议");
             foreach (var key in dag.Keys.ToList().OrderBy(k => k))
             {
                 Console.Write("{0}: ", key);
@@ -35,22 +35,22 @@ namespace JiebaNet.Segmenter.Tests
         {
             var s = "语言学家参加学术会议";
             var seg = new JiebaSegmenter();
-            var dag = seg.GetDAG(s);
+            var dag = seg.GetDag(s);
             var route = seg.Calc(s, dag);
             foreach (var key in route.Keys.ToList().OrderBy(k => k))
             {
                 Console.Write("{0}: ", key);
                 var pair = route[key];
-                Console.WriteLine("({0}, {1})", pair.freq, pair.key);
+                Console.WriteLine("({0}, {1})", pair.Freq, pair.Key);
             }
         }
 
         [TestCase]
-        public void TestCutDAG()
+        public void TestCutDag()
         {
             var s = "语言学家去参加了那个学术会议";
             var seg = new JiebaSegmenter();
-            var words = seg.CutDAG(s);
+            var words = seg.CutDag(s);
             foreach (var w in words)
             {
                 Console.WriteLine(w);
@@ -58,11 +58,11 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
-        public void TestCutDAGWithoutHmm()
+        public void TestCutDagWithoutHmm()
         {
             var s = "语言学家去参加了那个学术会议";
             var seg = new JiebaSegmenter();
-            var words = seg.CutDAGWithoutHmm(s);
+            var words = seg.CutDagWithoutHmm(s);
             foreach (var w in words)
             {
                 Console.WriteLine(w);
@@ -125,9 +125,16 @@ namespace JiebaNet.Segmenter.Tests
         public void TestAddWord()
         {
             var seg = new JiebaSegmenter();
-            TestCutThenPrint(seg, "小明最近在学习机器学习和自然语言处理");
+            var s = "小明最近在学习机器学习和自然语言处理";
+
+            var segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("机器"));
+            Assert.That(segments, Contains.Item("学习"));
+
             seg.AddWord("机器学习");
-            TestCutThenPrint(seg, "小明最近在学习机器学习和自然语言处理");
+            segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("机器学习"));
+            Assert.That(segments, Is.Not.Contains("机器"));
         }
 
         [TestCase]
@@ -135,8 +142,6 @@ namespace JiebaNet.Segmenter.Tests
         {
             var seg = new JiebaSegmenter();
             TestCutThenPrint(seg, "小明最近在學習機器學習和自然語言處理");
-            //seg.AddWord("机器学习");
-            //TestCutThenPrint(seg, "小明最近在学习机器学习和自然语言处理");
         }
 
         [TestCase]

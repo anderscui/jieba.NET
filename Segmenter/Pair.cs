@@ -1,25 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace JiebaNet.Segmenter
+﻿namespace JiebaNet.Segmenter
 {
     public class Pair<TKey>
     {
-        public TKey key;
-        public Double freq = 0.0;
+        public TKey Key { get;set; }
+        public double Freq { get; set; }
 
         public Pair(TKey key, double freq)
         {
-            this.key = key;
-            this.freq = freq;
+            Key = key;
+            Freq = freq;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
-            return "Candidate [key=" + key + ", freq=" + freq + "]";
+            return "Candidate [Key=" + Key + ", Freq=" + Freq + "]";
         }
     }
 }
