@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CAE0F06F-5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Tests", "Segmenter.Tests\Segmenter.Tests.csproj", "{77A71258-2175-4868-8539-D1EDFB5B7AB0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtraDict", "ExtraDict", "{2111E414-9025-4BC6-94C3-0939D8E6DECF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

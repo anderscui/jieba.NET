@@ -63,15 +63,9 @@
     <Content Include="Resources\prob_emit.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\stop_words.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Resources\dict.txt.big">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Resources\dict.txt.small" />
-    <None Include="Resources\idf.txt.big" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

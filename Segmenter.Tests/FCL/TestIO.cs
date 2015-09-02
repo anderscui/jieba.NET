@@ -40,6 +40,11 @@ namespace Segmenter.Tests.FCL
         public void TestNormalizePath()
         {
             var p = @"..\test.txt";
+            Console.WriteLine(Path.IsPathRooted(p));
+            Console.WriteLine(Path.GetFullPath(p));
+
+            p = @"C:\test.txt";
+            Console.WriteLine(Path.IsPathRooted(p));
             Console.WriteLine(Path.GetFullPath(p));
         }
     }
