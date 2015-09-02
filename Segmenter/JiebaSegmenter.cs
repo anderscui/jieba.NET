@@ -16,184 +16,18 @@ namespace JiebaNet.Segmenter
 
         private static readonly object locker = new object();
 
-        public static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
+        #region Regular Expressions
 
-        public static readonly Regex RegexSkipDefault = new Regex(@"(\r\n|\s)", RegexOptions.Compiled);
+        internal static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
 
-        public static readonly Regex RegexChineseCutAll = new Regex(@"([\u4E00-\u9FA5]+)", RegexOptions.Compiled);
-        public static readonly Regex RegexSkipCutAll = new Regex(@"[^a-zA-Z0-9+#\n]", RegexOptions.Compiled);
+        internal static readonly Regex RegexSkipDefault = new Regex(@"(\r\n|\s)", RegexOptions.Compiled);
 
-        public static readonly Regex RegexEnglishChars = new Regex(@"[a-zA-Z0-9]", RegexOptions.Compiled);
+        internal static readonly Regex RegexChineseCutAll = new Regex(@"([\u4E00-\u9FA5]+)", RegexOptions.Compiled);
+        internal static readonly Regex RegexSkipCutAll = new Regex(@"[^a-zA-Z0-9+#\n]", RegexOptions.Compiled);
 
-        public IDictionary<int, List<int>> GetDag(string sentence)
-        {
-            var dag = new Dictionary<int, List<int>>();
-            var trie = WordDict.Trie;
+        internal static readonly Regex RegexEnglishChars = new Regex(@"[a-zA-Z0-9]", RegexOptions.Compiled);
 
-            var N = sentence.Length;
-            for (var k = 0; k < sentence.Length; k++)
-            {
-                var templist = new List<int>();
-                var i = k;
-                var frag = sentence.Substring(k, 1);
-                while (i < N && trie.ContainsKey(frag))
-                {
-                    if (trie[frag] > 0)
-                    {
-                        templist.Add(i);
-                    }
-
-                    i++;
-                    // TODO:
-                    if (i < N)
-                    {
-                        frag = sentence.Sub(k, i + 1);
-                    }
-                }
-                if (templist.Count == 0)
-                {
-                    templist.Add(k);
-                }
-                dag[k] = templist;
-            }
-
-            return dag;
-        }
-
-        public IDictionary<int, Pair<int>> Calc(string sentence, IDictionary<int, List<int>> dag)
-        {
-            var n = sentence.Length;
-            var route = new Dictionary<int, Pair<int>>();
-            route[n] = new Pair<int>(0, 0.0);
-
-            var logtotal = Math.Log(WordDict.Total);
-            for (var i = n - 1; i > -1; i--)
-            {
-                var candidate = new Pair<int>(-1, double.MinValue);
-                foreach (int x in dag[i])
-                {
-                    var freq = Math.Log(WordDict.GetFreqOrDefault(sentence.Sub(i, x + 1))) - logtotal + route[x + 1].Freq;
-                    if (candidate.Freq < freq)
-                    {
-                        candidate.Freq = freq;
-                        candidate.Key = x;
-                    }
-                }
-                route[i] = candidate;
-            }
-            return route;
-        }
-
-        public IEnumerable<string> CutAll(string sentence)
-        {
-            var dag = GetDag(sentence);
-
-            var words = new List<string>();
-            var lastPos = -1;
-
-            foreach (var pair in dag)
-            {
-                var k = pair.Key;
-                var nexts = pair.Value;
-                if (nexts.Count == 1 && k > lastPos)
-                {
-                    words.Add(sentence.Substring(k, nexts[0] + 1 - k));
-                    lastPos = nexts[0];
-                }
-                else
-                {
-                    foreach (var j in nexts)
-                    {
-                        if (j > k)
-                        {
-                            words.Add(sentence.Substring(k, j + 1 - k));
-                            lastPos = j;
-                        }
-                    }
-                }
-            }
-
-            return words;
-        }
-
-        public IEnumerable<string> CutDag(string sentence)
-        {
-            var dag = GetDag(sentence);
-            var route = Calc(sentence, dag);
-
-            var tokens = new List<string>();
-
-            var x = 0;
-            var n = sentence.Length;
-            var buf = string.Empty;
-            while (x < n)
-            {
-                var y = route[x].Key + 1;
-                var w = sentence.Substring(x, y - x);
-                if (y - x == 1)
-                {
-                    buf += w;
-                }
-                else
-                {
-                    if (buf.Length > 0)
-                    {
-                        AddBufferToWordList(tokens, buf);
-                        buf = string.Empty;
-                    }
-                    tokens.Add(w);
-                }
-                x = y;
-            }
-
-            if (buf.Length > 0)
-            {
-                AddBufferToWordList(tokens, buf);
-            }
-
-            return tokens;
-        }
-
-        public IEnumerable<string> CutDagWithoutHmm(string sentence)
-        {
-            var dag = GetDag(sentence);
-            var route = Calc(sentence, dag);
-
-            var words = new List<string>();
-
-            var x = 0;
-            string buf = string.Empty;
-            var N = sentence.Length;
-
-            var y = -1;
-            while (x < N)
-            {
-                y = route[x].Key + 1;
-                var l_word = sentence.Substring(x, y - x);
-                if (RegexEnglishChars.IsMatch(l_word) && l_word.Length == 1)
-                {
-                    buf += l_word;
-                    x = y;
-                }
-                else
-                {
-                    if (buf.Length > 0)
-                    {
-                        words.Add(buf);
-                        buf = string.Empty;
-                    }
-                    words.Add(l_word);
-                    x = y;
-                }
-            }
-
-            if (buf.Length > 0)
-            {
-                words.Add(buf);
-            }
-
-            return words;
-        }
+        #endregion
 
         /// <summary>
         /// The main function that segments an entire sentence that contains 
@@ -357,6 +191,180 @@ namespace JiebaNet.Segmenter
 
             return result;
         }
+
+        #region Internal Cut Methods
+
+        internal IDictionary<int, List<int>> GetDag(string sentence)
+        {
+            var dag = new Dictionary<int, List<int>>();
+            var trie = WordDict.Trie;
+
+            var N = sentence.Length;
+            for (var k = 0; k < sentence.Length; k++)
+            {
+                var templist = new List<int>();
+                var i = k;
+                var frag = sentence.Substring(k, 1);
+                while (i < N && trie.ContainsKey(frag))
+                {
+                    if (trie[frag] > 0)
+                    {
+                        templist.Add(i);
+                    }
+
+                    i++;
+                    // TODO:
+                    if (i < N)
+                    {
+                        frag = sentence.Sub(k, i + 1);
+                    }
+                }
+                if (templist.Count == 0)
+                {
+                    templist.Add(k);
+                }
+                dag[k] = templist;
+            }
+
+            return dag;
+        }
+
+        internal IDictionary<int, Pair<int>> Calc(string sentence, IDictionary<int, List<int>> dag)
+        {
+            var n = sentence.Length;
+            var route = new Dictionary<int, Pair<int>>();
+            route[n] = new Pair<int>(0, 0.0);
+
+            var logtotal = Math.Log(WordDict.Total);
+            for (var i = n - 1; i > -1; i--)
+            {
+                var candidate = new Pair<int>(-1, double.MinValue);
+                foreach (int x in dag[i])
+                {
+                    var freq = Math.Log(WordDict.GetFreqOrDefault(sentence.Sub(i, x + 1))) - logtotal + route[x + 1].Freq;
+                    if (candidate.Freq < freq)
+                    {
+                        candidate.Freq = freq;
+                        candidate.Key = x;
+                    }
+                }
+                route[i] = candidate;
+            }
+            return route;
+        }
+
+        internal IEnumerable<string> CutAll(string sentence)
+        {
+            var dag = GetDag(sentence);
+
+            var words = new List<string>();
+            var lastPos = -1;
+
+            foreach (var pair in dag)
+            {
+                var k = pair.Key;
+                var nexts = pair.Value;
+                if (nexts.Count == 1 && k > lastPos)
+                {
+                    words.Add(sentence.Substring(k, nexts[0] + 1 - k));
+                    lastPos = nexts[0];
+                }
+                else
+                {
+                    foreach (var j in nexts)
+                    {
+                        if (j > k)
+                        {
+                            words.Add(sentence.Substring(k, j + 1 - k));
+                            lastPos = j;
+                        }
+                    }
+                }
+            }
+
+            return words;
+        }
+
+        internal IEnumerable<string> CutDag(string sentence)
+        {
+            var dag = GetDag(sentence);
+            var route = Calc(sentence, dag);
+
+            var tokens = new List<string>();
+
+            var x = 0;
+            var n = sentence.Length;
+            var buf = string.Empty;
+            while (x < n)
+            {
+                var y = route[x].Key + 1;
+                var w = sentence.Substring(x, y - x);
+                if (y - x == 1)
+                {
+                    buf += w;
+                }
+                else
+                {
+                    if (buf.Length > 0)
+                    {
+                        AddBufferToWordList(tokens, buf);
+                        buf = string.Empty;
+                    }
+                    tokens.Add(w);
+                }
+                x = y;
+            }
+
+            if (buf.Length > 0)
+            {
+                AddBufferToWordList(tokens, buf);
+            }
+
+            return tokens;
+        }
+
+        internal IEnumerable<string> CutDagWithoutHmm(string sentence)
+        {
+            var dag = GetDag(sentence);
+            var route = Calc(sentence, dag);
+
+            var words = new List<string>();
+
+            var x = 0;
+            string buf = string.Empty;
+            var N = sentence.Length;
+
+            var y = -1;
+            while (x < N)
+            {
+                y = route[x].Key + 1;
+                var l_word = sentence.Substring(x, y - x);
+                if (RegexEnglishChars.IsMatch(l_word) && l_word.Length == 1)
+                {
+                    buf += l_word;
+                    x = y;
+                }
+                else
+                {
+                    if (buf.Length > 0)
+                    {
+                        words.Add(buf);
+                        buf = string.Empty;
+                    }
+                    words.Add(l_word);
+                    x = y;
+                }
+            }
+
+            if (buf.Length > 0)
+            {
+                words.Add(buf);
+            }
+
+            return words;
+        }
+
+        #endregion
 
         #region Extend Main Dict
 
