@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -45,6 +48,8 @@
   <ItemGroup>
     <Compile Include="FCL\TestEnumerable.cs" />
     <Compile Include="FCL\TestDictionary.cs" />
+    <Compile Include="FCL\TestUnicode.cs" />
+    <Compile Include="FCL\TestJson.cs" />
     <Compile Include="FCL\TestRegex.cs" />
     <Compile Include="FCL\TestIO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -79,6 +84,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+    <None Include="Resources\pos_prob_start.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\pos_prob_trans.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Segmenter\Segmenter.csproj">
