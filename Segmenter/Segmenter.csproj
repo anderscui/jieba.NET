@@ -58,6 +58,7 @@
     <Compile Include="JiebaSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="PosSeg\prob_start.py" />
     <Content Include="Resources\dict.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

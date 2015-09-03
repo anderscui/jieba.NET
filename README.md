@@ -93,6 +93,9 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 ### 3. 关键词提取（暂未实现）
 ### 4. 词性标注（暂未实现）
+
+关于ictclas和jieba中使用的标记法列表，请参考：[词性标记](https://gist.github.com/luw2007/6016931)。
+
 ### 5. 并行分词（暂未实现）
 ### 6. Tokenize：返回词语在原文的起止位置
 

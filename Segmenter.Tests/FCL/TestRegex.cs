@@ -32,5 +32,12 @@ namespace Segmenter.Tests.FCL
             Assert.That(re.IsMatch("1.2.3"));
             Assert.That(re.IsMatch("a.1.2.3"));
         }
+
+        [TestCase]
+        public void TestFloatNumbers()
+        {
+            Console.WriteLine(double.Parse("-4.762305214596967"));
+            Console.WriteLine(double.Parse("-3.14e+100"));
+        }
     }
 }
