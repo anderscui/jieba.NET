@@ -88,16 +88,29 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 #### 调整词典
 
-* 使用`JiebaSegmenter.AddWord(word, freq=0, tag=null)`可添加一个新词，或调整已知词的词频；若`freq`为非正数，则使用自动计算出的词频
+* 使用`JiebaSegmenter.AddWord(word, freq=0, tag=null)`可添加一个新词，或调整已知词的词频；若`freq`不是正整数，则使用自动计算出的词频
 * 使用`JiebaSegmenter.DeleteWord(word)`可移除一个词，使其不能被分出来
 
 ### 3. 关键词提取（暂未实现）
-### 4. 词性标注（暂未实现）
 
-关于ictclas和jieba中使用的标记法列表，请参考：[词性标记](https://gist.github.com/luw2007/6016931)。
+### 4. 词性标注
 
-### 5. 并行分词（暂未实现）
-### 6. Tokenize：返回词语在原文的起止位置
+* `JiebaNet.Segmenter.PosSeg.PosSegmenter`类可以在分词的同时，为每个词添加词性标注。
+* 词性标注采用和ictclas兼容的标记法，关于ictclas和jieba中使用的标记法列表，请参考：[词性标记](https://gist.github.com/luw2007/6016931)。
+
+```c#
+var posSeg = new PosSegmenter();
+var s = "一团硕大无朋的高能离子云，在遥远而神秘的太空中迅疾地飘移";
+
+var tokens = posSeg.Cut(s);
+Console.WriteLine(string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag))));
+```
+
+```
+一团/m 硕大无朋/i 的/uj 高能/n 离子/n 云/ns ，/x 在/p 遥远/a 而/c 神秘/a 的/uj 太空/n 中/f 迅疾/z 地/uv 飘移/v
+```
+
+### 5. Tokenize：返回词语在原文的起止位置
 
 * 默认模式
 
@@ -118,5 +131,27 @@ word 饰品           start: 4   end: 6
 word 有限公司         start: 6   end: 10
 ```
 
+* 搜索模式
+
+```c#
+var segmenter = new JiebaSegmenter();
+var s = "永和服装饰品有限公司";
+var tokens = segmenter.Tokenize(s, TokenizerMode.Search);
+foreach (var token in tokens)
+{
+    Console.WriteLine("word {0,-12} start: {1,-3} end: {2,-3}", token.Word, token.StartIndex, token.EndIndex);
+}
+```
+
+```
+word 永和           start: 0   end: 2
+word 服装           start: 2   end: 4
+word 饰品           start: 4   end: 6
+word 有限           start: 6   end: 8
+word 公司           start: 8   end: 10
+word 有限公司         start: 6   end: 10
+```
+
+### 6. 并行分词（暂未实现）
 
 ### 7. 命令行分词（暂未实现）

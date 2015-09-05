@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+using JiebaNet.Segmenter.PosSeg;
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests
@@ -36,6 +38,28 @@ namespace JiebaNet.Segmenter.Tests
             {
                 Console.WriteLine("word {0,-12} start: {1,-3} end: {2,-3}", token.Word, token.StartIndex, token.EndIndex);
             }
+        }
+
+        [TestCase]
+        public void TokenizeSearchDemo()
+        {
+            var segmenter = new JiebaSegmenter();
+            var s = "永和服装饰品有限公司";
+            var tokens = segmenter.Tokenize(s, TokenizerMode.Search);
+            foreach (var token in tokens)
+            {
+                Console.WriteLine("word {0,-12} start: {1,-3} end: {2,-3}", token.Word, token.StartIndex, token.EndIndex);
+            }
+        }
+
+        [TestCase]
+        public void PosCutDemo()
+        {
+            var posSeg = new PosSegmenter();
+            var s = "一团硕大无朋的高能离子云，在遥远而神秘的太空中迅疾地飘移";
+
+            var tokens = posSeg.Cut(s);
+            Console.WriteLine(string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag))));
         }
     }
 }

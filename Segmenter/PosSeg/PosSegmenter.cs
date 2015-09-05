@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.PosSeg
 {
@@ -13,6 +12,7 @@ namespace JiebaNet.Segmenter.PosSeg
         private static readonly WordDictionary WordDict = WordDictionary.Instance;
         private static readonly Viterbi PosSeg = Viterbi.Instance;
 
+        // TODO: 
         private static readonly object locker = new object();
 
         #region Regular Expressions
@@ -68,19 +68,24 @@ namespace JiebaNet.Segmenter.PosSeg
             }
         }
 
-        // TODO: refactor name?
-        private JiebaSegmenter _tokenizer;
-        public PosSegmenter(JiebaSegmenter tokenizer)
+        private JiebaSegmenter _segmenter;
+
+        public PosSegmenter()
         {
-            _tokenizer = tokenizer;
+            _segmenter = new JiebaSegmenter();
+        }
+
+        public PosSegmenter(JiebaSegmenter segmenter)
+        {
+            _segmenter = segmenter;
         }
 
         private void CheckNewUserWordTags()
         {
-            if (_tokenizer.UserWordTagTab.IsNotEmpty())
+            if (_segmenter.UserWordTagTab.IsNotEmpty())
             {
-                _wordTagTab.Update(_tokenizer.UserWordTagTab);
-                _tokenizer.UserWordTagTab = new Dictionary<string, string>();
+                _wordTagTab.Update(_segmenter.UserWordTagTab);
+                _segmenter.UserWordTagTab = new Dictionary<string, string>();
             }
         }
 
@@ -151,8 +156,8 @@ namespace JiebaNet.Segmenter.PosSeg
 
         internal IEnumerable<Pair> CutDag(string sentence)
         {
-            var dag = _tokenizer.GetDag(sentence);
-            var route = _tokenizer.Calc(sentence, dag);
+            var dag = _segmenter.GetDag(sentence);
+            var route = _segmenter.Calc(sentence, dag);
 
             var tokens = new List<Pair>();
 
@@ -189,8 +194,8 @@ namespace JiebaNet.Segmenter.PosSeg
 
         internal IEnumerable<Pair> CutDagWithoutHmm(string sentence)
         {
-            var dag = _tokenizer.GetDag(sentence);
-            var route = _tokenizer.Calc(sentence, dag);
+            var dag = _segmenter.GetDag(sentence);
+            var route = _segmenter.Calc(sentence, dag);
 
             var tokens = new List<Pair>();
 

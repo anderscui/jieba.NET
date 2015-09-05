@@ -49,7 +49,6 @@
     <Compile Include="FinalSeg\IFinalSeg.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pair.cs" />
-    <Compile Include="PosSeg\Node.cs" />
     <Compile Include="PosSeg\Pair.cs" />
     <Compile Include="PosSeg\PosSegmenter.cs" />
     <Compile Include="PosSeg\Viterbi.cs" />
