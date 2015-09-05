@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using JiebaNet.Segmenter.FinalSeg;
+using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.PosSeg
 {
@@ -30,6 +31,36 @@ namespace JiebaNet.Segmenter.PosSeg
         internal static readonly Regex RegexEnglishLine = new Regex(@"^[a-zA-Z0-9]$", RegexOptions.Compiled);
 
         #endregion
+
+        private static IDictionary<string, double> _startProbs;
+        private static IDictionary<string, IDictionary<string, double>> _transProbs;
+        private static IDictionary<string, IDictionary<char, double>> _emitProbs;
+        private static IDictionary<char, List<string>> _stateTab;
+
+        static PosSegmenter()
+        {
+            LoadModel();
+        }
+
+        private static void LoadModel()
+        {
+            var startJson = File.ReadAllText(Path.GetFullPath(ConfigManager.PosProbStartFile));
+            _startProbs = JsonConvert.DeserializeObject<IDictionary<string, double>>(startJson);
+
+            var transJson = File.ReadAllText(Path.GetFullPath(ConfigManager.PosProbTransFile));
+            _transProbs = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<string, double>>>(transJson);
+
+            var emitJson = File.ReadAllText(Path.GetFullPath(ConfigManager.PosProbEmitFile));
+            _emitProbs = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<char, double>>>(emitJson);
+
+            var tabJson = File.ReadAllText(Path.GetFullPath(ConfigManager.CharStateTabFile));
+            _stateTab = JsonConvert.DeserializeObject<IDictionary<char, List<string>>>(tabJson);
+        }
+
+        public PosSegmenter()
+        {
+            
+        }
 
         /// <summary>
         /// The main function that segments an entire sentence that contains 

@@ -53,7 +53,7 @@ namespace JiebaNet.Segmenter.FinalSeg
         
         private void LoadModel()
         {
-            long s = DateTime.Now.Millisecond;
+            int s = DateTime.Now.Millisecond;
             _prevStatus = new Dictionary<char, char[]>();
             _prevStatus['B'] = new char[] {'E', 'S'};
             _prevStatus['M'] = new char[] {'M', 'B'};

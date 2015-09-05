@@ -2,7 +2,7 @@
 using System.IO;
 using NUnit.Framework;
 
-namespace Segmenter.Tests.FCL
+namespace JiebaNet.Segmenter.Tests.FCL
 {
     [TestFixture]
     public class TestIO
