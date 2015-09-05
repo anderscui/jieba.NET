@@ -26,6 +26,12 @@ namespace JiebaNet.Segmenter.Tests
 
             segments = segmenter.Cut("结过婚的和尚未结过婚的");
             Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
+
+            segments = segmenter.Cut("北京大学生喝进口红酒");
+            Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
+
+            segments = segmenter.Cut("在北京大学生活区喝进口红酒");
+            Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
         }
 
         [TestCase]
