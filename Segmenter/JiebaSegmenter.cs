@@ -16,6 +16,8 @@ namespace JiebaNet.Segmenter
 
         private static readonly object locker = new object();
 
+        internal IDictionary<string, string> UserWordTagTab { get; set; }
+
         #region Regular Expressions
 
         internal static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
@@ -28,6 +30,11 @@ namespace JiebaNet.Segmenter
         internal static readonly Regex RegexEnglishChars = new Regex(@"[a-zA-Z0-9]", RegexOptions.Compiled);
 
         #endregion
+
+        public JiebaSegmenter()
+        {
+            UserWordTagTab = new Dictionary<string, string>();
+        }
 
         /// <summary>
         /// The main function that segments an entire sentence that contains 
@@ -394,7 +401,7 @@ namespace JiebaNet.Segmenter
                             continue;
                         }
 
-                        var tokens = line.Trim().Split('\t', ' ');
+                        var tokens = line.Trim().Split(' ');
                         var word = tokens[0];
                         var freq = 0;
                         var tag = string.Empty;
@@ -439,6 +446,12 @@ namespace JiebaNet.Segmenter
                 freq = WordDict.SuggestFreq(word, Cut(word, hmm: false));
             }
             WordDict.AddWord(word, freq);
+
+            // Add user word tag of POS
+            if (!string.IsNullOrEmpty(tag))
+            {
+                UserWordTagTab[word] = tag;
+            }
         }
 
         public void DeleteWord(string word)

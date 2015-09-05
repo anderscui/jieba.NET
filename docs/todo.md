@@ -6,4 +6,9 @@
 
 
 Misc
-1.
+1. synchronization;
+2. cache;
+3. perf test;
+4. jieba.pool;
+
+

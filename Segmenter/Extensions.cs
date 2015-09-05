@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace JiebaNet.Segmenter
@@ -36,9 +37,27 @@ namespace JiebaNet.Segmenter
             return defaultValue;
         }
 
+        public static void Update<TKey, TValue>(this IDictionary<TKey, TValue> dict, IDictionary<TKey, TValue> other)
+        {
+            foreach (var key in other.Keys)
+            {
+                dict[key] = other[key];
+            }
+        }
+
         public static string Join(this IEnumerable<string> inputs, string separator = ", ")
         {
             return string.Join(separator, inputs);
+        }
+
+        public static bool IsEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return (enumerable == null) || !enumerable.Any();
+        }
+
+        public static bool IsNotEmpty<T>(this IEnumerable<T> enumerable)
+        {
+            return (enumerable != null) && enumerable.Any();
         }
     }
 }

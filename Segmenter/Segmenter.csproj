@@ -49,8 +49,10 @@
     <Compile Include="FinalSeg\IFinalSeg.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pair.cs" />
+    <Compile Include="PosSeg\Node.cs" />
     <Compile Include="PosSeg\Pair.cs" />
     <Compile Include="PosSeg\PosSegmenter.cs" />
+    <Compile Include="PosSeg\Viterbi.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="FinalSeg\Viterbi.cs" />

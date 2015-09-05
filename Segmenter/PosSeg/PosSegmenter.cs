@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using JiebaNet.Segmenter.FinalSeg;
 using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.PosSeg
@@ -12,8 +11,7 @@ namespace JiebaNet.Segmenter.PosSeg
     public class PosSegmenter
     {
         private static readonly WordDictionary WordDict = WordDictionary.Instance;
-        private static readonly IFinalSeg FinalSeg = Viterbi.Instance;
-        private static readonly ISet<string> LoadedPath = new HashSet<string>();
+        private static readonly Viterbi PosSeg = Viterbi.Instance;
 
         private static readonly object locker = new object();
 
@@ -28,65 +26,78 @@ namespace JiebaNet.Segmenter.PosSeg
         internal static readonly Regex RegexEnglishWords = new Regex(@"[a-zA-Z0-9]+", RegexOptions.Compiled);
         internal static readonly Regex RegexNumbers = new Regex(@"[\.0-9]+", RegexOptions.Compiled);
 
-        internal static readonly Regex RegexEnglishLine = new Regex(@"^[a-zA-Z0-9]$", RegexOptions.Compiled);
+        internal static readonly Regex RegexEnglishChar = new Regex(@"^[a-zA-Z0-9]$", RegexOptions.Compiled);
 
         #endregion
 
-        private static IDictionary<string, double> _startProbs;
-        private static IDictionary<string, IDictionary<string, double>> _transProbs;
-        private static IDictionary<string, IDictionary<char, double>> _emitProbs;
-        private static IDictionary<char, List<string>> _stateTab;
+        private static IDictionary<string, string> _wordTagTab;
 
         static PosSegmenter()
         {
-            LoadModel();
+            LoadWordTagTab();
         }
 
-        private static void LoadModel()
+        private static void LoadWordTagTab()
         {
-            var startJson = File.ReadAllText(Path.GetFullPath(ConfigManager.PosProbStartFile));
-            _startProbs = JsonConvert.DeserializeObject<IDictionary<string, double>>(startJson);
-
-            var transJson = File.ReadAllText(Path.GetFullPath(ConfigManager.PosProbTransFile));
-            _transProbs = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<string, double>>>(transJson);
-
-            var emitJson = File.ReadAllText(Path.GetFullPath(ConfigManager.PosProbEmitFile));
-            _emitProbs = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<char, double>>>(emitJson);
-
-            var tabJson = File.ReadAllText(Path.GetFullPath(ConfigManager.CharStateTabFile));
-            _stateTab = JsonConvert.DeserializeObject<IDictionary<char, List<string>>>(tabJson);
-        }
-
-        public PosSegmenter()
-        {
-            
-        }
-
-        /// <summary>
-        /// The main function that segments an entire sentence that contains 
-        /// Chinese characters into seperated words.
-        /// </summary>
-        /// <param name="text">The string to be segmented.</param>
-        /// <param name="cutAll">Model type. True for full pattern, False for accurate pattern.</param>
-        /// <param name="hmm">Whether to use the Hidden Markov Model.</param>
-        /// <returns></returns>
-        public IEnumerable<string> Cut(string text, bool cutAll = false, bool hmm = true)
-        {
-            var reHan = RegexChineseInternal;
-            var reSkip = RegexSkipInternal;
-            Func<string, IEnumerable<string>> cutMethod = null;
-
-            if (cutAll)
+            try
             {
-                reHan = RegexChineseDetail;
-                reSkip = RegexSkipDetail;
-            }
+                _wordTagTab = new Dictionary<string, string>();
+                var lines = File.ReadAllLines(ConfigManager.MainDictFile, Encoding.UTF8);
+                foreach (var line in lines)
+                {
+                    var tokens = line.Split(' ');
+                    if (tokens.Length < 2)
+                    {
+                        Console.Error.WriteLine("Invalid line: {0}", line);
+                        continue;
+                    }
 
-            if (cutAll)
-            {
-                cutMethod = CutAll;
+                    var word = tokens[0];
+                    var tag = tokens[2];
+
+                    _wordTagTab[word] = tag;
+                }
             }
-            else if (hmm)
+            catch (IOException e)
+            {
+                Console.Error.WriteLine("Word tag table load failure, reason: {0}", e.Message);
+            }
+            catch (FormatException fe)
+            {
+                Console.Error.WriteLine(fe.Message);
+            }
+        }
+
+        // TODO: refactor name?
+        private JiebaSegmenter _tokenizer;
+        public PosSegmenter(JiebaSegmenter tokenizer)
+        {
+            _tokenizer = tokenizer;
+        }
+
+        private void CheckNewUserWordTags()
+        {
+            if (_tokenizer.UserWordTagTab.IsNotEmpty())
+            {
+                _wordTagTab.Update(_tokenizer.UserWordTagTab);
+                _tokenizer.UserWordTagTab = new Dictionary<string, string>();
+            }
+        }
+
+        public IEnumerable<Pair> Cut(string text, bool hmm = true)
+        {
+            return CutInternal(text, hmm);
+        }
+
+        #region Internal Cut Methods
+
+        internal IEnumerable<Pair> CutInternal(string text, bool hmm = true)
+        {
+            CheckNewUserWordTags();
+
+            var blocks = RegexChineseInternal.Split(text);
+            Func<string, IEnumerable<Pair>> cutMethod = null;
+            if (hmm)
             {
                 cutMethod = CutDag;
             }
@@ -95,235 +106,55 @@ namespace JiebaNet.Segmenter.PosSeg
                 cutMethod = CutDagWithoutHmm;
             }
 
-            var result = new List<string>();
-            var blocks = reHan.Split(text);
+            var tokens = new List<Pair>();
             foreach (var blk in blocks)
             {
-                if (string.IsNullOrWhiteSpace(blk))
+                if (RegexChineseInternal.IsMatch(blk))
                 {
-                    continue;
-                }
-
-                if (reHan.IsMatch(blk))
-                {
-                    foreach (var word in cutMethod(blk))
-                    {
-                        result.Add(word);
-                    }
+                    tokens.AddRange(cutMethod(blk));
                 }
                 else
                 {
-                    var tmp = reSkip.Split(blk);
+                    var tmp = RegexSkipInternal.Split(blk);
                     foreach (var x in tmp)
                     {
-                        if (reSkip.IsMatch(x))
+                        if (RegexSkipInternal.IsMatch(x))
                         {
-                            result.Add(x);
-                        }
-                        else if (!cutAll)
-                        {
-                            foreach (var ch in x)
-                            {
-                                result.Add(ch.ToString());
-                            }
+                            tokens.Add(new Pair(x, "x"));
                         }
                         else
                         {
-                            result.Add(x);
-                        }
-                    }
-                }
-            }
-
-            return result;
-        }
-
-        public IEnumerable<string> CutForSearch(string text, bool hmm = true)
-        {
-            var result = new List<string>();
-
-            var words = Cut(text, hmm: hmm);
-            foreach (var w in words)
-            {
-                if (w.Length > 2)
-                {
-                    foreach (var i in Enumerable.Range(0, w.Length - 1))
-                    {
-                        var gram2 = w.Substring(i, 2);
-                        if (WordDict.ContainsWord(gram2))
-                        {
-                            result.Add(gram2);
-                        }
-                    }
-                }
-
-                if (w.Length > 3)
-                {
-                    foreach (var i in Enumerable.Range(0, w.Length - 2))
-                    {
-                        var gram3 = w.Substring(i, 3);
-                        if (WordDict.ContainsWord(gram3))
-                        {
-                            result.Add(gram3);
-                        }
-                    }
-                }
-
-                result.Add(w);
-            }
-
-            return result;
-        }
-
-        public IEnumerable<Token> Tokenize(string text, TokenizerMode mode = TokenizerMode.Default, bool hmm = true)
-        {
-            var result = new List<Token>();
-
-            var start = 0;
-            if (mode == TokenizerMode.Default)
-            {
-                foreach (var w in Cut(text, hmm: hmm))
-                {
-                    var width = w.Length;
-                    result.Add(new Token(w, start, start + width));
-                    start += width;
-                }
-            }
-            else
-            {
-                foreach (var w in Cut(text, hmm: hmm))
-                {
-                    var width = w.Length;
-                    if (width > 2)
-                    {
-                        for (var i = 0; i < width - 1; i++)
-                        {
-                            var gram2 = w.Substring(i, 2);
-                            if (WordDict.ContainsWord(gram2))
+                            foreach (var xx in x)
                             {
-                                result.Add(new Token(gram2, start + i, start + i + 2));
+                                // TODO: each char?
+                                var xxs = xx.ToString();
+                                if (RegexNumbers.IsMatch(xxs))
+                                {
+                                    tokens.Add(new Pair(xxs, "m"));
+                                }
+                                else if (RegexEnglishWords.IsMatch(x))
+                                {
+                                    tokens.Add(new Pair(xxs, "eng"));
+                                }
+                                else
+                                {
+                                    tokens.Add(new Pair(xxs, "x"));
+                                }
                             }
                         }
                     }
-                    if (width > 3)
-                    {
-                        for (var i = 0; i < width - 2; i++)
-                        {
-                            var gram3 = w.Substring(i, 3);
-                            if (WordDict.ContainsWord(gram3))
-                            {
-                                result.Add(new Token(gram3, start + i, start + i + 3));
-                            }
-                        }
-                    }
-
-                    result.Add(new Token(w, start, start + width));
-                    start += width;
                 }
             }
 
-            return result;
+            return tokens;
         }
 
-        #region Internal Cut Methods
-
-        internal IDictionary<int, List<int>> GetDag(string sentence)
+        internal IEnumerable<Pair> CutDag(string sentence)
         {
-            var dag = new Dictionary<int, List<int>>();
-            var trie = WordDict.Trie;
+            var dag = _tokenizer.GetDag(sentence);
+            var route = _tokenizer.Calc(sentence, dag);
 
-            var N = sentence.Length;
-            for (var k = 0; k < sentence.Length; k++)
-            {
-                var templist = new List<int>();
-                var i = k;
-                var frag = sentence.Substring(k, 1);
-                while (i < N && trie.ContainsKey(frag))
-                {
-                    if (trie[frag] > 0)
-                    {
-                        templist.Add(i);
-                    }
-
-                    i++;
-                    // TODO:
-                    if (i < N)
-                    {
-                        frag = sentence.Sub(k, i + 1);
-                    }
-                }
-                if (templist.Count == 0)
-                {
-                    templist.Add(k);
-                }
-                dag[k] = templist;
-            }
-
-            return dag;
-        }
-
-        internal IDictionary<int, Pair<int>> Calc(string sentence, IDictionary<int, List<int>> dag)
-        {
-            var n = sentence.Length;
-            var route = new Dictionary<int, Pair<int>>();
-            route[n] = new Pair<int>(0, 0.0);
-
-            var logtotal = Math.Log(WordDict.Total);
-            for (var i = n - 1; i > -1; i--)
-            {
-                var candidate = new Pair<int>(-1, double.MinValue);
-                foreach (int x in dag[i])
-                {
-                    var freq = Math.Log(WordDict.GetFreqOrDefault(sentence.Sub(i, x + 1))) - logtotal + route[x + 1].Freq;
-                    if (candidate.Freq < freq)
-                    {
-                        candidate.Freq = freq;
-                        candidate.Key = x;
-                    }
-                }
-                route[i] = candidate;
-            }
-            return route;
-        }
-
-        internal IEnumerable<string> CutAll(string sentence)
-        {
-            var dag = GetDag(sentence);
-
-            var words = new List<string>();
-            var lastPos = -1;
-
-            foreach (var pair in dag)
-            {
-                var k = pair.Key;
-                var nexts = pair.Value;
-                if (nexts.Count == 1 && k > lastPos)
-                {
-                    words.Add(sentence.Substring(k, nexts[0] + 1 - k));
-                    lastPos = nexts[0];
-                }
-                else
-                {
-                    foreach (var j in nexts)
-                    {
-                        if (j > k)
-                        {
-                            words.Add(sentence.Substring(k, j + 1 - k));
-                            lastPos = j;
-                        }
-                    }
-                }
-            }
-
-            return words;
-        }
-
-        internal IEnumerable<string> CutDag(string sentence)
-        {
-            var dag = GetDag(sentence);
-            var route = Calc(sentence, dag);
-
-            var tokens = new List<string>();
+            var tokens = new List<Pair>();
 
             var x = 0;
             var n = sentence.Length;
@@ -343,7 +174,7 @@ namespace JiebaNet.Segmenter.PosSeg
                         AddBufferToWordList(tokens, buf);
                         buf = string.Empty;
                     }
-                    tokens.Add(w);
+                    tokens.Add(new Pair(w, _wordTagTab.GetDefault(w, "x")));
                 }
                 x = y;
             }
@@ -356,159 +187,109 @@ namespace JiebaNet.Segmenter.PosSeg
             return tokens;
         }
 
-        internal IEnumerable<string> CutDagWithoutHmm(string sentence)
+        internal IEnumerable<Pair> CutDagWithoutHmm(string sentence)
         {
-            var dag = GetDag(sentence);
-            var route = Calc(sentence, dag);
+            var dag = _tokenizer.GetDag(sentence);
+            var route = _tokenizer.Calc(sentence, dag);
 
-            var words = new List<string>();
+            var tokens = new List<Pair>();
 
             var x = 0;
-            string buf = string.Empty;
-            var N = sentence.Length;
+            var buf = string.Empty;
+            var n = sentence.Length;
 
             var y = -1;
-            while (x < N)
+            while (x < n)
             {
                 y = route[x].Key + 1;
-                var l_word = sentence.Substring(x, y - x);
-                if (RegexEnglishWords.IsMatch(l_word) && l_word.Length == 1)
+                var w = sentence.Substring(x, y - x);
+                // TODO: char or word?
+                if (RegexEnglishChar.IsMatch(w))
                 {
-                    buf += l_word;
+                    buf += w;
                     x = y;
                 }
                 else
                 {
                     if (buf.Length > 0)
                     {
-                        words.Add(buf);
+                        tokens.Add(new Pair(buf, "eng"));
                         buf = string.Empty;
                     }
-                    words.Add(l_word);
+                    tokens.Add(new Pair(w, _wordTagTab.GetDefault(w, "x")));
                     x = y;
                 }
             }
 
             if (buf.Length > 0)
             {
-                words.Add(buf);
+                tokens.Add(new Pair(buf, "eng"));
             }
 
-            return words;
+            return tokens;
         }
 
-        #endregion
-
-        #region Extend Main Dict
-
-        /// <summary>
-        /// Loads user dictionaries.
-        /// </summary>
-        /// <param name="userDictFile"></param>
-        public void LoadUserDict(string userDictFile)
+        internal IEnumerable<Pair> CutDetail(string text)
         {
-            var dictFullPath = Path.GetFullPath(userDictFile);
-            Console.WriteLine("Initializing user dictionary: " + userDictFile);
-
-            lock (locker)
+            var tokens = new List<Pair>();
+            var blocks = RegexChineseDetail.Split(text);
+            foreach (var blk in blocks)
             {
-                if (LoadedPath.Contains(dictFullPath))
-                    return;
-
-                try
+                if (RegexChineseDetail.IsMatch(blk))
                 {
-                    var startTime = DateTime.Now.Millisecond;
-
-                    var lines = File.ReadAllLines(dictFullPath, Encoding.UTF8);
-                    foreach (var line in lines)
+                    tokens.AddRange(PosSeg.Cut(blk));
+                }
+                else
+                {
+                    var tmp = RegexSkipDetail.Split(blk);
+                    foreach (var x in tmp)
                     {
-                        if (string.IsNullOrWhiteSpace(line))
+                        if (!string.IsNullOrWhiteSpace(x))
                         {
-                            continue;
-                        }
-
-                        var tokens = line.Trim().Split('\t', ' ');
-                        var word = tokens[0];
-                        var freq = 0;
-                        var tag = string.Empty;
-                        if (tokens.Length == 2)
-                        {
-                            if (tokens[1].IsInt32())
+                            if (RegexNumbers.IsMatch(x))
                             {
-                                freq = int.Parse(tokens[1]);
+                                tokens.Add(new Pair(x, "m"));
+                            }
+                            else if(RegexEnglishWords.IsMatch(x))
+                            {
+                                tokens.Add(new Pair(x, "eng"));
                             }
                             else
                             {
-                                tag = tokens[1];
+                                tokens.Add(new Pair(x, "x"));
                             }
                         }
-                        else if (tokens.Length > 2)
-                        {
-                            freq = int.Parse(tokens[1]);
-                            tag = tokens[2];
-                        }
-
-                        AddWord(word, freq, tag);
                     }
-
-                    Console.WriteLine("user dict '{0}' load finished, time elapsed {1} ms",
-                        dictFullPath, DateTime.Now.Millisecond - startTime);
-                }
-                catch (IOException e)
-                {
-                    Console.Error.WriteLine("'{0}' load failure, reason: {1}", dictFullPath, e.Message);
-                }
-                catch (FormatException fe)
-                {
-                    Console.Error.WriteLine(fe.Message);
                 }
             }
-        }
 
-        public void AddWord(string word, int freq = 0, string tag = null)
-        {
-            if (freq <= 0)
-            {
-                freq = WordDict.SuggestFreq(word, Cut(word, hmm: false));
-            }
-            WordDict.AddWord(word, freq);
-        }
-
-        public void DeleteWord(string word)
-        {
-            WordDict.DeleteWord(word);
+            return tokens;
         }
 
         #endregion
 
         #region Private Helpers
 
-        private void AddBufferToWordList(List<string> words, string buf)
+        private void AddBufferToWordList(List<Pair> words, string buf)
         {
             if (buf.Length == 1)
             {
-                words.Add(buf);
+                words.Add(new Pair(buf, _wordTagTab.GetDefault(buf, "x")));
             }
             else
             {
                 if (!WordDict.ContainsWord(buf))
                 {
-                    var tokens = FinalSeg.Cut(buf);
+                    var tokens = CutDetail(buf);
                     words.AddRange(tokens);
                 }
                 else
                 {
-                    words.AddRange(buf.Select(ch => ch.ToString()));
+                    words.AddRange(buf.Select(ch => new Pair(ch.ToString(), "x")));
                 }
             }
         }
 
         #endregion
-    }
-
-    public enum TokenizerMode
-    {
-        Default,
-        Search
     }
 }

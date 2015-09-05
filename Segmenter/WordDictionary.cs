@@ -40,7 +40,7 @@ namespace JiebaNet.Segmenter
                 var lines = File.ReadAllLines(MainDict, Encoding.UTF8);
                 foreach (var line in lines)
                 {
-                    var tokens = line.Split('\t', ' ');
+                    var tokens = line.Split(' ');
                     if (tokens.Length < 2)
                     {
                         Console.Error.WriteLine("Invalid line: {0}", line);
