@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using JiebaNet.Segmenter;
 using JiebaNet.Segmenter.PosSeg;
 
 namespace JiebaNet.Analyser
 {
-    //public 
     public class Tfidf
     {
         private static readonly string DefaultIdfFile = ConfigManager.IdfFile;
@@ -25,32 +26,35 @@ namespace JiebaNet.Analyser
         internal IDictionary<string, double> IdfFreq { get; set; }
         internal double MedianIdf { get; set; }
 
-        public Tfidf(string idfPath = null)
+        public Tfidf()
         {
             Segmenter = new JiebaSegmenter();
             PosSegmenter = new PosSegmenter(Segmenter);
-            Loader = new IdfLoader();
+            Loader = new IdfLoader(DefaultIdfFile);
 
-            var idf = Loader.Idf;
-            IdfFreq = idf.Item1;
-            MedianIdf = idf.Item2;
+            IdfFreq = Loader.IdfFreq;
+            MedianIdf = Loader.MedianIdf;
         }
 
         public void SetIdfPath(string idfPath)
         {
             Loader.SetNewPath(idfPath);
-            var idf = Loader.Idf;
-            IdfFreq = idf.Item1;
-            MedianIdf = idf.Item2;
+            IdfFreq = Loader.IdfFreq;
+            MedianIdf = Loader.MedianIdf;
         }
+
+        // TODO:
+        public IEnumerable<string> FilterCutByPos(string text, IEnumerable<string> allowPos)
+        {
+            return Segmenter.Cut(text);
+        } 
 
         public IEnumerable<string> ExtractTags(string text, int count = 10, bool withWeight = false, IEnumerable<string> allowPos = null)
         {
             IEnumerable<string> words = null;
-            IEnumerable<Pair> wordTags = null;
             if (allowPos.IsNotEmpty())
             {
-                wordTags = PosSegmenter.Cut(text);
+                words = FilterCutByPos(text, allowPos);
             }
             else
             {
@@ -59,8 +63,9 @@ namespace JiebaNet.Analyser
 
             // Calculate TF
             var freq = new Dictionary<string, double>();
-            foreach (var w in words)
+            foreach (var word in words)
             {
+                var w = word;
                 if (string.IsNullOrEmpty(w) || w.Trim().Length < 2 || StopWords.Contains(w.ToLower()))
                 {
                     continue;
@@ -68,9 +73,9 @@ namespace JiebaNet.Analyser
                 freq[w] = freq.GetDefault(w, 0.0) + 1.0;
             }
             var total = freq.Values.Sum();
-            foreach (var k in freq.Keys)
+            foreach (var k in freq.Keys.ToList())
             {
-                freq[k] *= IdfFreq.GetDefault(k, MedianIdf)/total;
+                freq[k] *= IdfFreq.GetDefault(k, MedianIdf) / total;
             }
 
             if (count <= 0)
@@ -84,18 +89,39 @@ namespace JiebaNet.Analyser
 
     public class IdfLoader
     {
-        internal string Path { get; set; }
+        internal string IdfFilePath { get; set; }
         internal IDictionary<string, double> IdfFreq { get; set; }
         internal double MedianIdf { get; set; }
 
-        public void SetNewPath(string newIdfPath)
+        public IdfLoader(string idfPath = null)
         {
-            // TODO:
+            IdfFilePath = string.Empty;
+            IdfFreq = new Dictionary<string, double>();
+            MedianIdf = 0.0;
+            if (!string.IsNullOrWhiteSpace(idfPath))
+            {
+                SetNewPath(idfPath);
+            }
         }
 
-        public Tuple<IDictionary<string, double>, double> Idf
+        public void SetNewPath(string newIdfPath)
         {
-            get { return new Tuple<IDictionary<string, double>, double>(IdfFreq, MedianIdf); }
+            var idfPath = Path.GetFullPath(newIdfPath);
+            if (IdfFilePath != idfPath)
+            {
+                IdfFilePath = idfPath;
+                var lines = File.ReadAllLines(idfPath, Encoding.UTF8);
+                IdfFreq = new Dictionary<string, double>();
+                foreach (var line in lines)
+                {
+                    var parts = line.Trim().Split(' ');
+                    var word = parts[0];
+                    var freq = double.Parse(parts[1]);
+                    IdfFreq[word] = freq;
+                }
+
+                MedianIdf = IdfFreq.Values.OrderBy(v => v).ToList()[IdfFreq.Count/2];
+            }
         }
     }
 }

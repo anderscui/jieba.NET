@@ -58,6 +58,7 @@
     <Compile Include="TestDemo.cs" />
     <Compile Include="TestPosSegmenter.cs" />
     <Compile Include="TestSegmenter.cs" />
+    <Compile Include="TestTfidfExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Cases\accurate_hmm.txt">
@@ -93,6 +94,12 @@
     <Content Include="Cases\pos_cut_no_hmm.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\article.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\idf.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\test_dict.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -108,6 +115,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Analyser\Analyser.csproj">
+      <Project>{420C99CA-4DE4-4802-9129-B26C35786224}</Project>
+      <Name>Analyser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Segmenter\Segmenter.csproj">
       <Project>{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}</Project>
       <Name>Segmenter</Name>
