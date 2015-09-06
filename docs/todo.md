@@ -1,4 +1,4 @@
-1. Extract Tags
+1. Practical Stop Words.
 2. TextRank
 3. Spell check and suggests
 4. Search with Lucene
@@ -10,8 +10,7 @@ Misc
 3. perf test;
 4. jieba.pool;
 5. other dict files;
-6. more stop words;
-7. multiple english words (Steve Jobs)
-8. named entity recognition
-9. new word recognition
-10. 
+6. multiple english words (Steve Jobs)
+7. named entity recognition
+8. new word recognition
+9. time elapsed is minus?
