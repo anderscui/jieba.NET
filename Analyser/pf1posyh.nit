@@ -9,7 +9,6 @@ namespace JiebaNet.Analyser
     public class TfidfExtractor : KeywordExtractor
     {
         private static readonly string DefaultIdfFile = ConfigManager.IdfFile;
-        private static readonly int DefaultWordCount = 20;
 
         private JiebaSegmenter Segmenter { get; set; }
         private PosSegmenter PosSegmenter { get; set; }
@@ -41,13 +40,13 @@ namespace JiebaNet.Analyser
             MedianIdf = Loader.MedianIdf;
         }
 
-        private IEnumerable<string> FilterCutByPos(string text, IEnumerable<string> allowPos)
+        // TODO:
+        public IEnumerable<string> FilterCutByPos(string text, IEnumerable<string> allowPos)
         {
-            var posTags = PosSegmenter.Cut(text).Where(p => allowPos.Contains(p.Flag));
-            return posTags.Select(p => p.Word);
+            return Segmenter.Cut(text);
         }
 
-        private IDictionary<string, double> GetWordIfidf(string text, IEnumerable<string> allowPos)
+        private IDictionary<string, double> GetWordIfidf(string text, IEnumerable<string> allowPos = null)
         {
             IEnumerable<string> words = null;
             if (allowPos.IsNotEmpty())
@@ -77,31 +76,21 @@ namespace JiebaNet.Analyser
             }
 
             return freq;
-        }
+        } 
 
         public override IEnumerable<string> ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null)
         {
-            if (count <= 0) { count = DefaultWordCount; }
+            if (count <= 0)
+            {
+                count = 20;
+            }
 
-            var freq = GetWordIfidf(text, allowPos);
             return freq.OrderByDescending(p => p.Value).Select(p => p.Key).Take(count);
         }
 
-        public override IEnumerable<WordWeightPair> ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)
+        public override IEnumerable<Tuple<string, double>> ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)
         {
-            if (count <= 0) { count = DefaultWordCount; }
-
-            var freq = GetWordIfidf(text, allowPos);
-            return freq.OrderByDescending(p => p.Value).Select(p => new WordWeightPair()
-            {
-                Word = p.Key, Weight = p.Value
-            }).Take(count);
+            throw new NotImplementedException();
         }
-    }
-
-    public class WordWeightPair
-    {
-        public string Word { get; set; }
-        public double Weight { get; set; }
     }
 }

@@ -7,7 +7,7 @@ jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
 * 支持三种分词模式：
     - 精确模式，试图将句子最精确地切开，适合**文本分析**；
     - 全模式，把句子中所有的可以成词的词语都扫描出来, **速度非常快，但是不能解决歧义**。具体来说，分词过程不会借助于词频查找最大概率路径，亦不会使用HMM；
-    - 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，适合用于搜索引擎分词。
+    - 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，**适合用于搜索引擎分词**。
 * 支持**繁体分词**（的词典）
 * 支持添加自定义词典和自定义词
 * MIT 授权协议
@@ -91,7 +91,14 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 * 使用`JiebaSegmenter.AddWord(word, freq=0, tag=null)`可添加一个新词，或调整已知词的词频；若`freq`不是正整数，则使用自动计算出的词频
 * 使用`JiebaSegmenter.DeleteWord(word)`可移除一个词，使其不能被分出来
 
-### 3. 关键词提取（暂未实现）
+### 3. 关键词提取
+
+#### 基于TF-IDF算法的关键词抽取
+
+* `JiebaNet.Analyser.TfidfExtractor.**ExtractTags**(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中抽取出关键词。
+* `JiebaNet.Analyser.TfidfExtractor.**ExtractTagsWithWeight**(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中**抽取关键词的同时得到其权重**。
+* 关键词抽取基于逆向文件频率（IDF），组件内置一个IDF语料库，可以配置为其它自定义的语料库。
+* 关键词抽取会过滤停用词（Stop Words），组件内置一个极小的语料库，建议根据需要配置为其它自定义的语料库。
 
 ### 4. 词性标注
 
@@ -153,5 +160,3 @@ word 有限公司         start: 6   end: 10
 ```
 
 ### 6. 并行分词（暂未实现）
-
-### 7. 命令行分词（暂未实现）
