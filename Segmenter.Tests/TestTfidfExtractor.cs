@@ -21,9 +21,46 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestExtractTags()
         {
-            var tfidf = new Tfidf();
+            var tfidf = new TfidfExtractor();
             var text = GetFileContents(@"Resources\article.txt");
-            var result = tfidf.ExtractTags(text, 10);
+            var result = tfidf.ExtractTags(text);
+            foreach (var tag in result)
+            {
+                Console.WriteLine(tag);
+            }
+        }
+
+        [TestCase]
+        public void TestExtractSportsTags()
+        {
+            var tfidf = new TfidfExtractor();
+            var text = GetFileContents(@"Resources\article_sports.txt");
+            var result = tfidf.ExtractTags(text);
+            foreach (var tag in result)
+            {
+                Console.WriteLine(tag);
+            }
+        }
+
+        [TestCase]
+        public void TestSetStopWords()
+        {
+            var tfidf = new TfidfExtractor();
+            tfidf.SetStopWords(@"Resources\stop_words_test.txt");
+            var text = GetFileContents(@"Resources\article_sports.txt");
+            var result = tfidf.ExtractTags(text, 30);
+            foreach (var tag in result)
+            {
+                Console.WriteLine(tag);
+            }
+        }
+
+        [TestCase]
+        public void TestExtractSportsTagsSocialNews()
+        {
+            var tfidf = new TfidfExtractor();
+            var text = GetFileContents(@"Resources\article_social.txt");
+            var result = tfidf.ExtractTags(text, 30);
             foreach (var tag in result)
             {
                 Console.WriteLine(tag);

@@ -8,28 +8,56 @@ using JiebaNet.Segmenter.PosSeg;
 
 namespace JiebaNet.Analyser
 {
-    public class Tfidf
+    public abstract class KeywordExtractor
     {
-        private static readonly string DefaultIdfFile = ConfigManager.IdfFile;
-
-        private static readonly List<string> StopWords = new List<string>()
+        protected static readonly List<string> DefaultStopWords = new List<string>()
         {
             "the", "of", "is", "and", "to", "in", "that", "we", "for", "an", "are",
             "by", "be", "as", "on", "with", "can", "if", "from", "which", "you", "it",
             "this", "then", "at", "have", "all", "not", "one", "has", "or", "that"
         };
 
-        public JiebaSegmenter Segmenter { get; set; }
-        public PosSegmenter PosSegmenter { get; set; }
-        public IdfLoader Loader { get; set; }
+        protected virtual ISet<string> StopWords { get; set; }
 
-        internal IDictionary<string, double> IdfFreq { get; set; }
-        internal double MedianIdf { get; set; }
+        public void SetStopWords(string stopWordsFile)
+        {
+            var path = Path.GetFullPath(stopWordsFile);
+            if (File.Exists(path))
+            {
+                var lines = File.ReadAllLines(path);
+                StopWords = new HashSet<string>();
+                foreach (var line in lines)
+                {
+                    StopWords.Add(line.Trim());
+                }
+            }
+        }
 
-        public Tfidf()
+        public abstract IEnumerable<string> ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null);
+        public abstract IEnumerable<Tuple<string, double>> ExtractTagsWithWeight(string text, int count = 10, IEnumerable<string> allowPos = null);
+    }
+
+    public class TfidfExtractor : KeywordExtractor
+    {
+        private static readonly string DefaultIdfFile = ConfigManager.IdfFile;
+
+        private JiebaSegmenter Segmenter { get; set; }
+        private PosSegmenter PosSegmenter { get; set; }
+        private IdfLoader Loader { get; set; }
+
+        private IDictionary<string, double> IdfFreq { get; set; }
+        private double MedianIdf { get; set; }
+
+        public TfidfExtractor()
         {
             Segmenter = new JiebaSegmenter();
             PosSegmenter = new PosSegmenter(Segmenter);
+            SetStopWords(ConfigManager.StopWordsFile);
+            if (StopWords.IsEmpty())
+            {
+                StopWords.UnionWith(DefaultStopWords);
+            }
+
             Loader = new IdfLoader(DefaultIdfFile);
 
             IdfFreq = Loader.IdfFreq;
@@ -47,9 +75,9 @@ namespace JiebaNet.Analyser
         public IEnumerable<string> FilterCutByPos(string text, IEnumerable<string> allowPos)
         {
             return Segmenter.Cut(text);
-        } 
+        }
 
-        public IEnumerable<string> ExtractTags(string text, int count = 10, bool withWeight = false, IEnumerable<string> allowPos = null)
+        public override IEnumerable<string> ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null)
         {
             IEnumerable<string> words = null;
             if (allowPos.IsNotEmpty())
@@ -84,6 +112,11 @@ namespace JiebaNet.Analyser
             }
 
             return freq.OrderByDescending(p => p.Value).Select(p => p.Key).Take(count);
+        }
+
+        public override IEnumerable<Tuple<string, double>> ExtractTagsWithWeight(string text, int count = 10, IEnumerable<string> allowPos = null)
+        {
+            throw new NotImplementedException();
         }
     }
 
@@ -120,7 +153,7 @@ namespace JiebaNet.Analyser
                     IdfFreq[word] = freq;
                 }
 
-                MedianIdf = IdfFreq.Values.OrderBy(v => v).ToList()[IdfFreq.Count/2];
+                MedianIdf = IdfFreq.Values.OrderBy(v => v).ToList()[IdfFreq.Count / 2];
             }
         }
     }

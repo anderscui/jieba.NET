@@ -8,5 +8,10 @@ namespace JiebaNet.Analyser
         {
             get { return ConfigurationManager.AppSettings["IdfFile"]; }
         }
+
+        public static string StopWordsFile
+        {
+            get { return ConfigurationManager.AppSettings["StopWordsFile"]; }
+        }
     }
 }
