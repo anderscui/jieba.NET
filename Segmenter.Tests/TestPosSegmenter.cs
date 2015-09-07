@@ -31,6 +31,15 @@ namespace JiebaNet.Segmenter.Tests
             TestCutFunction(posSeg.Cut, false, @"Cases\pos_cut_no_hmm.txt");
         }
 
+        [TestCase]
+        public void TestCutNames()
+        {
+            var posSeg = new PosSegmenter();
+            var tokens = posSeg.Cut("吉林的省会是长春");
+            var result = string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag)));
+            Console.WriteLine(result);
+        }
+
         #region Private Helpers
 
         private void TestCutFunction(Func<string, bool, IEnumerable<Pair>> method,
