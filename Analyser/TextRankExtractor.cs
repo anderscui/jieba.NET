@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using JiebaNet.Segmenter;
@@ -10,8 +9,9 @@ namespace JiebaNet.Analyser
     {
         private static readonly IEnumerable<string> DefaultPosFilter = new List<string>()
         {
-            "ns", "n", "vn", "v"
+            "n", "ng", "nr", "nrfg", "nrt", "ns", "nt", "nz", "v", "vd", "vg", "vi", "vn", "vq"
         };
+
         private JiebaSegmenter Segmenter { get; set; }
         private PosSegmenter PosSegmenter { get; set; }
 
@@ -36,7 +36,27 @@ namespace JiebaNet.Analyser
                 StopWords.UnionWith(DefaultStopWords);
             }
         }
+
         public override IEnumerable<string> ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null)
+        {
+            var rank = ExtractTagRank(text, allowPos);
+            if (count <= 0) { count = 20; }
+            return rank.OrderByDescending(p => p.Value).Select(p => p.Key).Take(count);
+        }
+
+        public override IEnumerable<WordWeightPair> ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)
+        {
+            var rank = ExtractTagRank(text, allowPos);
+            if (count <= 0) { count = 20; }
+            return rank.OrderByDescending(p => p.Value).Select(p => new WordWeightPair()
+            {
+                Word = p.Key, Weight = p.Value
+            }).Take(count);
+        }
+
+        #region Private Helpers
+
+        private IDictionary<string, double> ExtractTagRank(string text, IEnumerable<string> allowPos)
         {
             if (allowPos.IsEmpty())
             {
@@ -46,22 +66,24 @@ namespace JiebaNet.Analyser
             var g = new UndirectWeightedGraph();
             var cm = new Dictionary<string, int>();
             var words = PosSegmenter.Cut(text).ToList();
+
             for (var i = 0; i < words.Count(); i++)
             {
                 var wp = words[i];
                 if (PairFilter(wp))
                 {
-                    for (var j = i+1; j < i+Span; j++)
+                    for (var j = i + 1; j < i + Span; j++)
                     {
                         if (j >= words.Count)
                         {
                             break;
                         }
-                        if (!PairFilter(wp))
+                        if (!PairFilter(words[j]))
                         {
                             continue;
                         }
 
+                        // TODO: better separator.
                         var key = wp.Word + "$" + words[j].Word;
                         if (!cm.ContainsKey(key))
                         {
@@ -77,101 +99,10 @@ namespace JiebaNet.Analyser
                 var terms = p.Key.Split('$');
                 g.AddEdge(terms[0], terms[1], p.Value);
             }
-            
-            var rank = g.Rank();
-            if (count <= 0) { count = 20; }
-            return rank.OrderByDescending(p => p.Value).Select(p => p.Key).Take(count);
+
+            return g.Rank();
         }
 
-        public override IEnumerable<WordWeightPair> ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    public class Edge
-    {
-        public string Start { get; set; }
-        public string End { get; set; }
-        public double Weight { get; set; }
-    }
-
-    public class UndirectWeightedGraph
-    {
-        private static readonly double d = 0.85;
-
-        public IDictionary<string, List<Edge>> Graph { get; set; } 
-        public UndirectWeightedGraph()
-        {
-            Graph = new Dictionary<string, List<Edge>>();
-        }
-
-        public void AddEdge(string start, string end, double weight)
-        {
-            if (!Graph.ContainsKey(start))
-            {
-                Graph[start] = new List<Edge>();
-            }
-
-            if (!Graph.ContainsKey(end))
-            {
-                Graph[end] = new List<Edge>();
-            }
-
-            Graph[start].Add(new Edge(){ Start = start, End = end, Weight = weight });
-            Graph[end].Add(new Edge(){ Start = end, End = start, Weight = weight });
-        }
-
-        public IDictionary<string, double> Rank()
-        {
-            var ws = new Dictionary<string, double>();
-            var outSum = new Dictionary<string, double>();
-
-            // init scores
-            var count = Graph.Count > 0 ? Graph.Count : 1;
-            var wsdef = 1.0/count;
-            foreach (var pair in Graph)
-            {
-                ws[pair.Key] = wsdef;
-                outSum[pair.Key] = pair.Value.Sum(e => e.Weight);
-            }
-
-            // 10 iterations
-            var sortedKeys = Graph.Keys.OrderBy(k => k);
-            for (var i = 0; i < 10; i++)
-            {
-                foreach (var n in sortedKeys)
-                {
-                    var s = 0d;
-                    foreach (var edge in Graph[n])
-                    {
-                        s += edge.Weight/outSum[n]*ws[edge.End];
-                    }
-                    ws[n] = (1 - d) + d*s;
-                }
-            }
-
-            var minRank = double.MaxValue;
-            var maxRank = double.MinValue;
-
-            foreach (var w in ws.Values)
-            {
-                if (w < minRank)
-                {
-                    minRank = w;
-                }
-                else if(w > maxRank)
-                {
-                    maxRank = w;
-                }
-            }
-
-            foreach (var pair in ws.ToList())
-            {
-                ws[pair.Key] = (pair.Value - minRank/10.0)/(maxRank - minRank/10.0);
-            }
-
-            return ws;
-        }
+        #endregion
     }
 }

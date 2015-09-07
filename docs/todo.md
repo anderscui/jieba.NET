@@ -2,7 +2,7 @@
 2. TextRank
 3. Spell check and suggests
 4. Search with Lucene
-
+5. News Classification
 
 Misc
 1. synchronization;
@@ -14,3 +14,4 @@ Misc
 7. named entity recognition
 8. new word recognition
 9. time elapsed is minus?
+10. PosSeg test, ¼ªÁÖ nr or ns?

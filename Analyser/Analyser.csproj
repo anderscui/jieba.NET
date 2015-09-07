@@ -46,6 +46,7 @@
     <Compile Include="TextRankExtractor.cs" />
     <Compile Include="TfidfExtractor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UndirectWeightedGraph.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Segmenter\Segmenter.csproj">
