@@ -1,23 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.FinalSeg
 {
     public class Viterbi : IFinalSeg
     {
         private static readonly Lazy<Viterbi> Lazy = new Lazy<Viterbi>(() => new Viterbi());
-        private static readonly char[] States = {'B', 'M', 'E', 'S'};
+        private static readonly char[] States = { 'B', 'M', 'E', 'S' };
 
         private static readonly Regex RegexChinese = new Regex(@"([\u4E00-\u9FA5]+)", RegexOptions.Compiled);
         private static readonly Regex RegexSkip = new Regex(@"(\d+\.\d+|[a-zA-Z0-9]+)", RegexOptions.Compiled);
 
-        private static IDictionary<char, IDictionary<char, Double>> _emitProbs;
-        private static IDictionary<char, Double> _startProbs;
-        private static IDictionary<char, IDictionary<char, Double>> _transProbs;
+        private static IDictionary<char, IDictionary<char, double>> _emitProbs;
+        private static IDictionary<char, double> _startProbs;
+        private static IDictionary<char, IDictionary<char, double>> _transProbs;
         private static IDictionary<char, char[]> _prevStatus;
 
         private Viterbi()
@@ -50,81 +52,45 @@ namespace JiebaNet.Segmenter.FinalSeg
         }
 
         #region Private Helpers
-        
+
         private void LoadModel()
         {
-            int s = DateTime.Now.Millisecond;
-            _prevStatus = new Dictionary<char, char[]>();
-            _prevStatus['B'] = new char[] {'E', 'S'};
-            _prevStatus['M'] = new char[] {'M', 'B'};
-            _prevStatus['S'] = new char[] {'S', 'E'};
-            _prevStatus['E'] = new char[] {'B', 'M'};
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
 
-            _startProbs = new Dictionary<char, Double>();
-            _startProbs['B'] = -0.26268660809250016;
-            _startProbs['E'] = -3.14e+100;
-            _startProbs['M'] = -3.14e+100;
-            _startProbs['S'] = -1.4652633398537678;
-
-            _transProbs = new Dictionary<char, IDictionary<char, Double>>();
-            IDictionary<char, Double> transB = new Dictionary<char, Double>();
-            transB['E'] = -0.510825623765990;
-            transB['M'] = -0.916290731874155;
-            _transProbs['B'] = transB;
-
-            IDictionary<char, Double> transE = new Dictionary<char, Double>();
-            transE['B'] = -0.5897149736854513;
-            transE['S'] = -0.8085250474669937;
-            _transProbs['E'] = transE;
-
-            IDictionary<char, Double> transM = new Dictionary<char, Double>();
-            transM['E'] = -0.33344856811948514;
-            transM['M'] = -1.2603623820268226;
-            _transProbs['M'] = transM;
-
-            IDictionary<char, Double> transS = new Dictionary<char, Double>();
-            transS['B'] = -0.7211965654669841;
-            transS['S'] = -0.6658631448798212;
-            _transProbs['S'] = transS;
-
-            var probEmitPath = ConfigManager.ProbEmitFile;
-            _emitProbs = new Dictionary<char, IDictionary<char, double>>();
-
-            try
+            _prevStatus = new Dictionary<char, char[]>()
             {
-                var lines = File.ReadAllLines(probEmitPath, Encoding.UTF8);
+                {'B', new []{'E', 'S'}},
+                {'M', new []{'M', 'B'}},
+                {'S', new []{'S', 'E'}},
+                {'E', new []{'B', 'M'}}
+            };
 
-                IDictionary<char, double> values = null;
-                foreach (var line in lines)
-                {
-                    var tokens = line.Split('\t');
-                    // If a new state starts.
-                    if (tokens.Length == 1)
-                    {
-                        values = new Dictionary<char, double>();
-                        _emitProbs[tokens[0][0]] = values;
-                    }
-                    else
-                    {
-                        values[tokens[0][0]] = double.Parse(tokens[1]);
-                    }
-                }
-            }
-            catch (IOException ex)
+            _startProbs = new Dictionary<char, double>()
             {
-                Console.Error.WriteLine("{0}: loading model from file {1} failure!", ex.Message, probEmitPath);
-            }
+                {'B', -0.26268660809250016},
+                {'E', -3.14e+100},
+                {'M', -3.14e+100},
+                {'S', -1.4652633398537678}
+            };
 
-            Console.WriteLine("model loading finished, time elapsed {0} ms.", DateTime.Now.Millisecond - s);
+            var transJson = File.ReadAllText(Path.GetFullPath(ConfigManager.ProbTransFile));
+            _transProbs = JsonConvert.DeserializeObject<IDictionary<char, IDictionary<char, double>>>(transJson);
+
+            var emitJson = File.ReadAllText(Path.GetFullPath(ConfigManager.ProbEmitFile));
+            _emitProbs = JsonConvert.DeserializeObject<IDictionary<char, IDictionary<char, double>>>(emitJson);
+
+            stopWatch.Stop();
+            Console.WriteLine("model loading finished, time elapsed {0} ms.", stopWatch.ElapsedMilliseconds);
         }
 
         private IEnumerable<string> ViterbiCut(string sentence)
         {
-            var v = new List<IDictionary<char, Double>>();
+            var v = new List<IDictionary<char, double>>();
             IDictionary<char, Node> path = new Dictionary<char, Node>();
 
             // Init weights and paths.
-            v.Add(new Dictionary<char, Double>());
+            v.Add(new Dictionary<char, double>());
             foreach (var state in States)
             {
                 var emP = _emitProbs[state].GetDefault(sentence[0], Constants.MinProb);
@@ -135,7 +101,7 @@ namespace JiebaNet.Segmenter.FinalSeg
             // For each remaining char
             for (var i = 1; i < sentence.Length; ++i)
             {
-                IDictionary<char, Double> vv = new Dictionary<char, Double>();
+                IDictionary<char, double> vv = new Dictionary<char, double>();
                 v.Add(vv);
                 IDictionary<char, Node> newPath = new Dictionary<char, Node>();
                 foreach (var y in States)

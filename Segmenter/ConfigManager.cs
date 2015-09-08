@@ -9,6 +9,11 @@ namespace JiebaNet.Segmenter
             get { return ConfigurationManager.AppSettings["MainDictFile"]; }
         }
 
+        public static string ProbTransFile
+        {
+            get { return ConfigurationManager.AppSettings["ProbTransFile"]; }
+        }
+
         public static string ProbEmitFile
         {
             get { return ConfigurationManager.AppSettings["ProbEmitFile"]; }

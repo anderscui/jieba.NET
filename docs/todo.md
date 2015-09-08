@@ -1,4 +1,3 @@
-1. Practical Stop Words
 2. File Resources
 3. Spell check and suggests
 4. Search with Lucene
