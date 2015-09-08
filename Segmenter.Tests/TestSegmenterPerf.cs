@@ -15,6 +15,7 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
+        [Ignore]
         public void TestCutLargeFile()
         {
             var weiCheng = File.ReadAllText(@"Resources\围城.txt");

@@ -7,7 +7,7 @@ Misc
 2. cache;
 4. jieba.pool;
 5. other dict files;
-6. multiple english words (Steve Jobs)
+6. multiple english words (e.g. Steve Jobs)
 7. named entity recognition
 8. new word recognition
 10. logging

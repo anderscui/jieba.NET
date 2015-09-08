@@ -1,6 +1,6 @@
 jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
 
-当前版本是初始版本，基于jieba 0.37，目标是提供与jieba一致的功能与接口，但以后可能会在jieba基础上提供其它扩展功能。如果对jieba的实现不清楚，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+当前版本为0.37.1，基于jieba 0.37，目标是提供与jieba一致的功能与接口，但以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
 
 ## 特点
 
@@ -8,7 +8,7 @@ jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
     - 精确模式，试图将句子最精确地切开，适合**文本分析**；
     - 全模式，把句子中所有的可以成词的词语都扫描出来, **速度非常快，但是不能解决歧义**。具体来说，分词过程不会借助于词频查找最大概率路径，亦不会使用HMM；
     - 搜索引擎模式，在精确模式的基础上，对长词再次切分，提高召回率，**适合用于搜索引擎分词**。
-* 支持**繁体分词**（的词典）
+* 支持**繁体分词**
 * 支持添加自定义词典和自定义词
 * MIT 授权协议
 
@@ -20,12 +20,27 @@ jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
 
 ## 安装和配置
 
-当前版本基于.NET Framework 4.5。暂不支持NuGet方式安装，须手动引用项目或程序集。在app.config或web.config中添加两个配置项：
+当前版本基于.NET Framework 4.5，支持NuGet方式安装：
+
+```shell
+PM> Install-Package jieba.NET
+```
+
+安装之后，在packages\jieba.NET目录下可以看到Resources目录，这里面是jieba.NET运行所需的词典及其它数据文件，最简单的配置方法是将整个Resources目录拷贝到程序集所在目录，这样jieba.NET会使用内置的默认配置值。如果希望将这些文件放在其它位置，则要在app.config或web.config中添加如下的配置项：
 
 ```xml
 <appSettings>
     <add key="MainDictFile" value="Resources\dict.txt" />
-    <add key="ProbEmitFile" value="Resources\prob_emit.txt" />
+    <add key="ProbTransFile" value="Resources\prob_trans.json" />
+    <add key="ProbEmitFile" value="Resources\prob_emit.json" />
+
+    <add key="PosProbStartFile" value="Resources\pos_prob_start.json" />
+    <add key="PosProbTransFile" value="Resources\pos_prob_trans.json" />
+    <add key="PosProbEmitFile" value="Resources\pos_prob_emit.json" />
+    <add key="CharStateTabFile" value="Resources\char_state_tab.json" />
+
+    <add key="StopWordsFile" value="Resources\stopwords.txt" />
+    <add key="IdfFile" value="Resources\idf.txt" />
 </appSettings>
 ```
 
@@ -71,7 +86,7 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 #### 加载词典
 
-* 开发者可以指定自己自定义的词典，以便包含 jieba 词库里没有的词。虽然 jieba 有新词识别能力，但是自行添加新词可以保证更高的正确率
+* 开发者可以指定自己自定义的词典，以便包含jieba词库里没有的词。虽然jieba有新词识别能力，但是自行添加新词可以保证更高的正确率
 * `JiebaSegmenter.LoadUserDict("user_dict_file_path")`
 * 词典格式与主词典格式相同，即一行包含：词、词频（可省略）、词性（可省略），用空格隔开
 * 词频省略时，分词器将使用自动计算出的词频保证该词被分出
@@ -93,12 +108,16 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 ### 3. 关键词提取
 
-#### 基于TF-IDF算法的关键词抽取
+#### 基于TF-IDF算法的关键词提取
 
 * `JiebaNet.Analyser.TfidfExtractor.ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中抽取出关键词。
 * `JiebaNet.Analyser.TfidfExtractor.ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中**抽取关键词的同时得到其权重**。
 * 关键词抽取基于逆向文件频率（IDF），组件内置一个IDF语料库，可以配置为其它自定义的语料库。
 * 关键词抽取会过滤停用词（Stop Words），组件内置一个极小的语料库，建议根据需要配置为其它自定义的语料库。
+
+#### 基于TextRank算法的关键词抽取
+
+* `JiebaNet.Analyser.TextRankExtractor`与`TfidfExtractor`相同的接口。需要注意的是，`TextRankExtractor`默认情况下只提取名词和动词。
 
 ### 4. 词性标注
 

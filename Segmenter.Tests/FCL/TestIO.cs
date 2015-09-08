@@ -11,11 +11,11 @@ namespace JiebaNet.Segmenter.Tests.FCL
         public void TestNormalizePath()
         {
             var p = @"..\test.txt";
-            Assert.That(Path.IsPathRooted(p));
+            Assert.That(Path.IsPathRooted(p), Is.False);
             Console.WriteLine(Path.GetFullPath(p));
 
             p = @"C:\test.txt";
-            Assert.That(Path.IsPathRooted(p), Is.False);
+            Assert.That(Path.IsPathRooted(p), Is.True);
             Console.WriteLine(Path.GetFullPath(p));
         }
     }
