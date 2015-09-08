@@ -108,7 +108,7 @@ namespace JiebaNet.Segmenter.FinalSeg
                 {
                     var emp = _emitProbs[y].GetDefault(sentence[i], Constants.MinProb);
 
-                    Pair<char> candidate = new Pair<char>('\0', Constants.MinProb);
+                    Pair<char> candidate = new Pair<char>('\0', double.MinValue);
                     foreach (var y0 in _prevStatus[y])
                     {
                         var tranp = _transProbs[y0].GetDefault(y, Constants.MinProb);

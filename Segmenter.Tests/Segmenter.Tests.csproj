@@ -57,6 +57,7 @@
     <Compile Include="TestDict.cs" />
     <Compile Include="TestDemo.cs" />
     <Compile Include="TestPosSegmenter.cs" />
+    <Compile Include="TestSegmenterPerf.cs" />
     <Compile Include="TestSegmenter.cs" />
     <Compile Include="TestTfidfExtractor.cs" />
   </ItemGroup>
