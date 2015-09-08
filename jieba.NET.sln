@@ -18,8 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtraDict", "ExtraDict", "{
 		ExtraDicts\dict.txt.big = ExtraDicts\dict.txt.big
 		ExtraDicts\dict.txt.small = ExtraDicts\dict.txt.small
 		ExtraDicts\idf.txt.big = ExtraDicts\idf.txt.big
-		ExtraDicts\stop_words.txt = ExtraDicts\stop_words.txt
-		ExtraDicts\test_dict.txt = ExtraDicts\test_dict.txt
+		ExtraDicts\stopwords_en_nltk.txt = ExtraDicts\stopwords_en_nltk.txt
+		ExtraDicts\stopwords_zh_hit.txt = ExtraDicts\stopwords_zh_hit.txt
 		ExtraDicts\user_dict.txt = ExtraDicts\user_dict.txt
 	EndProjectSection
 EndProject
