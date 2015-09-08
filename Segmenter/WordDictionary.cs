@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,7 +36,8 @@ namespace JiebaNet.Segmenter
         {
             try
             {
-                var startTime = DateTime.Now.Millisecond;
+                var stopWatch = new Stopwatch();
+                stopWatch.Start();
 
                 var lines = File.ReadAllLines(MainDict, Encoding.UTF8);
                 foreach (var line in lines)
@@ -63,7 +65,8 @@ namespace JiebaNet.Segmenter
                     }
                 }
 
-                Console.WriteLine("main dict load finished, time elapsed {0} ms", DateTime.Now.Millisecond - startTime);
+                stopWatch.Stop();
+                Console.WriteLine("main dict load finished, time elapsed {0} ms", stopWatch.ElapsedMilliseconds);
             }
             catch (IOException e)
             {

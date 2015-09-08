@@ -95,8 +95,8 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 #### 基于TF-IDF算法的关键词抽取
 
-* `JiebaNet.Analyser.TfidfExtractor.**ExtractTags**(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中抽取出关键词。
-* `JiebaNet.Analyser.TfidfExtractor.**ExtractTagsWithWeight**(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中**抽取关键词的同时得到其权重**。
+* `JiebaNet.Analyser.TfidfExtractor.ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中抽取出关键词。
+* `JiebaNet.Analyser.TfidfExtractor.ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中**抽取关键词的同时得到其权重**。
 * 关键词抽取基于逆向文件频率（IDF），组件内置一个IDF语料库，可以配置为其它自定义的语料库。
 * 关键词抽取会过滤停用词（Stop Words），组件内置一个极小的语料库，建议根据需要配置为其它自定义的语料库。
 

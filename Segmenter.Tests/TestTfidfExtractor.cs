@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using JiebaNet.Analyser;
-using JiebaNet.Segmenter.PosSeg;
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests
