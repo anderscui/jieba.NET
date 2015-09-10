@@ -1,3 +1,4 @@
+1. Pinyin
 3. Spell check and suggests
 4. Search with Lucene
 5. News Classification

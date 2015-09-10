@@ -39,28 +39,31 @@ namespace JiebaNet.Segmenter
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
 
-                var lines = File.ReadAllLines(MainDict, Encoding.UTF8);
-                foreach (var line in lines)
+                using (var sr = new StreamReader(MainDict, Encoding.UTF8))
                 {
-                    var tokens = line.Split(' ');
-                    if (tokens.Length < 2)
+                    string line = null;
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        Console.Error.WriteLine("Invalid line: {0}", line);
-                        continue;
-                    }
-
-                    var word = tokens[0];
-                    var freq = int.Parse(tokens[1]);
-
-                    Trie[word] = freq;
-                    Total += freq;
-
-                    foreach (var ch in Enumerable.Range(0, word.Length))
-                    {
-                        var wfrag = word.Sub(0, ch + 1);
-                        if (!Trie.ContainsKey(wfrag))
+                        var tokens = line.Split(' ');
+                        if (tokens.Length < 2)
                         {
-                            Trie[wfrag] = 0;
+                            Console.Error.WriteLine("Invalid line: {0}", line);
+                            continue;
+                        }
+
+                        var word = tokens[0];
+                        var freq = int.Parse(tokens[1]);
+
+                        Trie[word] = freq;
+                        Total += freq;
+
+                        foreach (var ch in Enumerable.Range(0, word.Length))
+                        {
+                            var wfrag = word.Sub(0, ch + 1);
+                            if (!Trie.ContainsKey(wfrag))
+                            {
+                                Trie[wfrag] = 0;
+                            }
                         }
                     }
                 }

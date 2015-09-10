@@ -138,6 +138,29 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
+        public void TestSpecialWords()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord(".NET");
+            seg.AddWord("U.S.A.");
+            
+            var s = ".NET平台是微软推出的, U.S.A.是美国的简写";
+
+            var segments = seg.Cut(s);
+            foreach (var segment in segments)
+            {
+                Console.WriteLine(segment);
+            }
+
+            s = "Steve Jobs重新定义了手机";
+            segments = seg.Cut(s);
+            foreach (var segment in segments)
+            {
+                Console.WriteLine(segment);
+            }
+        }
+
+        [TestCase]
         public void TestCutTraditionalChinese()
         {
             var seg = new JiebaSegmenter();

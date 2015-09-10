@@ -81,5 +81,20 @@ namespace JiebaNet.Segmenter.Tests
                 Console.WriteLine(keyword);
             }
         }
+
+        [TestCase]
+        public void ExtractTagsDemo2()
+        {
+            var text = @"在数学和计算机科学/算学之中，算法/算则法（Algorithm）为一个计算的具体步骤，常用于计算、数据处理和自动推理。精确而言，算法是一个表示为有限长列表的有效方法。算法应包含清晰定义的指令用于计算函数。
+                         算法中的指令描述的是一个计算，当其运行时能从一个初始状态和初始输入（可能为空）开始，经过一系列有限而清晰定义的状态最终产生输出并停止于一个终态。一个状态到另一个状态的转移不一定是确定的。随机化算法在内的一些算法，包含了一些随机输入。
+                         形式化算法的概念部分源自尝试解决希尔伯特提出的判定问题，并在其后尝试定义有效计算性或者有效方法中成形。这些尝试包括库尔特·哥德尔、雅克·埃尔布朗和斯蒂芬·科尔·克莱尼分别于1930年、1934年和1935年提出的递归函数，阿隆佐·邱奇于1936年提出的λ演算，1936年Emil Leon Post的Formulation 1和艾伦·图灵1937年提出的图灵机。即使在当前，依然常有直觉想法难以定义为形式化算法的情况。";
+
+            var extractor = new TfidfExtractor();
+            var keywords = extractor.ExtractTags(text, 10, Constants.NounAndVerbPos);
+            foreach (var keyword in keywords)
+            {
+                Console.WriteLine(keyword);
+            }
+        }
     }
 }
