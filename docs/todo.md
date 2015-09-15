@@ -1,6 +1,6 @@
-1. Pinyin
+1. Deploy dicts with dlls?
+2. Solution structure - clearer for open source project
 3. Spell check and suggests
-4. Search with Lucene
 5. News Classification
 
 Misc
@@ -12,3 +12,4 @@ Misc
 7. named entity recognition
 8. new word recognition
 10. logging
+11. Pinyin

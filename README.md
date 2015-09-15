@@ -113,7 +113,7 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 * `JiebaNet.Analyser.TfidfExtractor.ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中抽取出关键词。
 * `JiebaNet.Analyser.TfidfExtractor.ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null)`可从指定文本中**抽取关键词的同时得到其权重**。
 * 关键词抽取基于逆向文件频率（IDF），组件内置一个IDF语料库，可以配置为其它自定义的语料库。
-* 关键词抽取会过滤停用词（Stop Words），组件内置一个极小的语料库，建议根据需要配置为其它自定义的语料库。
+* 关键词抽取会过滤停用词（Stop Words），组件内置一个停用词语料库，这个语料库合并了NLTK的英文停用词和哈工大的中文停用词。
 
 #### 基于TextRank算法的关键词抽取
 
@@ -179,3 +179,7 @@ word 有限公司         start: 6   end: 10
 ```
 
 ### 6. 并行分词（暂未实现）
+
+### 7. 与Lucene.NET的集成
+
+jiebaForLuceneNet项目提供了与Lucene.NET的简单集成，更多信息请看：[jiebaForLuceneNet](https://github.com/anderscui/jiebaForLuceneNet/wiki/%E4%B8%8ELucene.NET%E7%9A%84%E9%9B%86%E6%88%90)
