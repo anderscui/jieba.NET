@@ -1,4 +1,4 @@
-jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
+jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C#实现）。
 
 当前版本为0.37.1，基于jieba 0.37，目标是提供与jieba一致的功能与接口，但以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
 
@@ -20,7 +20,7 @@ jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本。
 
 ## 安装和配置
 
-当前版本基于.NET Framework 4.5，支持NuGet方式安装：
+当前版本基于.NET Framework 4.5，可以手动引用项目，也可以通过NuGet添加引用：
 
 ```shell
 PM> Install-Package jieba.NET
@@ -86,7 +86,7 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 #### 加载词典
 
-* 开发者可以指定自己自定义的词典，以便包含jieba词库里没有的词。虽然jieba有新词识别能力，但是自行添加新词可以保证更高的正确率
+* 开发者可以指定自定义的词典，以便包含jieba词库里没有的词。虽然jieba有新词识别能力，但是自行添加新词可以保证更高的正确率
 * `JiebaSegmenter.LoadUserDict("user_dict_file_path")`
 * 词典格式与主词典格式相同，即一行包含：词、词频（可省略）、词性（可省略），用空格隔开
 * 词频省略时，分词器将使用自动计算出的词频保证该词被分出
@@ -103,7 +103,7 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 
 #### 调整词典
 
-* 使用`JiebaSegmenter.AddWord(word, freq=0, tag=null)`可添加一个新词，或调整已知词的词频；若`freq`不是正整数，则使用自动计算出的词频
+* 使用`JiebaSegmenter.AddWord(word, freq=0, tag=null)`可添加一个新词，或调整已知词的词频；若`freq`不是正整数，则使用自动计算出的词频，计算出的词频可保证该词被分出来
 * 使用`JiebaSegmenter.DeleteWord(word)`可移除一个词，使其不能被分出来
 
 ### 3. 关键词提取
@@ -118,6 +118,7 @@ Console.WriteLine("【歧义消除】：{0}", string.Join("/ ", segments));
 #### 基于TextRank算法的关键词抽取
 
 * `JiebaNet.Analyser.TextRankExtractor`与`TfidfExtractor`相同的接口。需要注意的是，`TextRankExtractor`默认情况下只提取名词和动词。
+* 以固定窗口大小（默认为5，通过Span属性调整）和词之间的共现关系构建图
 
 ### 4. 词性标注
 
@@ -183,3 +184,16 @@ word 有限公司         start: 6   end: 10
 ### 7. 与Lucene.NET的集成
 
 jiebaForLuceneNet项目提供了与Lucene.NET的简单集成，更多信息请看：[jiebaForLuceneNet](https://github.com/anderscui/jiebaForLuceneNet/wiki/%E4%B8%8ELucene.NET%E7%9A%84%E9%9B%86%E6%88%90)
+
+### 8. 其它词典
+
+jieba分词亦提供了其它的词典文件：
+
+* 占用内存较小的词典文件 [https://raw.githubusercontent.com/anderscui/jieba.NET/master/ExtraDicts/dict.txt.small](https://raw.githubusercontent.com/anderscui/jieba.NET/master/ExtraDicts/dict.txt.small)
+* 支持繁体分词更好的词典文件 [https://raw.githubusercontent.com/anderscui/jieba.NET/master/ExtraDicts/dict.txt.big](https://raw.githubusercontent.com/anderscui/jieba.NET/master/ExtraDicts/dict.txt.big)
+
+### 9. 分词速度
+
+* 全模式：2.5 MB/s
+* 精确模式：1.1 MB/s
+* 测试环境： Intel(R) Core(TM) i3-2120 CPU @ 3.30GHz；围城.txt（734KB）

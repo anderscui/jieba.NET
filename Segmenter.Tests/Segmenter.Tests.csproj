@@ -60,6 +60,7 @@
     <Compile Include="TestPosSegmenter.cs" />
     <Compile Include="TestSegmenterPerf.cs" />
     <Compile Include="TestSegmenter.cs" />
+    <Compile Include="TestTextRankExtractor.cs" />
     <Compile Include="TestTfidfExtractor.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +82,7 @@
     <Content Include="Cases\jieba_test.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\围城.txt" />
     <None Include="Resources\test_dict.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

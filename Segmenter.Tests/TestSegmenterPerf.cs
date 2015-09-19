@@ -9,7 +9,7 @@ namespace JiebaNet.Segmenter.Tests
     [TestFixture]
     public class TestSegmenterPerf
     {
-        private string[] GetTestSentences()
+        private string[] GetTestText()
         {
             return File.ReadAllLines(@"Cases\jieba_test.txt");
         }
@@ -18,12 +18,15 @@ namespace JiebaNet.Segmenter.Tests
         [Ignore]
         public void TestCutLargeFile()
         {
-            var weiCheng = File.ReadAllText(@"Resources\围城.txt");
+            var fileName = @"Resources\围城.txt";
+            var weiCheng = File.ReadAllText(fileName);
+            var fileSize = (new FileInfo(fileName)).Length;
+
             var seg = new JiebaSegmenter();
-            seg.Cut("热身");
+            seg.Cut("热身一下");
 
             Console.WriteLine("Start to cut");
-            var n = 20;
+            const int n = 20;
             var stopWatch = new Stopwatch();
 
             // Accurate mode
@@ -33,9 +36,11 @@ namespace JiebaNet.Segmenter.Tests
             {
                 seg.Cut(weiCheng);
             }
-            
+
             stopWatch.Stop();
-            Console.WriteLine("Accurate mode: {0} ms", stopWatch.ElapsedMilliseconds / n);
+            var timeConsumed = (double)stopWatch.ElapsedMilliseconds / (1000 * n);
+            Console.WriteLine("Accurate mode: {0} ms, average: {1} / second",
+                                timeConsumed, fileSize / timeConsumed);
 
             // Full mode
             stopWatch.Reset();
@@ -47,26 +52,10 @@ namespace JiebaNet.Segmenter.Tests
             }
 
             stopWatch.Stop();
-            Console.WriteLine("Full mode: {0} ms", stopWatch.ElapsedMilliseconds / n);
+
+            timeConsumed = (double)stopWatch.ElapsedMilliseconds / (1000 * n);
+            Console.WriteLine("Full mode: {0} ms, average: {1} / second",
+                                timeConsumed, fileSize / timeConsumed);
         }
-
-        #region Private Helpers
-
-        private void TestCutFunction(Func<string, bool, bool, IEnumerable<string>> method,
-                                     bool cutAll, bool useHmm,
-                                     string testResultFile)
-        {
-            var testCases = GetTestSentences();
-            var testResults = File.ReadAllLines(testResultFile);
-            Assert.That(testCases.Length, Is.EqualTo(testResults.Length));
-            for (int i = 0; i < testCases.Length; i++)
-            {
-                var testCase = testCases[i];
-                var testResult = testResults[i];
-                Assert.That(method(testCase, cutAll, useHmm).Join("/ "), Is.EqualTo(testResult));
-            }
-        }
-
-        #endregion
     }
 }
