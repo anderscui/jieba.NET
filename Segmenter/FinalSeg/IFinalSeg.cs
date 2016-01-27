@@ -5,6 +5,6 @@ namespace JiebaNet.Segmenter.FinalSeg
 {
     public interface IFinalSeg
     {
-        IEnumerable<string> Cut(String sentence);
+        IEnumerable<string> Cut(string sentence);
     }
 }

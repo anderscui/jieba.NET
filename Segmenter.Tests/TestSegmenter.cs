@@ -152,6 +152,7 @@ namespace JiebaNet.Segmenter.Tests
                 Console.WriteLine(segment);
             }
 
+            seg.LoadUserDict(@"Resources\user_dict.txt");
             s = "Steve Jobs重新定义了手机";
             segments = seg.Cut(s);
             foreach (var segment in segments)

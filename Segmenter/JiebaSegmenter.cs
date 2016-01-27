@@ -20,14 +20,16 @@ namespace JiebaNet.Segmenter
 
         #region Regular Expressions
 
-        internal static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FA5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
+        internal static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FD5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
 
         internal static readonly Regex RegexSkipDefault = new Regex(@"(\r\n|\s)", RegexOptions.Compiled);
 
-        internal static readonly Regex RegexChineseCutAll = new Regex(@"([\u4E00-\u9FA5]+)", RegexOptions.Compiled);
+        internal static readonly Regex RegexChineseCutAll = new Regex(@"([\u4E00-\u9FD5]+)", RegexOptions.Compiled);
         internal static readonly Regex RegexSkipCutAll = new Regex(@"[^a-zA-Z0-9+#\n]", RegexOptions.Compiled);
 
         internal static readonly Regex RegexEnglishChars = new Regex(@"[a-zA-Z0-9]", RegexOptions.Compiled);
+
+        internal static readonly Regex RegexUserDict = new Regex("^(?<word>.+?)(?<freq> [0-9]+)?(?<tag> [a-z]+)?$", RegexOptions.Compiled);
 
         #endregion
 
@@ -401,28 +403,13 @@ namespace JiebaNet.Segmenter
                             continue;
                         }
 
-                        var tokens = line.Trim().Split(' ');
-                        var word = tokens[0];
-                        var freq = 0;
-                        var tag = string.Empty;
-                        if (tokens.Length == 2)
-                        {
-                            if (tokens[1].IsInt32())
-                            {
-                                freq = int.Parse(tokens[1]);
-                            }
-                            else
-                            {
-                                tag = tokens[1];
-                            }
-                        }
-                        else if (tokens.Length > 2)
-                        {
-                            freq = int.Parse(tokens[1]);
-                            tag = tokens[2];
-                        }
+                        var tokens = RegexUserDict.Match(line.Trim()).Groups;
+                        var word = tokens["word"].Value.Trim();
+                        var freq = tokens["freq"].Value.Trim();
+                        var tag = tokens["tag"].Value.Trim();
 
-                        AddWord(word, freq, tag);
+                        var actualFreq = freq.Length > 0 ? int.Parse(freq) : 0;
+                        AddWord(word, actualFreq, tag);
                     }
 
                     Console.WriteLine("user dict '{0}' load finished, time elapsed {1} ms",

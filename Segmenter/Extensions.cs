@@ -59,5 +59,12 @@ namespace JiebaNet.Segmenter
         {
             return (enumerable != null) && enumerable.Any();
         }
+
+        public static IEnumerable<string> SubGroupValues(this GroupCollection groups)
+        {
+            var result = from Group g in groups
+                         select g.Value;
+            return result.Skip(1);
+        }
     }
 }

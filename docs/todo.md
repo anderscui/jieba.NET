@@ -13,3 +13,4 @@ Misc
 8. new word recognition
 10. logging
 11. Pinyin
+12. Remove Console.WriteLine output, use Debug instead

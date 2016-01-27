@@ -14,7 +14,7 @@ namespace JiebaNet.Segmenter.FinalSeg
         private static readonly Lazy<Viterbi> Lazy = new Lazy<Viterbi>(() => new Viterbi());
         private static readonly char[] States = { 'B', 'M', 'E', 'S' };
 
-        private static readonly Regex RegexChinese = new Regex(@"([\u4E00-\u9FA5]+)", RegexOptions.Compiled);
+        private static readonly Regex RegexChinese = new Regex(@"([\u4E00-\u9FD5]+)", RegexOptions.Compiled);
         private static readonly Regex RegexSkip = new Regex(@"(\d+\.\d+|[a-zA-Z0-9]+)", RegexOptions.Compiled);
 
         private static IDictionary<char, IDictionary<char, double>> _emitProbs;
@@ -33,7 +33,7 @@ namespace JiebaNet.Segmenter.FinalSeg
             get { return Lazy.Value; }
         }
 
-        public IEnumerable<string> Cut(String sentence)
+        public IEnumerable<string> Cut(string sentence)
         {
             var tokens = new List<string>();
             foreach (var blk in RegexChinese.Split(sentence))

@@ -9,3 +9,5 @@ easy_install 3 eng
 机器学习
 自然语言处理
 凱特琳 nz
+Edu Trust认证 2000
+Steve Jobs 1000 nr
