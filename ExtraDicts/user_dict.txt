@@ -11,3 +11,4 @@ easy_install 3 eng
 凱特琳 nz
 Edu Trust认证 2000
 Steve Jobs 1000 nr
+Mac OS X 10

@@ -76,7 +76,7 @@ namespace JiebaNet.Analyser
                 {
                     minRank = w;
                 }
-                else if(w > maxRank)
+                if(w > maxRank)
                 {
                     maxRank = w;
                 }
