@@ -115,11 +115,11 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Analyser\Analyser.csproj">
+    <ProjectReference Include="..\..\src\Analyser\Analyser.csproj">
       <Project>{420C99CA-4DE4-4802-9129-B26C35786224}</Project>
       <Name>Analyser</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Segmenter\Segmenter.csproj">
+    <ProjectReference Include="..\..\src\Segmenter\Segmenter.csproj">
       <Project>{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}</Project>
       <Name>Segmenter</Name>
     </ProjectReference>

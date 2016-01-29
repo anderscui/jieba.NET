@@ -3,15 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter", "Segmenter\Segmenter.csproj", "{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CAE0F06F-592A-4714-8494-6EA5D870F4F6}"
 	ProjectSection(SolutionItems) = preProject
-		docs\codeConversion.txt = docs\codeConversion.txt
 		docs\todo.md = docs\todo.md
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Tests", "Segmenter.Tests\Segmenter.Tests.csproj", "{77A71258-2175-4868-8539-D1EDFB5B7AB0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtraDict", "ExtraDict", "{2111E414-9025-4BC6-94C3-0939D8E6DECF}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,9 +18,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtraDict", "ExtraDict", "{
 		ExtraDicts\user_dict.txt = ExtraDicts\user_dict.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Cli", "Segmenter.Cli\Segmenter.Cli.csproj", "{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter", "src\Segmenter\Segmenter.csproj", "{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyser", "Analyser\Analyser.csproj", "{420C99CA-4DE4-4802-9129-B26C35786224}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Analyser", "src\Analyser\Analyser.csproj", "{420C99CA-4DE4-4802-9129-B26C35786224}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Cli", "src\Segmenter.Cli\Segmenter.Cli.csproj", "{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Tests", "test\Segmenter.Tests\Segmenter.Tests.csproj", "{77A71258-2175-4868-8539-D1EDFB5B7AB0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,18 +36,18 @@ Global
 		{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{420C99CA-4DE4-4802-9129-B26C35786224}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{420C99CA-4DE4-4802-9129-B26C35786224}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{420C99CA-4DE4-4802-9129-B26C35786224}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{420C99CA-4DE4-4802-9129-B26C35786224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77A71258-2175-4868-8539-D1EDFB5B7AB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
