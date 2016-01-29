@@ -17,7 +17,7 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestGetDag()
         {
-            JiebaSegmenter seg = new JiebaSegmenter();
+            var seg = new JiebaSegmenter();
             var dag = seg.GetDag("语言学家参加学术会议");
             foreach (var key in dag.Keys.ToList().OrderBy(k => k))
             {

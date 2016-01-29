@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,7 +49,7 @@ namespace JiebaNet.Segmenter.PosSeg
                     var tokens = line.Split(' ');
                     if (tokens.Length < 2)
                     {
-                        Console.Error.WriteLine("Invalid line: {0}", line);
+                        Debug.Fail(string.Format("Invalid line: {0}", line));
                         continue;
                     }
 
@@ -60,11 +61,11 @@ namespace JiebaNet.Segmenter.PosSeg
             }
             catch (IOException e)
             {
-                Console.Error.WriteLine("Word tag table load failure, reason: {0}", e.Message);
+                Debug.Fail(string.Format("Word tag table load failure, reason: {0}", e.Message));
             }
             catch (FormatException fe)
             {
-                Console.Error.WriteLine(fe.Message);
+                Debug.Fail(fe.Message);
             }
         }
 

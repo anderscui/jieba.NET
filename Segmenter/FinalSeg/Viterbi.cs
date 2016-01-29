@@ -81,7 +81,7 @@ namespace JiebaNet.Segmenter.FinalSeg
             _emitProbs = JsonConvert.DeserializeObject<IDictionary<char, IDictionary<char, double>>>(emitJson);
 
             stopWatch.Stop();
-            Console.WriteLine("model loading finished, time elapsed {0} ms.", stopWatch.ElapsedMilliseconds);
+            Debug.WriteLine("model loading finished, time elapsed {0} ms.", stopWatch.ElapsedMilliseconds);
         }
 
         private IEnumerable<string> ViterbiCut(string sentence)

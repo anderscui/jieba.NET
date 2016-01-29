@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,12 +39,17 @@ namespace JiebaNet.Segmenter
             UserWordTagTab = new Dictionary<string, string>();
         }
 
+        private Func<string, IEnumerable<string>> GetCutMethod(bool cutAll = false, bool hmm = true)
+        {
+            return null;
+        }
+
         /// <summary>
         /// The main function that segments an entire sentence that contains 
         /// Chinese characters into seperated words.
         /// </summary>
         /// <param name="text">The string to be segmented.</param>
-        /// <param name="cutAll">Model type. True for full pattern, False for accurate pattern.</param>
+        /// <param name="cutAll">Specify segmentation pattern. True for full pattern, False for accurate pattern.</param>
         /// <param name="hmm">Whether to use the Hidden Markov Model.</param>
         /// <returns></returns>
         public IEnumerable<string> Cut(string text, bool cutAll = false, bool hmm = true)
@@ -71,47 +77,8 @@ namespace JiebaNet.Segmenter
                 cutMethod = CutDagWithoutHmm;
             }
 
-            var result = new List<string>();
-            var blocks = reHan.Split(text);
-            foreach (var blk in blocks)
-            {
-                if (string.IsNullOrWhiteSpace(blk))
-                {
-                    continue;
-                }
-
-                if (reHan.IsMatch(blk))
-                {
-                    foreach (var word in cutMethod(blk))
-                    {
-                        result.Add(word);
-                    }
-                }
-                else
-                {
-                    var tmp = reSkip.Split(blk);
-                    foreach (var x in tmp)
-                    {
-                        if (reSkip.IsMatch(x))
-                        {
-                            result.Add(x);
-                        }
-                        else if (!cutAll)
-                        {
-                            foreach (var ch in x)
-                            {
-                                result.Add(ch.ToString());
-                            }
-                        }
-                        else
-                        {
-                            result.Add(x);
-                        }
-                    }
-                }
-            }
-
-            return result;
+            // TODO: make it parallelly.
+            return CutIt(text, cutMethod, reHan, reSkip, cutAll);
         }
 
         public IEnumerable<string> CutForSearch(string text, bool hmm = true)
@@ -199,6 +166,11 @@ namespace JiebaNet.Segmenter
             }
 
             return result;
+        }
+
+        public IEnumerable<string> CutParallelly()
+        {
+            return null;
         }
 
         #region Internal Cut Methods
@@ -373,6 +345,52 @@ namespace JiebaNet.Segmenter
             return words;
         }
 
+        internal IEnumerable<string> CutIt(string text, Func<string, IEnumerable<string>> cutMethod,
+                                           Regex reHan, Regex reSkip, bool cutAll)
+        {
+            var result = new List<string>();
+            var blocks = reHan.Split(text);
+            foreach (var blk in blocks)
+            {
+                if (string.IsNullOrWhiteSpace(blk))
+                {
+                    continue;
+                }
+
+                if (reHan.IsMatch(blk))
+                {
+                    foreach (var word in cutMethod(blk))
+                    {
+                        result.Add(word);
+                    }
+                }
+                else
+                {
+                    var tmp = reSkip.Split(blk);
+                    foreach (var x in tmp)
+                    {
+                        if (reSkip.IsMatch(x))
+                        {
+                            result.Add(x);
+                        }
+                        else if (!cutAll)
+                        {
+                            foreach (var ch in x)
+                            {
+                                result.Add(ch.ToString());
+                            }
+                        }
+                        else
+                        {
+                            result.Add(x);
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region Extend Main Dict
@@ -384,7 +402,7 @@ namespace JiebaNet.Segmenter
         public void LoadUserDict(string userDictFile)
         {
             var dictFullPath = Path.GetFullPath(userDictFile);
-            Console.WriteLine("Initializing user dictionary: " + userDictFile);
+            Debug.WriteLine("Initializing user dictionary: " + userDictFile);
 
             lock (locker)
             {
@@ -412,16 +430,16 @@ namespace JiebaNet.Segmenter
                         AddWord(word, actualFreq, tag);
                     }
 
-                    Console.WriteLine("user dict '{0}' load finished, time elapsed {1} ms",
+                    Debug.WriteLine("user dict '{0}' load finished, time elapsed {1} ms",
                         dictFullPath, DateTime.Now.Millisecond - startTime);
                 }
                 catch (IOException e)
                 {
-                    Console.Error.WriteLine("'{0}' load failure, reason: {1}", dictFullPath, e.Message);
+                    Debug.Fail(string.Format("'{0}' load failure, reason: {1}", dictFullPath, e.Message));
                 }
                 catch (FormatException fe)
                 {
-                    Console.Error.WriteLine(fe.Message);
+                    Debug.Fail(fe.Message);
                 }
             }
         }

@@ -49,6 +49,7 @@
     <Compile Include="FCL\TestObjects.cs" />
     <Compile Include="FCL\TestEnumerable.cs" />
     <Compile Include="FCL\TestDictionary.cs" />
+    <Compile Include="FCL\TestPLinq.cs" />
     <Compile Include="FCL\TestUnicode.cs" />
     <Compile Include="FCL\TestJson.cs" />
     <Compile Include="FCL\TestRegex.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="TestDict.cs" />
     <Compile Include="TestDemo.cs" />
     <Compile Include="TestPosSegmenter.cs" />
+    <Compile Include="TestSegmenterParallelism.cs" />
     <Compile Include="TestSegmenterPerf.cs" />
     <Compile Include="TestSegmenter.cs" />
     <Compile Include="TestTextRankExtractor.cs" />

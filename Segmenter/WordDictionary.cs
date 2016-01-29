@@ -23,8 +23,8 @@ namespace JiebaNet.Segmenter
         {
             LoadDict();
 
-            Console.WriteLine("{0} words", Trie.Count);
-            Console.WriteLine("total freq: {0}", Total);
+            Debug.WriteLine("{0} words", Trie.Count);
+            Debug.WriteLine("total freq: {0}", Total);
         }
 
         public static WordDictionary Instance
@@ -47,7 +47,7 @@ namespace JiebaNet.Segmenter
                         var tokens = line.Split(' ');
                         if (tokens.Length < 2)
                         {
-                            Console.Error.WriteLine("Invalid line: {0}", line);
+                            Debug.Fail(string.Format("Invalid line: {0}", line));
                             continue;
                         }
 
@@ -69,15 +69,15 @@ namespace JiebaNet.Segmenter
                 }
 
                 stopWatch.Stop();
-                Console.WriteLine("main dict load finished, time elapsed {0} ms", stopWatch.ElapsedMilliseconds);
+                Debug.WriteLine("main dict load finished, time elapsed {0} ms", stopWatch.ElapsedMilliseconds);
             }
             catch (IOException e)
             {
-                Console.Error.WriteLine("{0} load failure, reason: {1}", MainDict, e.Message);
+                Debug.Fail(string.Format("{0} load failure, reason: {1}", MainDict, e.Message));
             }
             catch (FormatException fe)
             {
-                Console.Error.WriteLine(fe.Message);
+                Debug.Fail(fe.Message);
             }
         }
 
