@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -24,6 +25,27 @@ namespace JiebaNet.Segmenter.Common
         #endregion
 
         #region String & Text
+
+        public static string Left(this string s, int endIndex)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return s;
+            }
+
+            return s.Substring(0, endIndex);
+        }
+
+        public static string Right(this string s, int startIndex)
+        {
+            if (string.IsNullOrEmpty(s))
+            {
+                return s;
+            }
+
+
+            return s.Substring(startIndex);
+        }
 
         public static string Sub(this string s, int startIndex, int endIndex)
         {

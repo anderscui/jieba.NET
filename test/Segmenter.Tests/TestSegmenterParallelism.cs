@@ -72,6 +72,9 @@ namespace JiebaNet.Segmenter.Tests
             var seg = GetParalellSegmenter();
             var s = "小明最近在学习机器学习和自然语言处理";
 
+            // TODO: affected by other test cases
+            seg.DeleteWord("机器学习");
+
             var segments = seg.Cut(s);
             Assert.That(segments, Contains.Item("机器"));
             Assert.That(segments, Contains.Item("学习"));

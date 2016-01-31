@@ -9,3 +9,6 @@
 
 更多细节请参考[wikipedia - Newline](https://en.wikipedia.org/wiki/Newline).
 
+# Spell Checker
+
+参考[How to Write a Spelling Corrector by Peter Norvig](http://norvig.com/spell-correct.html)
