@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests.FCL

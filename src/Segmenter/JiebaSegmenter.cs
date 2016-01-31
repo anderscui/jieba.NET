@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using JiebaNet.Segmenter.Common;
 using JiebaNet.Segmenter.FinalSeg;
 
 namespace JiebaNet.Segmenter
@@ -34,14 +35,12 @@ namespace JiebaNet.Segmenter
 
         #endregion
 
-        public JiebaSegmenter()
+        internal bool IsParallelEnabled { get; private set; }
+
+        public JiebaSegmenter(bool enableParallel = false)
         {
             UserWordTagTab = new Dictionary<string, string>();
-        }
-
-        private Func<string, IEnumerable<string>> GetCutMethod(bool cutAll = false, bool hmm = true)
-        {
-            return null;
+            IsParallelEnabled = enableParallel;
         }
 
         /// <summary>
@@ -77,8 +76,19 @@ namespace JiebaNet.Segmenter
                 cutMethod = CutDagWithoutHmm;
             }
 
-            // TODO: make it parallelly.
-            return CutIt(text, cutMethod, reHan, reSkip, cutAll);
+            if (IsParallelEnabled)
+            {
+                var parts = text.SplitLines();
+                var segmented = (from part in parts.AsParallel().AsOrdered()
+                                 select CutIt(part, cutMethod, reHan, reSkip, cutAll))
+                                 .SelectMany(segs => segs)
+                                 .ToList();
+                return segmented;
+            }
+            else
+            {
+                return CutIt(text, cutMethod, reHan, reSkip, cutAll);
+            }
         }
 
         public IEnumerable<string> CutForSearch(string text, bool hmm = true)

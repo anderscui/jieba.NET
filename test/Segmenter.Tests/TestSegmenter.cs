@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests
@@ -169,10 +170,10 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
-        [Ignore]
+        [Ignore("")]
         public void TestCutAllSpecialWords()
         {
-            // TODO: Open this test case after confirming with jieba py.
+            // TODO: Enable this test case after confirming with jieba py.
             var seg = new JiebaSegmenter();
             seg.AddWord(".NET");
             seg.AddWord("U.S.A.");

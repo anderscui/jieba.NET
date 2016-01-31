@@ -45,7 +45,7 @@
   <ItemGroup>
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="Extensions.cs" />
+    <Compile Include="Common\Extensions.cs" />
     <Compile Include="FinalSeg\IFinalSeg.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pair.cs" />

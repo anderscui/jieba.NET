@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using JiebaNet.Segmenter.Common;
 using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.PosSeg

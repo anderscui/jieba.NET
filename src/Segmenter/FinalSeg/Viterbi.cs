@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using JiebaNet.Segmenter.Common;
 using Newtonsoft.Json;
 
 namespace JiebaNet.Segmenter.FinalSeg

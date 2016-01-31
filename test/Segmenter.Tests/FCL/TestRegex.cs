@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests.FCL
@@ -64,6 +63,47 @@ namespace JiebaNet.Segmenter.Tests.FCL
             Assert.That(mat.Groups["freq"].Value.Trim(), Is.EqualTo(""));
             Assert.That(mat.Groups["tag"].Value.Trim(), Is.EqualTo(""));
             CollectionAssert.AreEqual(mat.Groups.SubGroupValues(), new [] { "Steve Jobs", "", "" });
+        }
+
+        [TestCase]
+        public void TestSplitLines_EmptyString()
+        {
+            var s = string.Empty;
+            var lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(1));
+            Assert.That(lines[0], Is.EqualTo(string.Empty));
+        }
+
+        [TestCase]
+        public void TestSplitLines_Consistent_Newline()
+        {
+            var s = "a\r\nb\r\nc";
+            var lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(5));
+
+            s = "a\nb\nc";
+            lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(5));
+
+            s = "a\rb\rc";
+            lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(5));
+        }
+
+        [TestCase]
+        public void TestSplitLines_Inconsistent_Newline()
+        {
+            var s = "a\r\nb\nc\rd";
+            var lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(7));
+
+            s = "a\nb\rc";
+            lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(5));
+
+            s = "a\rb\nc";
+            lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(5));
         }
     }
 }
