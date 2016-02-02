@@ -10,6 +10,21 @@ namespace JiebaNet.Segmenter.Common
         private static readonly Regex RegexDigits = new Regex(@"\d+", RegexOptions.Compiled);
         private static readonly Regex RegexNewline = new Regex("(\r\n|\n|\r)", RegexOptions.Compiled);
 
+        #region Objects
+
+        public static bool IsNull(this object obj)
+        {
+            return obj == null;
+        }
+
+        public static bool IsNotNull(this object obj)
+        {
+            return obj != null;
+        }
+
+        #endregion
+
+
         #region Enumerable
 
         public static bool IsEmpty<T>(this IEnumerable<T> enumerable)

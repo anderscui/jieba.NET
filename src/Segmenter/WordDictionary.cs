@@ -24,7 +24,7 @@ namespace JiebaNet.Segmenter
         {
             LoadDict();
 
-            Debug.WriteLine("{0} words", Trie.Count);
+            Debug.WriteLine("{0} words (and their prefixes)", Trie.Count);
             Debug.WriteLine("total freq: {0}", Total);
         }
 
