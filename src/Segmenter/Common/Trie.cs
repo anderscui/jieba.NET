@@ -85,7 +85,7 @@ namespace JiebaNet.Segmenter.Common
     {
         private static readonly char RootChar = '\0';
 
-        private readonly TrieNode Root;
+        internal TrieNode Root;
 
         public int Count { get; private set; }
         public int TotalFrequency { get; private set; }
@@ -134,7 +134,7 @@ namespace JiebaNet.Segmenter.Common
             return i;
         }
 
-        public IEnumerable<char> NextCharsOf(string prefix)
+        public IEnumerable<char> ChildChars(string prefix)
         {
             var node = Root.Search(prefix.Trim(), 0);
             return node.IsNull() || node.Children.IsNull() ? null : node.Children.Select(p => p.Key);

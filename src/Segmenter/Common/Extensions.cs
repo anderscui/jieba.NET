@@ -37,6 +37,11 @@ namespace JiebaNet.Segmenter.Common
             return (enumerable != null) && enumerable.Any();
         }
 
+        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key)
+        {
+            return d.ContainsKey(key) ? d[key] : default(TValue);
+        }
+
         #endregion
 
         #region String & Text
