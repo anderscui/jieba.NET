@@ -66,6 +66,7 @@
     <Compile Include="TestSegmenter.cs" />
     <Compile Include="TestSpellChecker.cs" />
     <Compile Include="TestTextRankExtractor.cs" />
+    <Compile Include="TestDictStats.cs" />
     <Compile Include="TestTfidfExtractor.cs" />
   </ItemGroup>
   <ItemGroup>

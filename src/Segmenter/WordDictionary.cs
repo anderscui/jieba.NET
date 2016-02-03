@@ -13,7 +13,7 @@ namespace JiebaNet.Segmenter
         private static readonly Lazy<WordDictionary> lazy = new Lazy<WordDictionary>(() => new WordDictionary());
         private static readonly string MainDict = ConfigManager.MainDictFile;
 
-        public IDictionary<string, int> Trie = new Dictionary<string, int>();
+        internal IDictionary<string, int> Trie = new Dictionary<string, int>();
 
         /// <summary>
         /// total occurrence of all words.

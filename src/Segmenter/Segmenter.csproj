@@ -47,6 +47,7 @@
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Common\Extensions.cs" />
+    <Compile Include="DefaultDictionary.cs" />
     <Compile Include="FinalSeg\IFinalSeg.cs" />
     <Compile Include="Node.cs" />
     <Compile Include="Pair.cs" />
