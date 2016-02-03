@@ -12,7 +12,7 @@ namespace JiebaNet.Segmenter.Tests
     [TestFixture]
     public class TestSpellChecker
     {
-        // 控制中心，不列，一目了然
+        // 控制中心，不列，一目了然，奋振心人
         [TestCase]
         public void TestGetEdits1()
         {
@@ -43,7 +43,7 @@ namespace JiebaNet.Segmenter.Tests
         public void TestSuggests()
         {
             var checker = new SpellChecker();
-            var word = "振奋心人";
+            var word = "小不列颠";
             var suggests = checker.Suggests(word);
             foreach (var suggest in suggests)
             {
