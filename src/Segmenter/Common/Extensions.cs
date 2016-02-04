@@ -42,6 +42,23 @@ namespace JiebaNet.Segmenter.Common
             return d.ContainsKey(key) ? d[key] : default(TValue);
         }
 
+        public static TValue GetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
+        {
+            if (dict.ContainsKey(key))
+            {
+                return dict[key];
+            }
+            return defaultValue;
+        }
+
+        public static void Update<TKey, TValue>(this IDictionary<TKey, TValue> dict, IDictionary<TKey, TValue> other)
+        {
+            foreach (var key in other.Keys)
+            {
+                dict[key] = other[key];
+            }
+        }
+
         #endregion
 
         #region String & Text
@@ -80,23 +97,6 @@ namespace JiebaNet.Segmenter.Common
         public static string[] SplitLines(this string s)
         {
             return RegexNewline.Split(s);
-        }
-
-        public static TValue GetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
-        {
-            if (dict.ContainsKey(key))
-            {
-                return dict[key];
-            }
-            return defaultValue;
-        }
-
-        public static void Update<TKey, TValue>(this IDictionary<TKey, TValue> dict, IDictionary<TKey, TValue> other)
-        {
-            foreach (var key in other.Keys)
-            {
-                dict[key] = other[key];
-            }
         }
 
         public static string Join(this IEnumerable<string> inputs, string separator = ", ")

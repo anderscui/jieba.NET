@@ -52,7 +52,7 @@ namespace JiebaNet.Analyser
                 outSum[pair.Key] = pair.Value.Sum(e => e.Weight);
             }
 
-            // 10 iterations
+            // TODO: 10 iterations?
             var sortedKeys = Graph.Keys.OrderBy(k => k);
             for (var i = 0; i < 10; i++)
             {
