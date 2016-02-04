@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using JiebaNet.Analyser;
 using JiebaNet.Segmenter.Common;
 using JiebaNet.Segmenter.Spelling;
 using NUnit.Framework;
@@ -12,7 +10,7 @@ namespace JiebaNet.Segmenter.Tests
     [TestFixture]
     public class TestSpellChecker
     {
-        // 控制中心，不列，一目了然，奋振心人
+        //test: 控制重心，不列，一目了然，奋振心人
         [TestCase]
         public void TestGetEdits1()
         {
@@ -24,19 +22,6 @@ namespace JiebaNet.Segmenter.Tests
             {
                 Console.WriteLine(edit);
             }
-
-            //var edits2 = checker.GetKnownEdits2(s);
-            //foreach (var e2 in edits2)
-            //{
-            //    Console.WriteLine(e2);
-            //}
-            //Console.WriteLine("-----");
-
-            //var sugguests = checker.Suggests(s);
-            //foreach (var sugguest in sugguests)
-            //{
-            //    Console.WriteLine(sugguest);
-            //}
         }
 
         [Test]

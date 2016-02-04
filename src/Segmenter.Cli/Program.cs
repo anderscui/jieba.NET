@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using CommandLine;
+using JiebaNet.Segmenter.PosSeg;
 
 namespace JiebaNet.Segmenter.Cli
 {
@@ -14,20 +16,17 @@ namespace JiebaNet.Segmenter.Cli
         [Option('v', "version")]
         public bool ShowVersion { get; set; }
 
-        [Option('f', "file")]
+        [Option('f', "file", Required = true)]
         public string FileName { get; set; }
 
-        [Option('l', "delimiter", DefaultValue = "/")]
+        [Option('d', "delimiter", DefaultValue = "/ ")]
         public string Delimiter { get; set; }
 
         [Option('p', "pos")]
-        public string POS { get; set; }
+        public bool POS { get; set; }
 
-        [Option('D', "dict")]
-        public string Dict { get; set; }
-
-        [Option('u', "user-dict")]
-        public string UserDict { get; set; }
+        //[Option('u', "user-dict")]
+        //public string UserDict { get; set; }
 
         [Option('a', "cut-all")]
         public bool CutAll { get; set; }
@@ -35,8 +34,8 @@ namespace JiebaNet.Segmenter.Cli
         [Option('n', "no-hmm")]
         public bool NoHmm { get; set; }
 
-        [Option('q', "quiet")]
-        public bool Quiet { get; set; }
+        //[Option('q', "quiet")]
+        //public bool Quiet { get; set; }
 
         [ParserState]
         public IParserState LastParserState { get; set; }
@@ -45,10 +44,24 @@ namespace JiebaNet.Segmenter.Cli
         public string GetUsage()
         {
             var usage = new StringBuilder();
-            usage.AppendLine("jieba.NET command line tool.");
-            usage.AppendLine("-f \t --file \t specify the file name.");
+            usage.AppendLine();
+            usage.AppendLine("jieba.NET options and parameters: ");
+            usage.AppendLine();
+            usage.AppendLine("-f \t --file \t the file name, required.");
+            usage.AppendLine();
+            usage.AppendLine("-d \t --delimiter \t the delimiter between tokens, default: / .");
+            usage.AppendLine("-a \t --cut-all \t use cut_all mode.");
+            usage.AppendLine("-n \t --no-hmm \t don't use HMM.");
+            usage.AppendLine("-p \t --pos \t enable POS tagging.");
+
+
             usage.AppendLine("-v \t --version \t show version info.");
             usage.AppendLine("-h \t --help \t show help details.");
+            usage.AppendLine();
+            usage.AppendLine("sample usages: ");
+            usage.AppendLine("$ jiebanet -f input.txt > output.txt");
+            usage.AppendLine("$ jiebanet -d | -f input.txt > output.txt");
+            usage.AppendLine("$ jiebanet -p -f input.txt > output.txt");
 
             return usage.ToString();
         }
@@ -81,10 +94,6 @@ namespace JiebaNet.Segmenter.Cli
 
                 SegmentFile(options);
             }
-            //else
-            //{
-            //    Console.WriteLine(options.GetUsage());
-            //}
         }
 
         private static void SegmentFile(Options options)
@@ -94,11 +103,25 @@ namespace JiebaNet.Segmenter.Cli
             var fileName = Path.GetFullPath(options.FileName);
             var lines = File.ReadAllLines(fileName);
 
+            Func<string, bool, bool, IEnumerable<string>> cutMethod = null;
             var segmenter = new JiebaSegmenter();
-            var delimiter = string.IsNullOrWhiteSpace(options.Delimiter) ? "/" : options.Delimiter;
+            if (options.POS)
+            {
+                cutMethod = (text, cutAll, hmm) =>
+                {
+                    var posSeg = new PosSegmenter(segmenter);
+                    return posSeg.Cut(text, hmm).Select(token => string.Format("{0}/{1}", token.Word, token.Flag));
+                };
+            }
+            else
+            {
+                cutMethod = segmenter.Cut;
+            }
+
+            var delimiter = string.IsNullOrWhiteSpace(options.Delimiter) ? "/ " : options.Delimiter;
             foreach (var line in lines)
             {
-                result.Add(string.Join(delimiter, segmenter.Cut(line)));
+                result.Add(string.Join(delimiter, cutMethod(line, options.CutAll, options.NoHmm)));
             }
             Console.WriteLine(string.Join(Environment.NewLine, result));
         }
