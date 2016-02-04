@@ -1,6 +1,8 @@
 jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C#实现）。
 
-当前版本为0.37.1，基于jieba 0.37，目标是提供与jieba一致的功能与接口，但以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+当前版本为0.38，基于jieba 0.38，提供与jieba一致的功能与接口，以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+
+如果您在开发中遇到与分词有关的需求或困难，请提交一个Issue，I see u:)
 
 ## 特点
 
@@ -197,3 +199,20 @@ jieba分词亦提供了其它的词典文件：
 * 全模式：2.5 MB/s
 * 精确模式：1.1 MB/s
 * 测试环境： Intel(R) Core(TM) i3-2120 CPU @ 3.30GHz；围城.txt（734KB）
+
+### 10. 命令行分词
+
+Segmenter.Cli项目build之后得到jiebanet.ext，它的选项和实例用法如下：
+
+-f       --file          the file name, (必要的).
+-d       --delimiter     the delimiter between tokens, default: / .
+-a       --cut-all       use cut_all mode.
+-n       --no-hmm        don't use HMM.
+-p       --pos           enable POS tagging.
+-v       --version       show version info.
+-h       --help          show help details.
+
+sample usages:
+$ jiebanet -f input.txt > output.txt
+$ jiebanet -d | -f input.txt > output.txt
+$ jiebanet -p -f input.txt > output.txt

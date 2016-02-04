@@ -1,16 +1,19 @@
 1. Deploy dicts with dlls?
-2. Solution structure - clearer for open source project
-3. Spell check and suggests
-5. News Classification
+2. Spell check and suggests
+3. News Classification
+4. Synonyms
+5. Parallel
 
 Misc
-1. synchronization;
-2. cache;
-4. jieba.pool;
-5. other dict files;
-6. multiple english words (e.g. Steve Jobs)
-7. named entity recognition
-8. new word recognition
-10. logging
-11. Pinyin
-12. Remove Console.WriteLine output, use Debug instead
+1. cache;
+2. other dict files;
+3. multiple english words (e.g. Steve Jobs)
+4. named entity recognition
+5. new word recognition
+6. logging
+7. Pinyin
+8. Simplified <-> Traditional
+
+Ideas
+1. [linggle](http://linggle.com/)
+2. gensim
