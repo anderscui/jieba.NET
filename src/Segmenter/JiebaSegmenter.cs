@@ -35,12 +35,9 @@ namespace JiebaNet.Segmenter
 
         #endregion
 
-        internal bool IsParallelEnabled { get; private set; }
-
-        public JiebaSegmenter(bool enableParallel = false)
+        public JiebaSegmenter()
         {
             UserWordTagTab = new Dictionary<string, string>();
-            IsParallelEnabled = enableParallel;
         }
 
         /// <summary>
@@ -76,19 +73,7 @@ namespace JiebaNet.Segmenter
                 cutMethod = CutDagWithoutHmm;
             }
 
-            if (IsParallelEnabled)
-            {
-                var parts = text.SplitLines();
-                var segmented = (from part in parts.AsParallel().AsOrdered()
-                                 select CutIt(part, cutMethod, reHan, reSkip, cutAll))
-                                 .SelectMany(segs => segs)
-                                 .ToList();
-                return segmented;
-            }
-            else
-            {
-                return CutIt(text, cutMethod, reHan, reSkip, cutAll);
-            }
+            return CutIt(text, cutMethod, reHan, reSkip, cutAll);
         }
 
         public IEnumerable<string> CutForSearch(string text, bool hmm = true)
@@ -176,11 +161,6 @@ namespace JiebaNet.Segmenter
             }
 
             return result;
-        }
-
-        public IEnumerable<string> CutParallelly()
-        {
-            return null;
         }
 
         #region Internal Cut Methods

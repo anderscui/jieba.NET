@@ -7,6 +7,7 @@ using NUnit.Framework;
 namespace JiebaNet.Segmenter.Tests
 {
     [TestFixture]
+    [Ignore("Not implemented yet.")]
     public class TestSegmenterParallelism
     {
         private string[] GetTestSentences()
@@ -16,7 +17,7 @@ namespace JiebaNet.Segmenter.Tests
 
         private JiebaSegmenter GetParalellSegmenter()
         {
-            return new JiebaSegmenter(enableParallel: true);
+            return new JiebaSegmenter();
         }
 
         [TestCase]
