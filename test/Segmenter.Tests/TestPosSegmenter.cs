@@ -40,6 +40,18 @@ namespace JiebaNet.Segmenter.Tests
             Console.WriteLine(result);
         }
 
+        [TestCase]
+        public void TestNewords()
+        {
+            //var text = "元祐";
+            var text = "整併";
+            var posSeg = new PosSegmenter();
+            var tokens = posSeg.Cut(text);
+            var result = string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag)));
+            Console.WriteLine(result);
+
+        }
+
         #region Private Helpers
 
         private void TestCutFunction(Func<string, bool, IEnumerable<Pair>> method,

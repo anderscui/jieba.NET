@@ -98,5 +98,24 @@ namespace JiebaNet.Segmenter.Tests
                 Console.WriteLine(tag);
             }
         }
+
+        [TestCase]
+        public void TestSpecialChars()
+        {
+            //var text = @"整併";
+            var text = @"测策";
+            var extractor = new TfidfExtractor();
+            var keywords = extractor.ExtractTags(text, 10, Constants.NounPos);
+            foreach (var keyword in keywords)
+            {
+                Console.WriteLine(keyword);
+            }
+
+            keywords = extractor.ExtractTags(text, 10, Constants.VerbPos);
+            foreach (var keyword in keywords)
+            {
+                Console.WriteLine(keyword);
+            }
+        }
     }
 }

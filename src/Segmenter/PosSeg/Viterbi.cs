@@ -123,13 +123,17 @@ namespace JiebaNet.Segmenter.PosSeg
                 {
                     var emp = _emitProbs[y].GetDefault(sentence[i], Constants.MinProb);
 
-                    var prob = Constants.MinProb;
+                    var prob = double.MinValue;
                     var state = string.Empty;
+
                     foreach (var y0 in prevStates)
                     {
-                        var tranp = _transProbs[y0].GetDefault(y, Constants.MinProb);
+                        var tranp = _transProbs[y0].GetDefault(y, double.MinValue);
                         tranp = v[i - 1][y0] + tranp + emp;
-                        if (prob <= tranp)
+                        // TODO: compare two very small values;
+                        // TODO: how to deal with negative infinity
+                        if (prob < tranp ||
+                            (prob == tranp && string.Compare(state, y0, StringComparison.InvariantCulture) < 0))
                         {
                             prob = tranp;
                             state = y0;
@@ -146,7 +150,9 @@ namespace JiebaNet.Segmenter.PosSeg
             var endState = string.Empty;
             foreach (var endPoint in last)
             {
-                if (endProb <= endPoint.Prob)
+                // TODO: compare two very small values;
+                if (endProb < endPoint.Prob || 
+                    (endProb == endPoint.Prob && String.Compare(endState, endPoint.State, StringComparison.InvariantCulture) < 0))
                 {
                     endProb = endPoint.Prob;
                     endState = endPoint.State;
