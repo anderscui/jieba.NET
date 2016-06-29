@@ -70,6 +70,8 @@ namespace JiebaNet.Segmenter.Tests
             }
         }
 
+        #region Jieba Python Test Cases
+
         [TestCase]
         public void TestCut()
         {
@@ -99,6 +101,8 @@ namespace JiebaNet.Segmenter.Tests
         {
             TestCutSearchFunction((new JiebaSegmenter()).CutForSearch, false, @"Cases\cut_search_no_hmm.txt");
         }
+
+        #endregion
 
         [TestCase]
         public void TestTokenize()
@@ -231,6 +235,21 @@ namespace JiebaNet.Segmenter.Tests
             {
                 Console.WriteLine(part);
             }
+        }
+
+        [TestCase]
+        [Category("Issue")]
+        public void TestEnglishWordsCut()
+        {
+            var seg = new JiebaSegmenter();
+            var text = "HighestDegree";
+            CollectionAssert.AreEqual(new[] { text }, seg.Cut(text));
+            text = "HelloWorld";
+            CollectionAssert.AreEqual(new[] { text }, seg.Cut(text));
+            text = "HelloWorldle";
+            CollectionAssert.AreEqual(new[] { text }, seg.Cut(text));
+            text = "HelloWorldlee";
+            CollectionAssert.AreEqual(new[] { text }, seg.Cut(text));
         }
 
         #region Private Helpers

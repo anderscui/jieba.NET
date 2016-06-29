@@ -19,9 +19,16 @@ namespace JiebaNet.Analyser
         private IDictionary<string, double> IdfFreq { get; set; }
         private double MedianIdf { get; set; }
 
-        public TfidfExtractor()
+        public TfidfExtractor(JiebaSegmenter segmenter = null)
         {
-            Segmenter = new JiebaSegmenter();
+            if (segmenter.IsNull())
+            {
+                Segmenter = new JiebaSegmenter();
+            }
+            else
+            {
+                Segmenter = segmenter;
+            }
             PosSegmenter = new PosSegmenter(Segmenter);
             SetStopWords(ConfigManager.StopWordsFile);
             if (StopWords.IsEmpty())
