@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\TestTrie.cs" />
+    <Compile Include="FCL\TestApp.cs" />
     <Compile Include="FCL\TestNumbers.cs" />
     <Compile Include="FCL\TestObjects.cs" />
     <Compile Include="FCL\TestEnumerable.cs" />

@@ -1,42 +1,51 @@
 ﻿using System.Configuration;
+using System.IO;
 
 namespace JiebaNet.Segmenter
 {
     public class ConfigManager
     {
+        public static string ConfigFileBaseDir
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
+            }
+        }
+
         public static string MainDictFile
         {
-            get { return ConfigurationManager.AppSettings["MainDictFile"] ?? @"Resources\dict.txt"; }
+            get { return Path.Combine(ConfigFileBaseDir, "dict.txt"); }
         }
 
         public static string ProbTransFile
         {
-            get { return ConfigurationManager.AppSettings["ProbTransFile"] ?? @"Resources\prob_trans.json"; }
+            get { return Path.Combine(ConfigFileBaseDir, "prob_trans.json"); }
         }
 
         public static string ProbEmitFile
         {
-            get { return ConfigurationManager.AppSettings["ProbEmitFile"] ?? @"Resources\prob_emit.json"; }
+            get { return Path.Combine(ConfigFileBaseDir, "prob_emit.json"); }
         }
 
         public static string PosProbStartFile
         {
-            get { return ConfigurationManager.AppSettings["PosProbStartFile"] ?? @"Resources\pos_prob_start.json"; }
+            get { return Path.Combine(ConfigFileBaseDir, "pos_prob_start.json"); }
         }
 
         public static string PosProbTransFile
         {
-            get { return ConfigurationManager.AppSettings["PosProbTransFile"] ?? @"Resources\pos_prob_trans.json"; }
+            get { return Path.Combine(ConfigFileBaseDir, "pos_prob_trans.json"); }
         }
 
         public static string PosProbEmitFile
         {
-            get { return ConfigurationManager.AppSettings["PosProbEmitFile"] ?? @"Resources\pos_prob_emit.json"; }
+            get { return Path.Combine(ConfigFileBaseDir, "pos_prob_emit.json"); }
         }
 
         public static string CharStateTabFile
         {
-            get { return ConfigurationManager.AppSettings["CharStateTabFile"] ?? @"Resources\char_state_tab.json"; }
+            get { return Path.Combine(ConfigFileBaseDir, "char_state_tab.json"); }
         }
     }
 }
