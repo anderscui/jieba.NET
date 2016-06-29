@@ -1,6 +1,6 @@
 jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C#实现）。
 
-当前版本为0.38，基于jieba 0.38，提供与jieba一致的功能与接口，以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+当前版本为0.38.1，基于jieba 0.38，提供与jieba一致的功能与接口，以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
 
 如果您在开发中遇到与分词有关的需求或困难，请提交一个Issue，I see u:)
 
@@ -32,19 +32,14 @@ PM> Install-Package jieba.NET
 
 ```xml
 <appSettings>
-    <add key="MainDictFile" value="Resources\dict.txt" />
-    <add key="ProbTransFile" value="Resources\prob_trans.json" />
-    <add key="ProbEmitFile" value="Resources\prob_emit.json" />
-
-    <add key="PosProbStartFile" value="Resources\pos_prob_start.json" />
-    <add key="PosProbTransFile" value="Resources\pos_prob_trans.json" />
-    <add key="PosProbEmitFile" value="Resources\pos_prob_emit.json" />
-    <add key="CharStateTabFile" value="Resources\char_state_tab.json" />
-
-    <add key="StopWordsFile" value="Resources\stopwords.txt" />
-    <add key="IdfFile" value="Resources\idf.txt" />
+    <add key="JiebaConfigFileDir" value="C:\jiebanet\config" />
 </appSettings>
 ```
+
+需要注意的是，如果使用绝对路径，那么WinForms和Web应用都可以使用；如果使用相对路径，则需要检查这个路径是否与设想的一致。
+
+* 配置示例：采用如上配置项时，主词典的路径会拼接为：C:\jiebanet\config\dict.txt。
+* 如果不添加任何配置项，那么默认值是**相对路径：Resources**，与之前的版本保持一致。
 
 ## 主要功能
 
@@ -204,6 +199,7 @@ jieba分词亦提供了其它的词典文件：
 
 Segmenter.Cli项目build之后得到jiebanet.ext，它的选项和实例用法如下：
 
+```shell
 -f       --file          the file name, (必要的).
 -d       --delimiter     the delimiter between tokens, default: / .
 -a       --cut-all       use cut_all mode.
@@ -216,3 +212,4 @@ sample usages:
 $ jiebanet -f input.txt > output.txt
 $ jiebanet -d | -f input.txt > output.txt
 $ jiebanet -p -f input.txt > output.txt
+```
