@@ -41,15 +41,22 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
+        [Category("Issue")]
         public void TestNewords()
         {
-            //var text = "元祐";
-            var text = "整併";
+            var text = "元祐";
+            TestPosSegmenterCut(text);
+
+            text = "整併整併整併整併";
+            TestPosSegmenterCut(text);
+        }
+
+        private static void TestPosSegmenterCut(string text)
+        {
             var posSeg = new PosSegmenter();
             var tokens = posSeg.Cut(text);
             var result = string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag)));
             Console.WriteLine(result);
-
         }
 
         #region Private Helpers

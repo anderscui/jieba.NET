@@ -100,10 +100,11 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
-        public void TestSpecialChars()
+        [Category("Issue")]
+        public void TestIssues()
         {
-            //var text = @"整併";
-            var text = @"测策";
+            // case 1
+            var text = @"整併";
             var extractor = new TfidfExtractor();
             var keywords = extractor.ExtractTags(text, 10, Constants.NounPos);
             foreach (var keyword in keywords)
@@ -112,6 +113,14 @@ namespace JiebaNet.Segmenter.Tests
             }
 
             keywords = extractor.ExtractTags(text, 10, Constants.VerbPos);
+            foreach (var keyword in keywords)
+            {
+                Console.WriteLine(keyword);
+            }
+
+            // case 2:
+            text = "開発支援工具FLEXITE";
+            keywords = extractor.ExtractTags(text, 10, Constants.NounPos);
             foreach (var keyword in keywords)
             {
                 Console.WriteLine(keyword);

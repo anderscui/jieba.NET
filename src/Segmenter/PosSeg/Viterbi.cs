@@ -146,7 +146,7 @@ namespace JiebaNet.Segmenter.PosSeg
 
             var vLast = v.Last();
             var last = memPath.Last().Keys.Select(y => new {State = y, Prob = vLast[y]});
-            var endProb = Constants.MinProb;
+            var endProb = double.MinValue;
             var endState = string.Empty;
             foreach (var endPoint in last)
             {
