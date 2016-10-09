@@ -21,6 +21,10 @@ namespace JiebaNet.Segmenter.Tests.FCL
             p = @"C:\test.txt";
             Assert.That(Path.IsPathRooted(p), Is.True);
             Console.WriteLine(Path.GetFullPath(p));
+
+            p = @"c:\a\b\c\..\test.txt";
+            Assert.That(Path.IsPathRooted(p), Is.True);
+            Console.WriteLine(Path.GetFullPath(p));
         }
 
         [TestCase]

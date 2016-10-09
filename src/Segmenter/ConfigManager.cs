@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 
 namespace JiebaNet.Segmenter
@@ -9,7 +10,13 @@ namespace JiebaNet.Segmenter
         {
             get
             {
-                return ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
+                var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
+                if (!Path.IsPathRooted(configFileDir))
+                {
+                    var domainDir = AppDomain.CurrentDomain.BaseDirectory;
+                    configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
+                }
+                return configFileDir;
             }
         }
 
