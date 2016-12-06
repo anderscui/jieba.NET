@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Segmenter")]
+[assembly: AssemblyTitle("JiebaNet.Segmenter")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("mathackers.com")]
+[assembly: AssemblyCompany("andersc")]
 [assembly: AssemblyProduct("JiebaSegmenter")]
-[assembly: AssemblyCopyright("Copyright © mathackers.com 2015")]
+[assembly: AssemblyCopyright("Copyright © andersc 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: InternalsVisibleTo("JiebaNet.Segmenter.Tests")]
@@ -33,5 +33,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.38.0.0")]
-[assembly: AssemblyFileVersion("0.38.0.0")]
+[assembly: AssemblyVersion("0.38.3.0")]
+[assembly: AssemblyFileVersion("0.38.3.0")]
