@@ -1,16 +1,22 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 
 namespace JiebaNet.Analyser
 {
     public class ConfigManager
     {
-        // TODO: duplicate codes.
         public static string ConfigFileBaseDir
         {
             get
             {
-                return ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
+                var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
+                if (!Path.IsPathRooted(configFileDir))
+                {
+                    var domainDir = AppDomain.CurrentDomain.BaseDirectory;
+                    configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
+                }
+                return configFileDir;
             }
         }
 

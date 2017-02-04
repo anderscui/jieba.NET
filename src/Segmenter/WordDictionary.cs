@@ -58,9 +58,11 @@ namespace JiebaNet.Segmenter
                         Trie[word] = freq;
                         Total += freq;
 
-                        foreach (var ch in Enumerable.Range(0, word.Length))
+                        if (word.Length < 2) { continue; }
+
+                        foreach (var ch in Enumerable.Range(1, word.Length - 1))
                         {
-                            var wfrag = word.Sub(0, ch + 1);
+                            var wfrag = word.Sub(0, ch);
                             if (!Trie.ContainsKey(wfrag))
                             {
                                 Trie[wfrag] = 0;
