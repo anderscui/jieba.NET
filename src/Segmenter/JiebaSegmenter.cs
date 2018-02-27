@@ -342,7 +342,7 @@ namespace JiebaNet.Segmenter
             var blocks = reHan.Split(text);
             foreach (var blk in blocks)
             {
-                if (string.IsNullOrWhiteSpace(blk))
+                if (string.IsNullOrEmpty(blk))
                 {
                     continue;
                 }
