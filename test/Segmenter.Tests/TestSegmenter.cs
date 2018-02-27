@@ -119,6 +119,9 @@ namespace JiebaNet.Segmenter.Tests
             {
                 Console.WriteLine(token);
             }
+
+            seg.DeleteWord("机器学习");
+            seg.DeleteWord("自然语言处理");
         }
 
         private static void TestCutThenPrint(JiebaSegmenter segmenter, string s)
@@ -140,6 +143,30 @@ namespace JiebaNet.Segmenter.Tests
             segments = seg.Cut(s);
             Assert.That(segments, Contains.Item("机器学习"));
             Assert.That(segments, Is.Not.Contains("机器"));
+
+            // reset dict otherwise other test cases would be affected.
+            seg.DeleteWord("机器学习");
+        }
+
+        [TestCase]
+        public void TestDeleteWord()
+        {
+            var seg = new JiebaSegmenter();
+            var s = "小明最近在学习机器学习和自然语言处理";
+
+            var segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("机器"));
+            Assert.That(segments, Is.Not.Contains("机器学习"));
+
+            seg.AddWord("机器学习");
+            segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("机器学习"));
+            Assert.That(segments, Is.Not.Contains("机器"));
+
+            seg.DeleteWord("机器学习");
+            segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("机器"));
+            Assert.That(segments, Is.Not.Contains("机器学习"));
         }
 
         [TestCase]
@@ -235,6 +262,25 @@ namespace JiebaNet.Segmenter.Tests
             {
                 Console.WriteLine(part);
             }
+        }
+
+        [TestCase]
+        public void TestPercentages()
+        {
+            var seg = new JiebaSegmenter();
+            
+            var s = "看上去iphone8手机样式很赞,售价699美元,销量涨了5%么？";
+            var segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("5%"));
+            foreach (var sm in segments)
+            {
+                Console.WriteLine(sm);
+            }
+
+            s = "pi的值是3.14，这是99.99%的人都知道的。";
+            segments = seg.Cut(s);
+            Assert.That(segments, Contains.Item("3.14"));
+            Assert.That(segments, Contains.Item("99.99%"));
         }
 
         [TestCase]

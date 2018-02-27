@@ -1,3 +1,6 @@
+2018-02-27: version 0.39
+1. 修复百分数的切词;
+
 2016-06-29：version 0.38.2
 1. 资源文件的目录配置支持相对路径：https://github.com/anderscui/jieba.NET/issues/5；
 
