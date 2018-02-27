@@ -18,9 +18,9 @@ namespace JiebaNet.Analyser
 
         public int Span { get; set; }
 
-        public bool PairFilter(Pair wp)
+        public bool PairFilter(IEnumerable<string> allowPos, Pair wp)
         {
-            return DefaultPosFilter.Contains(wp.Flag)
+            return allowPos.Contains(wp.Flag)
                    && wp.Word.Trim().Length >= 2
                    && !StopWords.Contains(wp.Word.ToLower());
         }
@@ -71,7 +71,7 @@ namespace JiebaNet.Analyser
             for (var i = 0; i < words.Count(); i++)
             {
                 var wp = words[i];
-                if (PairFilter(wp))
+                if (PairFilter(allowPos, wp))
                 {
                     for (var j = i + 1; j < i + Span; j++)
                     {
@@ -79,7 +79,7 @@ namespace JiebaNet.Analyser
                         {
                             break;
                         }
-                        if (!PairFilter(words[j]))
+                        if (!PairFilter(allowPos, words[j]))
                         {
                             continue;
                         }
