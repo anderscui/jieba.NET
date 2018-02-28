@@ -36,8 +36,31 @@ namespace JiebaNet.Segmenter.Tests
         {
             var posSeg = new PosSegmenter();
             var tokens = posSeg.Cut("吉林的省会是长春");
-            var result = string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag)));
+            var result = string.Join(" ", tokens.Select(token => $"{token.Word}/{token.Flag}"));
             Console.WriteLine(result);
+        }
+
+        [TestCase]
+        public void TestAddWord()
+        {
+            var seg = new JiebaSegmenter();
+
+            var posSeg = new PosSegmenter(seg);
+            var tokens = posSeg.Cut("小明最近在学习自然语言处理").ToList();
+            var result = string.Join(" ", tokens.Select(token => $"{token.Word}/{token.Flag}"));
+            Console.WriteLine(result);
+            var lastToken = tokens.Last();
+            Assert.That(lastToken.Word, Is.EqualTo("处理"));
+
+            seg.AddWord("自然语言处理", tag: "n");
+            tokens = posSeg.Cut("小明最近在学习自然语言处理").ToList();
+            result = string.Join(" ", tokens.Select(token => $"{token.Word}/{token.Flag}"));
+            Console.WriteLine(result);
+            lastToken = tokens.Last();
+            Assert.That(lastToken.Word, Is.EqualTo("自然语言处理"));
+            Assert.That(lastToken.Flag, Is.EqualTo("n"));
+            
+            seg.DeleteWord("自然语言处理");
         }
 
         [TestCase]
@@ -55,7 +78,7 @@ namespace JiebaNet.Segmenter.Tests
         {
             var posSeg = new PosSegmenter();
             var tokens = posSeg.Cut(text);
-            var result = string.Join(" ", tokens.Select(token => string.Format("{0}/{1}", token.Word, token.Flag)));
+            var result = string.Join(" ", tokens.Select(token => $"{token.Word}/{token.Flag}"));
             Console.WriteLine(result);
         }
 

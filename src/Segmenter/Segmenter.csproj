@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Counter.cs" />
     <Compile Include="Common\Trie.cs" />
     <Compile Include="ConfigManager.cs" />
     <Compile Include="Constants.cs" />

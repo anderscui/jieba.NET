@@ -310,6 +310,21 @@ namespace JiebaNet.Segmenter.Tests
             CollectionAssert.AreEqual(new[] { text }, seg.Cut(text));
         }
 
+        [Test]
+        public void TestWordFreq()
+        {
+            var s = "此领域探讨如何处理及运用自然语言。自然语言生成系统把计算机数据转化为自然语言。自然语言理解系统把自然语言转化为计算机程序更易于处理的形式。";
+            var seg = new JiebaSegmenter();
+            var freqs = new Counter<string>(seg.Cut(s));
+            Assert.That(freqs.Total, Is.EqualTo(33));
+            Assert.That(freqs["自然语言"], Is.EqualTo(5));
+            Assert.That(freqs["领域"], Is.EqualTo(1));
+            foreach (var pair in freqs.MostCommon())
+            {
+                Console.WriteLine($"{pair.Key}: {pair.Value}");
+            }
+        }
+
         #region Private Helpers
 
         private void TestCutFunction(Func<string, bool, bool, IEnumerable<string>> method,
