@@ -313,13 +313,10 @@ namespace JiebaNet.Segmenter.Tests
         [Test]
         public void TestWordFreq()
         {
-            var s = "此领域探讨如何处理及运用自然语言。自然语言生成系统把计算机数据转化为自然语言。自然语言理解系统把自然语言转化为计算机程序更易于处理的形式。";
+            var s = "在数学和计算机科学之中，算法（algorithm）为任何良定义的具体计算步骤的一个序列，常用于计算、数据处理和自动推理。精确而言，算法是一个表示为有限长列表的有效方法。算法应包含清晰定义的指令用于计算函数。";
             var seg = new JiebaSegmenter();
             var freqs = new Counter<string>(seg.Cut(s));
-            Assert.That(freqs.Total, Is.EqualTo(33));
-            Assert.That(freqs["自然语言"], Is.EqualTo(5));
-            Assert.That(freqs["领域"], Is.EqualTo(1));
-            foreach (var pair in freqs.MostCommon())
+            foreach (var pair in freqs.MostCommon(5))
             {
                 Console.WriteLine($"{pair.Key}: {pair.Value}");
             }

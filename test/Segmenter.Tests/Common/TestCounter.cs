@@ -42,20 +42,20 @@ namespace JiebaNet.Segmenter.Tests.Common
         }
 
         [Test]
-        public void TestUpdateWithEnumerable()
+        public void TestAddWithEnumerable()
         {
             var counter = new Counter<char>("which");
             Assert.That(counter['h'], Is.EqualTo(2));
-            counter.Update("witch");
+            counter.Add("witch");
             Assert.That(counter['h'], Is.EqualTo(3));
         }
 
         [Test]
-        public void TestUpdateWithCounter()
+        public void TestAddWithCounter()
         {
             var counter = new Counter<char>("which");
             var counter2 = new Counter<char>("witch");
-            counter.Update(counter2);
+            counter.Add(counter2);
             Assert.That(counter['h'], Is.EqualTo(3));
         }
 
@@ -80,6 +80,20 @@ namespace JiebaNet.Segmenter.Tests.Common
         }
 
         [Test]
+        public void TestUnion()
+        {
+            var counter1 = new Counter<char>("abbb");
+            Assert.That(counter1.Count, Is.EqualTo(2));
+
+            var counter2 = new Counter<char>("bcc");
+            var counter = counter1.Union(counter2);
+            Assert.That(counter.Count, Is.EqualTo(3));
+            Assert.That(counter.Total, Is.EqualTo(6));
+            Assert.That(counter['b'], Is.EqualTo(3));
+            Assert.That(counter['c'], Is.EqualTo(2));
+        }
+
+        [Test]
         public void TestContains()
         {
             var counter = new Counter<char>("which");
@@ -97,7 +111,18 @@ namespace JiebaNet.Segmenter.Tests.Common
             counter.Remove('t');
             Assert.That(counter.Contains('t'), Is.False);
         }
-        
+
+        [Test]
+        public void TestClear()
+        {
+            var counter = new Counter<char>("which");
+            Assert.That(counter.Total, Is.EqualTo(5));
+
+            counter.Clear();
+            Assert.That(counter.Count, Is.EqualTo(0));
+            Assert.That(counter.Total, Is.EqualTo(0));
+        }
+
         [Test]
         public void TestMostCommon()
         {

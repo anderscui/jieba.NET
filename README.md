@@ -215,3 +215,27 @@ $ jiebanet -f input.txt > output.txt
 $ jiebanet -d | -f input.txt > output.txt
 $ jiebanet -p -f input.txt > output.txt
 ```
+
+### 11. 词频统计
+
+可以使用`Counter`类统计词频，其实现来自Python标准库的Counter类（具体接口和实现细节略有不同），用法大致是：
+
+```c#
+var s = "在数学和计算机科学之中，算法（algorithm）为任何良定义的具体计算步骤的一个序列，常用于计算、数据处理和自动推理。精确而言，算法是一个表示为有限长列表的有效方法。算法应包含清晰定义的指令用于计算函数。";
+var seg = new JiebaSegmenter();
+var freqs = new Counter<string>(seg.Cut(s));
+foreach (var pair in freqs.MostCommon(5))
+{
+    Console.WriteLine($"{pair.Key}: {pair.Value}");
+}
+```
+
+```
+的: 4
+，: 3
+算法: 3
+计算: 3
+。: 3
+```
+
+`Counter`类可通过`Add`，`Subtract`和`Union`方法进行修改，最后以`MostCommon`方法获得频率最高的若干词。具体用法可见测试用例。
