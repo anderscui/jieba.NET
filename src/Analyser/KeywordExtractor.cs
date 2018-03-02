@@ -29,6 +29,22 @@ namespace JiebaNet.Analyser
             }
         }
 
+        public void AddStopWord(string word)
+        {
+            if (!StopWords.Contains(word))
+            {
+                StopWords.Add(word.Trim());
+            }
+        }
+
+        public void AddStopWords(IEnumerable<string> words)
+        {
+            foreach (var word in words)
+            {
+                AddStopWord(word);
+            }
+        }
+
         public abstract IEnumerable<string> ExtractTags(string text, int count = 20, IEnumerable<string> allowPos = null);
         public abstract IEnumerable<WordWeightPair> ExtractTagsWithWeight(string text, int count = 20, IEnumerable<string> allowPos = null);
     }

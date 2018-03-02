@@ -21,14 +21,7 @@ namespace JiebaNet.Analyser
 
         public TfidfExtractor(JiebaSegmenter segmenter = null)
         {
-            if (segmenter.IsNull())
-            {
-                Segmenter = new JiebaSegmenter();
-            }
-            else
-            {
-                Segmenter = segmenter;
-            }
+            Segmenter = segmenter.IsNull() ? new JiebaSegmenter() : segmenter;
             PosSegmenter = new PosSegmenter(Segmenter);
             SetStopWords(ConfigManager.StopWordsFile);
             if (StopWords.IsEmpty())

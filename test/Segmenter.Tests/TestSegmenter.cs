@@ -316,6 +316,7 @@ namespace JiebaNet.Segmenter.Tests
             var s = "在数学和计算机科学之中，算法（algorithm）为任何良定义的具体计算步骤的一个序列，常用于计算、数据处理和自动推理。精确而言，算法是一个表示为有限长列表的有效方法。算法应包含清晰定义的指令用于计算函数。";
             var seg = new JiebaSegmenter();
             var freqs = new Counter<string>(seg.Cut(s));
+            // TODO: use stopwords.
             foreach (var pair in freqs.MostCommon(5))
             {
                 Console.WriteLine($"{pair.Key}: {pair.Value}");
