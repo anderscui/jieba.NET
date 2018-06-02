@@ -1,15 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{CAE0F06F-592A-4714-8494-6EA5D870F4F6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Docs", "_Docs", "{CAE0F06F-592A-4714-8494-6EA5D870F4F6}"
 	ProjectSection(SolutionItems) = preProject
 		docs\impl.md = docs\impl.md
 		docs\todo.md = docs\todo.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExtraDict", "ExtraDict", "{2111E414-9025-4BC6-94C3-0939D8E6DECF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_ExtraDict", "_ExtraDict", "{2111E414-9025-4BC6-94C3-0939D8E6DECF}"
 	ProjectSection(SolutionItems) = preProject
 		ExtraDicts\dict.txt.big = ExtraDicts\dict.txt.big
 		ExtraDicts\dict.txt.small = ExtraDicts\dict.txt.small
@@ -26,6 +26,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Cli", "src\Segmenter.Cli\Segmenter.Cli.csproj", "{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Tests", "test\Segmenter.Tests\Segmenter.Tests.csproj", "{77A71258-2175-4868-8539-D1EDFB5B7AB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Analyser", "Analyser", "{A29DAC77-54EC-4F53-B2FC-00EC1C1F7756}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Segmenter", "Segmenter", "{34362CA4-B5D3-4AD3-8175-5CC30F759966}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Segmenter.Cli", "Segmenter.Cli", "{BFF49920-7D2B-4EC0-BE7E-6931B22A0965}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Segmenter.Tests", "Segmenter.Tests", "{2DD67628-A661-4B69-9E5D-0FFA087EA201}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,5 +60,14 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E} = {34362CA4-B5D3-4AD3-8175-5CC30F759966}
+		{420C99CA-4DE4-4802-9129-B26C35786224} = {A29DAC77-54EC-4F53-B2FC-00EC1C1F7756}
+		{5F8AAB4D-D2BF-4DAD-B1DC-E60E9AFA174B} = {BFF49920-7D2B-4EC0-BE7E-6931B22A0965}
+		{77A71258-2175-4868-8539-D1EDFB5B7AB0} = {2DD67628-A661-4B69-9E5D-0FFA087EA201}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4CCA468F-C730-4AD0-8ADE-02B8CEA55AA2}
 	EndGlobalSection
 EndGlobal

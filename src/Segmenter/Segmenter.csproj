@@ -59,11 +59,7 @@
     <Compile Include="Spelling\SpellChecker.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="FinalSeg\Viterbi.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="WordDictionary.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="JiebaSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
