@@ -43,6 +43,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Cli.Net40", "lnks
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Segmenter.Tests.Net40", "test\Segmenter.Tests.Net40\Segmenter.Tests.Net40.csproj", "{0A7BD803-0022-487B-82B6-FA5BAC286549}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Analyser.Netstandard2", "lnks_netstandard2\Analyser\Analyser.Netstandard2.csproj", "{61D14BDD-96D8-424C-8CDA-08794CBA688A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Segmenter.Netstandard2", "lnks_netstandard2\Segmenter\Segmenter.Netstandard2.csproj", "{126E178C-D42B-45F2-ABE7-BB0B47EB5634}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +85,14 @@ Global
 		{0A7BD803-0022-487B-82B6-FA5BAC286549}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0A7BD803-0022-487B-82B6-FA5BAC286549}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0A7BD803-0022-487B-82B6-FA5BAC286549}.Release|Any CPU.Build.0 = Release|Any CPU
+		{61D14BDD-96D8-424C-8CDA-08794CBA688A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61D14BDD-96D8-424C-8CDA-08794CBA688A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61D14BDD-96D8-424C-8CDA-08794CBA688A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61D14BDD-96D8-424C-8CDA-08794CBA688A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{126E178C-D42B-45F2-ABE7-BB0B47EB5634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{126E178C-D42B-45F2-ABE7-BB0B47EB5634}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{126E178C-D42B-45F2-ABE7-BB0B47EB5634}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{126E178C-D42B-45F2-ABE7-BB0B47EB5634}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,6 +106,8 @@ Global
 		{D80C1357-9203-4488-AD2D-B1CE2CF25A71} = {34362CA4-B5D3-4AD3-8175-5CC30F759966}
 		{7DC92901-69D3-483C-8D4F-DF284D6A933D} = {BFF49920-7D2B-4EC0-BE7E-6931B22A0965}
 		{0A7BD803-0022-487B-82B6-FA5BAC286549} = {2DD67628-A661-4B69-9E5D-0FFA087EA201}
+		{61D14BDD-96D8-424C-8CDA-08794CBA688A} = {A29DAC77-54EC-4F53-B2FC-00EC1C1F7756}
+		{126E178C-D42B-45F2-ABE7-BB0B47EB5634} = {34362CA4-B5D3-4AD3-8175-5CC30F759966}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4CCA468F-C730-4AD0-8ADE-02B8CEA55AA2}

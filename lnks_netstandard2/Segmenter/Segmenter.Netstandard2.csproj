@@ -1,0 +1,109 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <AssemblyName>JiebaNet.Segmenter</AssemblyName>
+    <RootNamespace>JiebaNet.Segmenter</RootNamespace>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netstandard2.0\JiebaNet.Segmenter.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\JiebaNet.Segmenter.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\Segmenter\Common\Counter.cs">
+      <link>Common\Counter.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Common\Trie.cs">
+      <link>Common\Trie.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\ConfigManager.cs">
+      <link>ConfigManager.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Constants.cs">
+      <link>Constants.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Common\Extensions.cs">
+      <link>Common\Extensions.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\DefaultDictionary.cs">
+      <link>DefaultDictionary.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\FinalSeg\IFinalSeg.cs">
+      <link>FinalSeg\IFinalSeg.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Node.cs">
+      <link>Node.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Pair.cs">
+      <link>Pair.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\PosSeg\Pair.cs">
+      <link>PosSeg\Pair.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\PosSeg\PosSegmenter.cs">
+      <link>PosSeg\PosSegmenter.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\PosSeg\Viterbi.cs">
+      <link>PosSeg\Viterbi.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Properties\AssemblyInfo.cs">
+      <link>Properties\AssemblyInfo.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Spelling\SpellChecker.cs">
+      <link>Spelling\SpellChecker.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Token.cs">
+      <link>Token.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\FinalSeg\Viterbi.cs">
+      <link>FinalSeg\Viterbi.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\WordDictionary.cs">
+      <link>WordDictionary.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\JiebaSegmenter.cs">
+      <link>JiebaSegmenter.cs</link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\content\Resources\dict.txt">
+      <link>Resources\dict.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\content\Resources\char_state_tab.json">
+      <link>Resources\char_state_tab.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\content\Resources\pos_prob_emit.json">
+      <link>Resources\pos_prob_emit.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\content\Resources\pos_prob_start.json">
+      <link>Resources\pos_prob_start.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\content\Resources\pos_prob_trans.json">
+      <link>Resources\pos_prob_trans.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\content\Resources\prob_emit.json">
+      <link>Resources\prob_emit.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\..\content\Resources\prob_trans.json">
+      <link>Resources\prob_trans.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

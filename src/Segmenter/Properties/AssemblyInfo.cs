@@ -5,11 +5,14 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+#if !NETSTANDARD2_0
 [assembly: AssemblyTitle("JiebaNet.Segmenter")]
-[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("andersc")]
 [assembly: AssemblyProduct("JiebaSegmenter")]
+#endif
+
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyCopyright("Copyright © andersc 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -33,5 +36,7 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
+#if !NETSTANDARD2_0
 [assembly: AssemblyVersion("0.39.1.0")]
 [assembly: AssemblyFileVersion("0.39.1.0")]
+#endif
