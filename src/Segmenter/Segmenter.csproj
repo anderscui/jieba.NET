@@ -65,6 +65,12 @@
     <Compile Include="JiebaSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\..\content\Resources\dict.txt">
+      <link>Resources\dict.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="..\..\content\Resources\char_state_tab.json">

@@ -1,0 +1,201 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0A7BD803-0022-487B-82B6-FA5BAC286549}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>JiebaNet.Segmenter.Tests</RootNamespace>
+    <AssemblyName>JiebaNet.Segmenter.Tests</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.4.14350, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Segmenter.Tests\Common\TestCounter.cs">
+      <link>Common\TestCounter.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\Common\TestTrie.cs">
+      <link>Common\TestTrie.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestApp.cs">
+      <link>FCL\TestApp.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestNumbers.cs">
+      <link>FCL\TestNumbers.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestObjects.cs">
+      <link>FCL\TestObjects.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestEnumerable.cs">
+      <link>FCL\TestEnumerable.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestDictionary.cs">
+      <link>FCL\TestDictionary.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestPLinq.cs">
+      <link>FCL\TestPLinq.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestUnicode.cs">
+      <link>FCL\TestUnicode.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestJson.cs">
+      <link>FCL\TestJson.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestRegex.cs">
+      <link>FCL\TestRegex.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\FCL\TestIO.cs">
+      <link>FCL\TestIO.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\Properties\AssemblyInfo.cs">
+      <link>Properties\AssemblyInfo.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestExtensions.cs">
+      <link>TestExtensions.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestDict.cs">
+      <link>TestDict.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestDemo.cs">
+      <link>TestDemo.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestPosSegmenter.cs">
+      <link>TestPosSegmenter.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestSegmenterParallelism.cs">
+      <link>TestSegmenterParallelism.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestSegmenterPerf.cs">
+      <link>TestSegmenterPerf.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestSegmenter.cs">
+      <link>TestSegmenter.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestSpellChecker.cs">
+      <link>TestSpellChecker.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestTextRankExtractor.cs">
+      <link>TestTextRankExtractor.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestDictStats.cs">
+      <link>TestDictStats.cs</link>
+    </Compile>
+    <Compile Include="..\Segmenter.Tests\TestTfidfExtractor.cs">
+      <link>TestTfidfExtractor.cs</link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\Segmenter.Tests\Cases\accurate_hmm.txt">
+      <link>Cases\accurate_hmm.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Cases\accurate_no_hmm.txt">
+      <link>Cases\accurate_no_hmm.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Cases\cut_all.txt">
+      <link>Cases\cut_all.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Cases\cut_search_hmm.txt">
+      <link>Cases\cut_search_hmm.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Cases\cut_search_no_hmm.txt">
+      <link>Cases\cut_search_no_hmm.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Cases\jieba_test.txt">
+      <link>Cases\jieba_test.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\user_dict.txt">
+      <link>Resources\user_dict.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\围城.txt">
+      <link>Resources\围城.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="..\Segmenter.Tests\Resources\test_dict.json">
+      <link>Resources\test_dict.json</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="..\Segmenter.Tests\Cases\pos_cut_hmm.txt">
+      <link>Cases\pos_cut_hmm.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Cases\pos_cut_no_hmm.txt">
+      <link>Cases\pos_cut_no_hmm.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\article_social.txt">
+      <link>Resources\article_social.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\article_sports.txt">
+      <link>Resources\article_sports.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\article.txt">
+      <link>Resources\article.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\stop_words_test.txt">
+      <link>Resources\stop_words_test.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\Segmenter.Tests\Resources\test_dict.txt">
+      <link>Resources\test_dict.txt</link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\lnks_net40\Analyser\Analyser.Net40.csproj">
+      <Project>{e25d103c-e417-4594-a3fa-7e987d21e6ff}</Project>
+      <Name>Analyser.Net40</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\lnks_net40\Segmenter\Segmenter.Net40.csproj">
+      <Project>{d80c1357-9203-4488-ad2d-b1ce2cf25a71}</Project>
+      <Name>Segmenter.Net40</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
