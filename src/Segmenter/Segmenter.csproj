@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\JiebaNet.Segmenter.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\JiebaNet.Segmenter.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json">
@@ -63,29 +65,30 @@
     <Compile Include="JiebaSegmenter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\dict.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="Resources\char_state_tab.json">
+	    <None Include="..\..\content\Resources\char_state_tab.json" >
+      <link>Resources\char_state_tab.json</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\pos_prob_emit.json">
+    <None Include="..\..\content\Resources\pos_prob_emit.json" >
+      <link>Resources\pos_prob_emit.json</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\pos_prob_start.json">
+    <None Include="..\..\content\Resources\pos_prob_start.json" >
+      <link>Resources\pos_prob_start.json</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\pos_prob_trans.json">
+    <None Include="..\..\content\Resources\pos_prob_trans.json" >
+      <link>Resources\pos_prob_trans.json</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\prob_emit.json">
+    <None Include="..\..\content\Resources\prob_emit.json" >
+      <link>Resources\prob_emit.json</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Resources\prob_trans.json">
+    <None Include="..\..\content\Resources\prob_trans.json" >
+      <link>Resources\prob_trans.json</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

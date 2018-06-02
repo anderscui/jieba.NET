@@ -57,10 +57,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\idf.txt">
+    <Content Include="..\..\content\Resources\idf.txt">
+	  <link>Resources\idf.txt</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\stopwords.txt">
+    <Content Include="..\..\content\Resources\stopwords.txt">
+	<link>Resources\stopwords.txt</link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
