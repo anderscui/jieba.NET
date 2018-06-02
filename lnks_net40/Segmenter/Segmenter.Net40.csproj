@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}</ProjectGuid>
+    <ProjectGuid>{D80C1357-9203-4488-AD2D-B1CE2CF25A71}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JiebaNet.Segmenter</RootNamespace>
     <AssemblyName>JiebaNet.Segmenter</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\JiebaNet.Segmenter.xml</DocumentationFile>
@@ -26,17 +26,17 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NET45</DefineConstants>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\JiebaNet.Segmenter.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -45,24 +45,60 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Common\Counter.cs" />
-    <Compile Include="Common\Trie.cs" />
-    <Compile Include="ConfigManager.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="Common\Extensions.cs" />
-    <Compile Include="DefaultDictionary.cs" />
-    <Compile Include="FinalSeg\IFinalSeg.cs" />
-    <Compile Include="Node.cs" />
-    <Compile Include="Pair.cs" />
-    <Compile Include="PosSeg\Pair.cs" />
-    <Compile Include="PosSeg\PosSegmenter.cs" />
-    <Compile Include="PosSeg\Viterbi.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Spelling\SpellChecker.cs" />
-    <Compile Include="Token.cs" />
-    <Compile Include="FinalSeg\Viterbi.cs" />
-    <Compile Include="WordDictionary.cs" />
-    <Compile Include="JiebaSegmenter.cs" />
+    <Compile Include="..\..\src\Segmenter\Common\Counter.cs">
+      <link>Common\Counter.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Common\Trie.cs">
+      <link>Common\Trie.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\ConfigManager.cs">
+      <link>ConfigManager.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Constants.cs">
+      <link>Constants.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Common\Extensions.cs">
+      <link>Common\Extensions.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\DefaultDictionary.cs">
+      <link>DefaultDictionary.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\FinalSeg\IFinalSeg.cs">
+      <link>FinalSeg\IFinalSeg.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Node.cs">
+      <link>Node.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Pair.cs">
+      <link>Pair.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\PosSeg\Pair.cs">
+      <link>PosSeg\Pair.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\PosSeg\PosSegmenter.cs">
+      <link>PosSeg\PosSegmenter.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\PosSeg\Viterbi.cs">
+      <link>PosSeg\Viterbi.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Properties\AssemblyInfo.cs">
+      <link>Properties\AssemblyInfo.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Spelling\SpellChecker.cs">
+      <link>Spelling\SpellChecker.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\Token.cs">
+      <link>Token.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\FinalSeg\Viterbi.cs">
+      <link>FinalSeg\Viterbi.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\WordDictionary.cs">
+      <link>WordDictionary.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Segmenter\JiebaSegmenter.cs">
+      <link>JiebaSegmenter.cs</link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -93,11 +129,4 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
