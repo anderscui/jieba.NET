@@ -1,5 +1,7 @@
 ﻿using System;
+#if !(NETSTANDARD1_0 || NETSTANDARD2_0)
 using System.Configuration;
+#endif
 using System.IO;
 
 namespace JiebaNet.Segmenter
@@ -10,7 +12,7 @@ namespace JiebaNet.Segmenter
         {
             get
             {
-#if !NETSTANDARD2_0
+#if !(NETSTANDARD1_0 || NETSTANDARD2_0)
                 var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
                 if (!Path.IsPathRooted(configFileDir))
                 {

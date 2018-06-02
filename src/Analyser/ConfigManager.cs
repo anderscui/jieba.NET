@@ -11,7 +11,7 @@ namespace JiebaNet.Analyser
         {
             get
             {
-#if !NETSTANDARD2_0
+#if !(NETSTANDARD1_0 || NETSTANDARD2_0)
                 var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
                 if (!Path.IsPathRooted(configFileDir))
                 {
