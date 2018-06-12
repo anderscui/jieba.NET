@@ -11,12 +11,17 @@ namespace JiebaNet.Analyser
         {
             get
             {
+#if !(NETSTANDARD1_0 || NETSTANDARD2_0)
                 var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
-				if (!Path.IsPathRooted(configFileDir)) {
-					var domainDir = AppDomain.CurrentDomain.BaseDirectory;
-					configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
-				}
-				return configFileDir;
+                if (!Path.IsPathRooted(configFileDir))
+                {
+                    var domainDir = AppDomain.CurrentDomain.BaseDirectory;
+                    configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
+                }
+#else
+                var configFileDir = "Resources";
+#endif
+                return configFileDir;
             }
         }
 

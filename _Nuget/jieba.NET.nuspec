@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>jieba.NET</id>
+    <version>0.39.1</version>
+    <title>jieba.NET Segmenter</title>
+    <authors>andersc</authors>
+    <owners>Anders Cui</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/anderscui/jieba.NET</projectUrl>
+    <description>jieba.NET支持多种分词模式，适用于不同的应用场景；可以对繁体中文分词；还可以添加自定义词典以改善特定场景下的分词。jieba.NET提供了TF-IDF和TextRank两种关键词提取算法。</description>
+    <summary>jieba.NET is a port and extension of the Python based "jieba" Chinese text segmenter, written in C# and targeted at .NET runtime users. jieba.NET是jieba中文分词组件的.NET版本。</summary>
+    <releaseNotes>支持百分数的切词；
+修复TextRank allowPos功能（#30）；
+修复Tokenize方法（#32）；</releaseNotes>
+    <tags>NLP, TextSegmentation, WordSegmentation</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0">
+        <dependency id="Newtonsoft.Json" version="8.0.2" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="Newtonsoft.Json" version="8.0.2" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Newtonsoft.Json" version="9.0.1" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

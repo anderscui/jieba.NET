@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{420C99CA-4DE4-4802-9129-B26C35786224}</ProjectGuid>
+    <ProjectGuid>{E25D103C-E417-4594-A3FA-7E987D21E6FF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>JiebaNet.Analyser</RootNamespace>
     <AssemblyName>JiebaNet.Analyser</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -17,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET45</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\JiebaNet.Analyser.xml</DocumentationFile>
@@ -25,11 +25,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\_bin\net45\</OutputPath>
-    <DefineConstants>TRACE;NET45</DefineConstants>
+    <OutputPath>..\..\_bin\net40\</OutputPath>
+    <DefineConstants>TRACE;NET40</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\..\_bin\net45\JiebaNet.Analyser.xml</DocumentationFile>
+    <DocumentationFile>..\..\_bin\net40\JiebaNet.Analyser.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -42,19 +42,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigManager.cs" />
-    <Compile Include="IdfLoader.cs" />
-    <Compile Include="KeywordExtractor.cs" />
-    <Compile Include="TextRankExtractor.cs" />
-    <Compile Include="TfidfExtractor.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UndirectWeightedGraph.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Segmenter\Segmenter.csproj">
-      <Project>{7930A2C1-15B4-4EAB-9CD4-4B709A3FD76E}</Project>
-      <Name>Segmenter</Name>
-    </ProjectReference>
+    <Compile Include="..\..\src\Analyser\ConfigManager.cs">
+      <link>ConfigManager.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Analyser\IdfLoader.cs">
+      <link>IdfLoader.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Analyser\KeywordExtractor.cs">
+      <link>KeywordExtractor.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Analyser\TextRankExtractor.cs">
+      <link>TextRankExtractor.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Analyser\TfidfExtractor.cs">
+      <link>TfidfExtractor.cs</link>
+    </Compile>
+    <Compile Include="..\..\src\Analyser\Properties\AssemblyInfo.cs">
+      <link>Properties\AssemblyInfo</link>
+    </Compile>
+    <Compile Include="..\..\src\Analyser\UndirectWeightedGraph.cs">
+      <link>UndirectWeightedGraph.cs</link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\content\Resources\idf.txt">
@@ -69,12 +77,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Segmenter\Segmenter.Net40.csproj">
+      <Project>{d80c1357-9203-4488-ad2d-b1ce2cf25a71}</Project>
+      <Name>Segmenter.Net40</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
