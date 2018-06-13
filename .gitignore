@@ -196,3 +196,4 @@ FakesAssemblies/
 *.opt
 _bin/
 _Nuget/NuGet.exe
+snks/*.snk

@@ -19,6 +19,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Segmenter\Segmenter.Netstandard2.csproj" />
   </ItemGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\..\snks\JiebaNet.Analyser.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\..\src\Analyser\ConfigManager.cs">
       <link>ConfigManager.cs</link>

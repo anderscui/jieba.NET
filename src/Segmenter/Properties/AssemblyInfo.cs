@@ -16,7 +16,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © andersc 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: InternalsVisibleTo("JiebaNet.Segmenter.Tests")]
+[assembly: InternalsVisibleTo("JiebaNet.Segmenter.Tests, PublicKey=002400000480000094000000060200000024000052534131000400000100010091812699fa05dc8484c20c446ddbbc32d6225f129334203592dc0b131a86f4e2e69433e7aae3e56359331d37562a35be7a146454126f00ca6c5e6075a4602bfae17dd4a9c15910316fa9f565c73af982b0d02f01fefdccb3f9d08855cb6376f42759e39b3858bfb4f0e79df4063415da2ed4f0a90eecb87a729a67a36d86f1a9")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
