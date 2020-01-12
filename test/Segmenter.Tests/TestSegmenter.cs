@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
 
@@ -293,6 +294,38 @@ namespace JiebaNet.Segmenter.Tests
             segments = seg.Cut(s);
             Assert.That(segments, Contains.Item("3.14"));
             Assert.That(segments, Contains.Item("99.99%"));
+        }
+
+        [TestCase]
+        public void TestHyphen()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("cet-4");
+
+            var s = "你一定也考过cet-4了。";
+            var segments = seg.Cut(s).ToList();
+            Assert.That(segments, Contains.Item("cet-4"));
+            Console.WriteLine(segments);
+            foreach (var sm in segments)
+            {
+                Console.WriteLine(sm);
+            }
+        }
+
+        [TestCase]
+        public void TestCutAllMixedZhEn()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("超敏C反应蛋白");
+
+            var s = "很多人的第一门语言是C语言。超敏C反应蛋白是什么？";
+            var segments = seg.CutAll(s).ToList();
+            Assert.That(segments, Contains.Item("C语言"));
+            Console.WriteLine(segments);
+            foreach (var sm in segments)
+            {
+                Console.WriteLine(sm);
+            }
         }
 
         [TestCase]
