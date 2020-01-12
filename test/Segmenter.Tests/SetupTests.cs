@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace JiebaNet.Segmenter.Tests
 {
     [SetUpFixture]
-    public class MySetUpClass
+    public class SetUpClass
     {
         [OneTimeSetUp]
         public void RunBeforeAnyTests()

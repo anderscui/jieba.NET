@@ -41,7 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConfigManager.cs" />
     <Compile Include="IdfLoader.cs" />
     <Compile Include="KeywordExtractor.cs" />
     <Compile Include="TextRankExtractor.cs" />
