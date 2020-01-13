@@ -13,6 +13,8 @@ namespace JiebaNet.Segmenter.Tests
         {
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Directory.SetCurrentDirectory(dir);
+
+            // ConfigManager.ConfigFileBaseDir = @"C:\jiebanet\config";
         }
 
         [OneTimeTearDown]

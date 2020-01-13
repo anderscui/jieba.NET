@@ -21,12 +21,10 @@ namespace JiebaNet.Segmenter
                         var domainDir = AppDomain.CurrentDomain.BaseDirectory;
                         configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
                     }
-                    return configFileDir;
+                    _configFileBaseDir = configFileDir;
                 }
-                else
-                {
-                    return _configFileBaseDir;
-                }
+
+                return _configFileBaseDir;
             }
             set { _configFileBaseDir = value; }
         }

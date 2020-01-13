@@ -312,6 +312,35 @@ namespace JiebaNet.Segmenter.Tests
             }
         }
 
+        [TestCase(TestName = "#42,#43")]
+        [Category("Issue")]
+        public void TestChineseDot()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("艾尔肯·吐尼亚孜");
+            seg.AddWord("短P-R间期");
+
+            var s = "艾尔肯·吐尼亚孜新疆阿克苏人。 在短P-R间期。";
+            var segments = seg.Cut(s).ToList();
+            Assert.That(segments, Contains.Item("艾尔肯·吐尼亚孜"));
+            Assert.That(segments, Contains.Item("短P-R间期"));
+        }
+
+        [TestCase(TestName = "#49")]
+        [Category("Issue")]
+        public void TestChineseDot2()
+        {
+            var seg = new JiebaSegmenter();
+
+            var s = "简历名称 JAVA后端";
+            var segments = seg.Cut(s);
+            Assert.That(segments.Count(), Is.EqualTo(5));
+
+            s = "简历名称JAVA后端";
+            segments = seg.Cut(s);
+            Assert.That(segments.Count(), Is.EqualTo(4));
+        }
+
         [TestCase]
         public void TestCutAllMixedZhEn()
         {
