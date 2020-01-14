@@ -328,7 +328,7 @@ namespace JiebaNet.Segmenter.Tests
 
         [TestCase(TestName = "#49")]
         [Category("Issue")]
-        public void TestChineseDot2()
+        public void TestIssue49()
         {
             var seg = new JiebaSegmenter();
 
@@ -355,6 +355,18 @@ namespace JiebaNet.Segmenter.Tests
             {
                 Console.WriteLine(sm);
             }
+        }
+
+        [TestCase]
+        [Category("Issue")]
+        public void TestIssue46()
+        {
+            var seg = new JiebaSegmenter();
+            seg.DeleteWord("天半");
+            
+            var segments = seg.CutAll("2天半").ToList();
+            Assert.That(segments, Contains.Item("天"));
+            Assert.That(segments, Contains.Item("半"));
         }
 
         [TestCase]

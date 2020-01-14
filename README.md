@@ -1,6 +1,6 @@
 jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C#实现）。
 
-当前版本为0.39.1，基于jieba 0.39，提供与jieba一致的功能与接口，以后可能会在jieba基础上提供其它扩展功能。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+当前版本为0.42.0，基于jieba 0.42，提供与jieba**基本一致**的功能与接口，但不支持其最新的paddle模式。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
 
 如果您在开发中遇到与分词有关的需求或困难，请提交一个Issue，I see u:)
 
@@ -22,7 +22,7 @@ jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C
 
 ## 安装和配置
 
-当前版本基于.NET Framework 4.5，可以手动引用项目，也可以通过NuGet添加引用：
+当前版本基于.NET Framework 4.0，可以手动引用项目，也可以通过NuGet添加引用：
 
 ```shell
 PM> Install-Package jieba.NET
@@ -42,6 +42,14 @@ PM> Install-Package jieba.NET
 
 * 采用绝对路径时，比如配置项为C:\jiebanet\config，那么主词典的路径会拼接为：C:\jiebanet\config\dict.txt。
 * 采用相对路径时（或未添加任何配置项，那么将会使用默认的**相对路径：Resources**），比如配置项为..\config（可通过..来调整相对路径），若当前应用程序域的BaseDirectory是C:\myapp\bin\，那么主词典的路径会拼接为：C:\myapp\config\dict.txt。
+
+### 使用代码配置词典路径
+
+如果因为某些原因，不方便通过应用的 config 文件配置，可使用代码设置（在使用任何分词功能之前，建议使用绝对路径），如：
+
+```c#
+JiebaNet.Segmenter.ConfigManager.ConfigFileBaseDir = @"C:\jiebanet\config";
+```
 
 ## 主要功能
 
