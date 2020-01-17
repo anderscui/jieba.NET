@@ -77,7 +77,6 @@ namespace JiebaNet.Segmenter.Cli
         private static void RunOptions(Options options)
         {
             var seg = new JiebaSegmenter();
-            Console.WriteLine(seg.Cut("强命名"));
 
             if (options.ShowHelp)
             {
