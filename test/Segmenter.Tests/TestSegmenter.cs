@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
 
@@ -293,6 +294,79 @@ namespace JiebaNet.Segmenter.Tests
             segments = seg.Cut(s);
             Assert.That(segments, Contains.Item("3.14"));
             Assert.That(segments, Contains.Item("99.99%"));
+        }
+
+        [TestCase]
+        public void TestHyphen()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("cet-4");
+
+            var s = "你一定也考过cet-4了。";
+            var segments = seg.Cut(s).ToList();
+            Assert.That(segments, Contains.Item("cet-4"));
+            Console.WriteLine(segments);
+            foreach (var sm in segments)
+            {
+                Console.WriteLine(sm);
+            }
+        }
+
+        [TestCase(TestName = "#42,#43")]
+        [Category("Issue")]
+        public void TestChineseDot()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("艾尔肯·吐尼亚孜");
+            seg.AddWord("短P-R间期");
+
+            var s = "艾尔肯·吐尼亚孜新疆阿克苏人。 在短P-R间期。";
+            var segments = seg.Cut(s).ToList();
+            Assert.That(segments, Contains.Item("艾尔肯·吐尼亚孜"));
+            Assert.That(segments, Contains.Item("短P-R间期"));
+        }
+
+        [TestCase(TestName = "#49")]
+        [Category("Issue")]
+        public void TestIssue49()
+        {
+            var seg = new JiebaSegmenter();
+
+            var s = "简历名称 JAVA后端";
+            var segments = seg.Cut(s);
+            Assert.That(segments.Count(), Is.EqualTo(5));
+
+            s = "简历名称JAVA后端";
+            segments = seg.Cut(s);
+            Assert.That(segments.Count(), Is.EqualTo(4));
+        }
+
+        [TestCase]
+        public void TestCutAllMixedZhEn()
+        {
+            var seg = new JiebaSegmenter();
+            seg.AddWord("超敏C反应蛋白");
+
+            var s = "很多人的第一门语言是C语言。超敏C反应蛋白是什么？";
+            var segments = seg.CutAll(s).ToList();
+            Assert.That(segments, Contains.Item("C语言"));
+            Console.WriteLine(segments);
+            foreach (var sm in segments)
+            {
+                Console.WriteLine(sm);
+            }
+        }
+
+        [TestCase]
+        [Category("Issue")]
+        public void TestIssue46()
+        {
+            var seg = new JiebaSegmenter();
+            seg.DeleteWord("天半");
+            
+            var segments = seg.CutAll("2天半").ToList();
+            Assert.That(segments, Contains.Item("天"));
+            Assert.That(segments, Contains.Item("半"));
         }
 
         [TestCase]

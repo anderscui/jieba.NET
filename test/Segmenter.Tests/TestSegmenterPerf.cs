@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace JiebaNet.Segmenter.Tests
 {
     [TestFixture]
-    [Ignore]
+    [Ignore("TODO")]
     public class TestSegmenterPerf
     {
         private string[] GetTestText()

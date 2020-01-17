@@ -1,29 +1,32 @@
 ﻿using System;
-#if !(NETSTANDARD1_0 || NETSTANDARD2_0)
 using System.Configuration;
-#endif
 using System.IO;
+using JiebaNet.Segmenter.Common;
 
 namespace JiebaNet.Segmenter
 {
     public class ConfigManager
     {
+        private static string _configFileBaseDir = null;
+
         public static string ConfigFileBaseDir
         {
             get
             {
-#if !(NETSTANDARD1_0 || NETSTANDARD2_0)
-                var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
-                if (!Path.IsPathRooted(configFileDir))
+                if (_configFileBaseDir.IsNull())
                 {
-                    var domainDir = AppDomain.CurrentDomain.BaseDirectory;
-                    configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
+                    var configFileDir = ConfigurationManager.AppSettings["JiebaConfigFileDir"] ?? "Resources";
+                    if (!Path.IsPathRooted(configFileDir))
+                    {
+                        var domainDir = AppDomain.CurrentDomain.BaseDirectory;
+                        configFileDir = Path.GetFullPath(Path.Combine(domainDir, configFileDir));
+                    }
+                    _configFileBaseDir = configFileDir;
                 }
-#else
-                var configFileDir = "Resources";
-#endif
-                return configFileDir;
+
+                return _configFileBaseDir;
             }
+            set { _configFileBaseDir = value; }
         }
 
         public static string MainDictFile
@@ -60,5 +63,9 @@ namespace JiebaNet.Segmenter
         {
             get { return Path.Combine(ConfigFileBaseDir, "char_state_tab.json"); }
         }
+
+        public static string IdfFile => Path.Combine(ConfigFileBaseDir, "idf.txt");
+
+        public static string StopWordsFile => Path.Combine(ConfigFileBaseDir, "stopwords.txt");
     }
 }

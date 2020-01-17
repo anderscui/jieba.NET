@@ -16,10 +16,10 @@ namespace JiebaNet.Segmenter.Cli
         [Option('v', "version")]
         public bool ShowVersion { get; set; }
 
-        [Option('f', "file", Required = true)]
+        [Option('f', "file", Required = false)]
         public string FileName { get; set; }
 
-        [Option('d', "delimiter", DefaultValue = "/ ")]
+        [Option('d', "delimiter", Default = "/ ")]
         public string Delimiter { get; set; }
 
         [Option('p', "pos")]
@@ -37,10 +37,6 @@ namespace JiebaNet.Segmenter.Cli
         //[Option('q', "quiet")]
         //public bool Quiet { get; set; }
 
-        [ParserState]
-        public IParserState LastParserState { get; set; }
-
-        [HelpOption]
         public string GetUsage()
         {
             var usage = new StringBuilder();
@@ -71,29 +67,36 @@ namespace JiebaNet.Segmenter.Cli
     {
         static void Main(string[] args)
         {
-            var options = new Options();
-            if (Parser.Default.ParseArguments(args, options))
+            Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(RunOptions)
+                .WithNotParsed((Console.WriteLine));
+
+            Console.ReadLine();
+        }
+
+        private static void RunOptions(Options options)
+        {
+            var seg = new JiebaSegmenter();
+
+            if (options.ShowHelp)
             {
-                if (options.ShowHelp)
-                {
-                    Console.WriteLine(options.GetUsage());
-                    return;
-                }
-
-                if (options.ShowVersion)
-                {
-                    Console.WriteLine("jieba.NET 0.38");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(options.FileName))
-                {
-                    Console.WriteLine("No file specified");
-                    return;
-                }
-
-                SegmentFile(options);
+                Console.WriteLine(options.GetUsage());
+                return;
             }
+
+            if (options.ShowVersion)
+            {
+                Console.WriteLine("jieba.NET 0.41");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(options.FileName))
+            {
+                Console.WriteLine("No file specified");
+                return;
+            }
+
+            SegmentFile(options);
         }
 
         private static void SegmentFile(Options options)

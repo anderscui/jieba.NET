@@ -1,3 +1,8 @@
+2020-01-15: version 0.42.0
+1. 修改 `ConfigManager.ConfigFileBaseDir` 为可写的，可通过程序方式传入词典路径；
+2. 修改 Target framework 为 .NET 4.0；
+3. 修复自定义词库不支持含"-"与"·"符号的问题；
+
 2018-02-27: version 0.39
 1. 修复百分数的切词;
 
