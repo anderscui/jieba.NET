@@ -1,6 +1,6 @@
 jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C#实现）。
 
-当前版本为0.42.0，基于jieba 0.42，提供与jieba**基本一致**的功能与接口，但不支持其最新的paddle模式。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+当前版本为0.42.1，基于jieba 0.42，提供与jieba**基本一致**的功能与接口，但不支持其最新的paddle模式。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
 
 如果您在开发中遇到与分词有关的需求或困难，请提交一个Issue，I see u:)
 
@@ -22,7 +22,7 @@ jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C
 
 ## 安装和配置
 
-当前版本基于.NET Framework 4.0，可以手动引用项目，也可以通过NuGet添加引用：
+当前版本支持net40、net45和netstandard2.0，可以手动引用项目，也可以通过NuGet添加引用：
 
 ```shell
 PM> Install-Package jieba.NET
