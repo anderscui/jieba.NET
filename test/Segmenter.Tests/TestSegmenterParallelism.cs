@@ -12,7 +12,7 @@ namespace JiebaNet.Segmenter.Tests
     {
         private string[] GetTestSentences()
         {
-            return File.ReadAllLines(@"Cases\jieba_test.txt");
+            return File.ReadAllLines(TestHelper.GetCaseFilePath("jieba_test.txt"));
         }
 
         private JiebaSegmenter GetParalellSegmenter()
@@ -23,31 +23,31 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestCut()
         {
-            TestCutFunction(GetParalellSegmenter().Cut, false, true, @"Cases\accurate_hmm.txt");
+            TestCutFunction(GetParalellSegmenter().Cut, false, true, TestHelper.GetCaseFilePath("accurate_hmm.txt"));
         }
 
         [TestCase]
         public void TestCutAll()
         {
-            TestCutFunction(GetParalellSegmenter().Cut, true, false, @"Cases\cut_all.txt");
+            TestCutFunction(GetParalellSegmenter().Cut, true, false, TestHelper.GetCaseFilePath("cut_all.txt"));
         }
 
         [TestCase]
         public void TestCutWithoutHmm()
         {
-            TestCutFunction(GetParalellSegmenter().Cut, false, false, @"Cases\accurate_no_hmm.txt");
+            TestCutFunction(GetParalellSegmenter().Cut, false, false, TestHelper.GetCaseFilePath("accurate_no_hmm.txt"));
         }
 
         [TestCase]
         public void TestCutForSearch()
         {
-            TestCutSearchFunction(GetParalellSegmenter().CutForSearch, true, @"Cases\cut_search_hmm.txt");
+            TestCutSearchFunction(GetParalellSegmenter().CutForSearch, true, TestHelper.GetCaseFilePath("cut_search_hmm.txt"));
         }
 
         [TestCase]
         public void TestCutForSearchWithoutHmm()
         {
-            TestCutSearchFunction(GetParalellSegmenter().CutForSearch, false, @"Cases\cut_search_no_hmm.txt");
+            TestCutSearchFunction(GetParalellSegmenter().CutForSearch, false, TestHelper.GetCaseFilePath("cut_search_no_hmm.txt"));
         }
 
         [TestCase]

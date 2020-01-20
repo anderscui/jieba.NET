@@ -18,7 +18,7 @@ namespace JiebaNet.Segmenter.Tests.FCL
             Assert.That(Path.IsPathRooted(p), Is.False);
             Console.WriteLine(Path.GetFullPath(p));
 
-            p = @"C:\test.txt";
+            p = @"\C:\test.txt";
             Assert.That(Path.IsPathRooted(p), Is.True);
             Console.WriteLine(Path.GetFullPath(p));
 
@@ -30,8 +30,8 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestReadFilePerf()
         {
-            ReadLines(@"Resources\dict.txt");
-            ReadStreamReader(@"Resources\dict.txt");
+            ReadLines(TestHelper.GetResourceFilePath("dict.txt"));
+            ReadStreamReader(TestHelper.GetResourceFilePath("dict.txt"));
         }
 
         private void ReadLines(string filePath)

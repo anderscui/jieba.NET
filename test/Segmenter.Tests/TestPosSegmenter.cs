@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using JiebaNet.Segmenter.PosSeg;
+
 using NUnit.Framework;
+
+using JiebaNet.Segmenter.PosSeg;
 
 namespace JiebaNet.Segmenter.Tests
 {
@@ -12,7 +14,7 @@ namespace JiebaNet.Segmenter.Tests
     {
         private string[] GetTestSentences()
         {
-            return File.ReadAllLines(@"Cases\jieba_test.txt");
+            return File.ReadAllLines(TestHelper.GetCaseFilePath("jieba_test.txt"));
         }
 
         [TestCase]
@@ -20,7 +22,7 @@ namespace JiebaNet.Segmenter.Tests
         {
             var seg = new JiebaSegmenter();
             var posSeg = new PosSegmenter(seg);
-            TestCutFunction(posSeg.Cut, true, @"Cases\pos_cut_hmm.txt");
+            TestCutFunction(posSeg.Cut, true, TestHelper.GetCaseFilePath("pos_cut_hmm.txt"));
         }
 
         [TestCase]
@@ -28,7 +30,7 @@ namespace JiebaNet.Segmenter.Tests
         {
             var seg = new JiebaSegmenter();
             var posSeg = new PosSegmenter(seg);
-            TestCutFunction(posSeg.Cut, false, @"Cases\pos_cut_no_hmm.txt");
+            TestCutFunction(posSeg.Cut, false, TestHelper.GetCaseFilePath("pos_cut_no_hmm.txt"));
         }
 
         [TestCase]

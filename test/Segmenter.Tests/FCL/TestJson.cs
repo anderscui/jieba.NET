@@ -13,7 +13,7 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestDeserializeDict()
         {
-            var p = @"Resources\test_dict.json";
+            var p = TestHelper.GetResourceFilePath("test_dict.json");
             var jsonContent = File.ReadAllText(p);
             var probs = JsonConvert.DeserializeObject<Dictionary<char, double>>(jsonContent);
             Assert.That(probs, Is.Not.Null);
@@ -24,7 +24,7 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestDeserializeProbStart()
         {
-            var p = @"Resources\pos_prob_start.json";
+            var p = TestHelper.GetResourceFilePath("pos_prob_start.json");
             var jsonContent = File.ReadAllText(p);
             var probs = JsonConvert.DeserializeObject<IDictionary<string, double>>(jsonContent);
             Assert.That(probs, Is.Not.Null);
@@ -35,7 +35,7 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestDeserializeProbTrans()
         {
-            var p = @"Resources\pos_prob_trans.json";
+            var p = TestHelper.GetResourceFilePath("pos_prob_trans.json");
             var jsonContent = File.ReadAllText(p);
             var probs = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<string, double>>>(jsonContent);
             Assert.That(probs, Is.Not.Null);
@@ -47,7 +47,7 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestDeserializeProbEmit()
         {
-            var p = @"Resources\pos_prob_emit.json";
+            var p = TestHelper.GetResourceFilePath("pos_prob_emit.json");
             var jsonContent = File.ReadAllText(p);
             var probs = JsonConvert.DeserializeObject<IDictionary<string, IDictionary<char, double>>>(jsonContent);
             Assert.That(probs, Is.Not.Null);
@@ -59,7 +59,7 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestDeserializeCharStateTab()
         {
-            var p = @"Resources\char_state_tab.json";
+            var p = TestHelper.GetResourceFilePath("char_state_tab.json");
             var jsonContent = File.ReadAllText(p);
             var probs = JsonConvert.DeserializeObject<IDictionary<string, List<string>>>(jsonContent);
             Assert.That(probs, Is.Not.Null);

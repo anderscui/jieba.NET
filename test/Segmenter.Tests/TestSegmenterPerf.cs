@@ -13,12 +13,12 @@ namespace JiebaNet.Segmenter.Tests
     {
         private string[] GetTestText()
         {
-            return File.ReadAllLines(@"Cases\jieba_test.txt");
+            return File.ReadAllLines(TestHelper.GetCaseFilePath("jieba_test.txt"));
         }
 
         private string[] GetTestSentences()
         {
-            var sentences = File.ReadAllText(@"Cases\jieba_test.txt");
+            var sentences = File.ReadAllText(TestHelper.GetCaseFilePath("jieba_test.txt"));
             var more = new List<string>();
             for (int i = 0; i < 1000; i++)
             {
