@@ -2,9 +2,12 @@
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
+using NUnit.Framework.Internal;
+using OSPlatform = NUnit.Framework.Internal.OSPlatform;
 
 namespace JiebaNet.Segmenter.Tests.FCL
 {
@@ -14,17 +17,34 @@ namespace JiebaNet.Segmenter.Tests.FCL
         [TestCase]
         public void TestNormalizePath()
         {
-            var p = @"..\test.txt";
-            Assert.That(Path.IsPathRooted(p), Is.False);
-            Console.WriteLine(Path.GetFullPath(p));
+            if (TestHelper.IsOnWindows())
+            {
+                var p = @"..\test.txt";
+                Assert.That(Path.IsPathRooted(p), Is.False);
+                Console.WriteLine(Path.GetFullPath(p));
 
-            p = @"\C:\test.txt";
-            Assert.That(Path.IsPathRooted(p), Is.True);
-            Console.WriteLine(Path.GetFullPath(p));
+                p = @"C:\test.txt";
+                Assert.That(Path.IsPathRooted(p), Is.True);
+                Console.WriteLine(Path.GetFullPath(p));
 
-            p = @"c:\a\b\c\..\test.txt";
-            Assert.That(Path.IsPathRooted(p), Is.True);
-            Console.WriteLine(Path.GetFullPath(p));
+                p = @"c:\a\b\c\..\test.txt";
+                Assert.That(Path.IsPathRooted(p), Is.True);
+                Console.WriteLine(Path.GetFullPath(p));
+            }
+            else
+            {
+                var p = @"../test.txt";
+                Assert.That(Path.IsPathRooted(p), Is.False);
+                Console.WriteLine(Path.GetFullPath(p));
+
+                p = @"/users/a/test.txt";
+                Assert.That(Path.IsPathRooted(p), Is.True);
+                Assert.That(Path.GetFullPath(p), Is.EqualTo("/users/a/test.txt"));
+
+                p = @"/users/a/b/c/../test.txt";
+                Assert.That(Path.IsPathRooted(p), Is.True);
+                Assert.That(Path.GetFullPath(p), Is.EqualTo("/users/a/b/test.txt"));
+            }
         }
 
         [TestCase]

@@ -14,7 +14,7 @@ namespace JiebaNet.Segmenter.Tests
             var dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             Directory.SetCurrentDirectory(dir);
 
-            // ConfigManager.ConfigFileBaseDir = @"C:\jiebanet\config";
+            ConfigManager.ConfigFileBaseDir = @"/Users/andersc/dev/lib/jiebanet";
         }
 
         [OneTimeTearDown]

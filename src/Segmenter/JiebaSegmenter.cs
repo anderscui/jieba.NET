@@ -22,7 +22,7 @@ namespace JiebaNet.Segmenter
 
         #region Regular Expressions
 
-        internal static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FD5a-zA-Z0-9+#&\._%-¡¤]+)", RegexOptions.Compiled);
+        internal static readonly Regex RegexChineseDefault = new Regex(@"([\u4E00-\u9FD5a-zA-Z0-9+#&\._%Â·\-]+)", RegexOptions.Compiled);
 
         internal static readonly Regex RegexSkipDefault = new Regex(@"(\r\n|\s)", RegexOptions.Compiled);
 
