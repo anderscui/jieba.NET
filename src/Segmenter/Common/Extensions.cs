@@ -96,7 +96,7 @@ namespace JiebaNet.Segmenter.Common
         
         public static string[] SplitLines(this string s)
         {
-            return RegexNewline.Split(s);
+            return s.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
         }
 
         public static string Join(this IEnumerable<string> inputs, string separator = ", ")

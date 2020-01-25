@@ -79,15 +79,19 @@ namespace JiebaNet.Segmenter.Tests.FCL
         {
             var s = "a\r\nb\r\nc";
             var lines = s.SplitLines();
-            Assert.That(lines.Length, Is.EqualTo(5));
+            Assert.That(lines.Length, Is.EqualTo(3));
 
             s = "a\nb\nc";
             lines = s.SplitLines();
-            Assert.That(lines.Length, Is.EqualTo(5));
+            Assert.That(lines.Length, Is.EqualTo(3));
+            
+            s = "a\n\nc";
+            lines = s.SplitLines();
+            Assert.That(lines.Length, Is.EqualTo(3));
 
             s = "a\rb\rc";
             lines = s.SplitLines();
-            Assert.That(lines.Length, Is.EqualTo(5));
+            Assert.That(lines.Length, Is.EqualTo(3));
         }
 
         [TestCase]
@@ -95,15 +99,15 @@ namespace JiebaNet.Segmenter.Tests.FCL
         {
             var s = "a\r\nb\nc\rd";
             var lines = s.SplitLines();
-            Assert.That(lines.Length, Is.EqualTo(7));
+            Assert.That(lines.Length, Is.EqualTo(4));
 
             s = "a\nb\rc";
             lines = s.SplitLines();
-            Assert.That(lines.Length, Is.EqualTo(5));
+            Assert.That(lines.Length, Is.EqualTo(3));
 
             s = "a\rb\nc";
             lines = s.SplitLines();
-            Assert.That(lines.Length, Is.EqualTo(5));
+            Assert.That(lines.Length, Is.EqualTo(3));
         }
     }
 }

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using JiebaNet.Segmenter.Common;
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests
 {
     [TestFixture]
-    [Ignore("Not implemented yet.")]
     public class TestSegmenterParallelism
     {
         private string[] GetTestSentences()
@@ -21,33 +21,59 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
+        public void TestCutLargeText()
+        {
+            var seg = GetParalellSegmenter();
+            
+            var lines = Enumerable.Repeat("生成句子中汉字所有可能成词情况所构成的有向无环图", 1).ToList();
+            var n = seg.Cut(lines[0]).Count();
+
+            var largeText = string.Join(Environment.NewLine, lines);
+            // Console.WriteLine(largeText);
+            var result = seg.CutInParallel(largeText);
+            Assert.That(result.Count(), Is.EqualTo(n * lines.Count));
+        }
+        
+        [TestCase]
+        public void TestCutList()
+        {
+            var seg = GetParalellSegmenter();
+            
+            var lines = Enumerable.Repeat("生成句子中汉字所有可能成词情况所构成的有向无环图", 1000).ToList();
+            var n = seg.Cut(lines[0]).Count();
+            
+            var result = seg.CutInParallel(lines).SelectMany(x => x);
+            Assert.That(result.Count(), Is.EqualTo(n * lines.Count));
+        }
+        
+        [TestCase]
         public void TestCut()
         {
-            TestCutFunction(GetParalellSegmenter().Cut, false, true, TestHelper.GetCaseFilePath("accurate_hmm.txt"));
+            TestCutInParallelFunction(GetParalellSegmenter().CutInParallel, false, true, TestHelper.GetCaseFilePath("accurate_hmm.txt"));
         }
 
         [TestCase]
         public void TestCutAll()
         {
-            TestCutFunction(GetParalellSegmenter().Cut, true, false, TestHelper.GetCaseFilePath("cut_all.txt"));
+            TestCutInParallelFunction(GetParalellSegmenter().CutInParallel, true, false, TestHelper.GetCaseFilePath("cut_all.txt"));
         }
 
         [TestCase]
         public void TestCutWithoutHmm()
         {
-            TestCutFunction(GetParalellSegmenter().Cut, false, false, TestHelper.GetCaseFilePath("accurate_no_hmm.txt"));
+            TestCutInParallelFunction(GetParalellSegmenter().CutInParallel, false, false, TestHelper.GetCaseFilePath("accurate_no_hmm.txt"));
         }
 
         [TestCase]
         public void TestCutForSearch()
         {
-            TestCutSearchFunction(GetParalellSegmenter().CutForSearch, true, TestHelper.GetCaseFilePath("cut_search_hmm.txt"));
+            TestCutSearchFunction(GetParalellSegmenter().CutForSearchInParallel, true, TestHelper.GetCaseFilePath("cut_search_hmm.txt"));
         }
 
         [TestCase]
         public void TestCutForSearchWithoutHmm()
         {
-            TestCutSearchFunction(GetParalellSegmenter().CutForSearch, false, TestHelper.GetCaseFilePath("cut_search_no_hmm.txt"));
+            TestCutSearchFunction(GetParalellSegmenter().CutForSearchInParallel, false, TestHelper.GetCaseFilePath("cut_search_no_hmm.txt"));
         }
 
         [TestCase]
@@ -88,33 +114,37 @@ namespace JiebaNet.Segmenter.Tests
 
         #region Private Helpers
 
-        private void TestCutFunction(Func<string, bool, bool, IEnumerable<string>> method,
+        private void TestCutInParallelFunction(Func<IEnumerable<string>, bool, bool, IEnumerable<IEnumerable<string>>> method,
                                      bool cutAll, bool useHmm,
                                      string testResultFile)
         {
             var testCases = GetTestSentences();
-            var testResults = File.ReadAllLines(testResultFile);
-            Assert.That(testCases.Length, Is.EqualTo(testResults.Length));
-            for (int i = 0; i < testCases.Length; i++)
+            var testResults = method(testCases, cutAll, useHmm).ToList();
+            var expectedResults = File.ReadAllLines(testResultFile);
+            Assert.That(testResults.Count, Is.EqualTo(expectedResults.Length));
+            
+            foreach (var item in testResults.Zip(expectedResults, Tuple.Create))
             {
-                var testCase = testCases[i];
-                var testResult = testResults[i];
-                Assert.That(method(testCase, cutAll, useHmm).Join("/ "), Is.EqualTo(testResult));
+                var actualResult = item.Item1.ToList();
+                var expectedResult = item.Item2;
+                Assert.That(actualResult.Join("/ "), Is.EqualTo(expectedResult));
             }
         }
 
-        private void TestCutSearchFunction(Func<string, bool, IEnumerable<string>> method,
+        private void TestCutSearchFunction(Func<IEnumerable<string>, bool, IEnumerable<IEnumerable<string>>> method,
                                      bool useHmm,
                                      string testResultFile)
         {
             var testCases = GetTestSentences();
-            var testResults = File.ReadAllLines(testResultFile);
-            Assert.That(testCases.Length, Is.EqualTo(testResults.Length));
-            for (int i = 0; i < testCases.Length; i++)
+            var testResults = method(testCases, useHmm).ToList();
+            var expectedResults = File.ReadAllLines(testResultFile);
+            Assert.That(testResults.Count, Is.EqualTo(expectedResults.Length));
+            
+            foreach (var item in testResults.Zip(expectedResults, Tuple.Create))
             {
-                var testCase = testCases[i];
-                var testResult = testResults[i];
-                Assert.That(method(testCase, useHmm).Join("/ "), Is.EqualTo(testResult));
+                var actualResult = item.Item1.ToList();
+                var expectedResult = item.Item2;
+                Assert.That(actualResult.Join("/ "), Is.EqualTo(expectedResult));
             }
         }
 

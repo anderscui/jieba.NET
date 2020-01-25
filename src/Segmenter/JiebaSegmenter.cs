@@ -50,30 +50,25 @@ namespace JiebaNet.Segmenter
         /// <returns></returns>
         public IEnumerable<string> Cut(string text, bool cutAll = false, bool hmm = true)
         {
-            var reHan = RegexChineseDefault;
-            var reSkip = RegexSkipDefault;
-            Func<string, IEnumerable<string>> cutMethod = null;
-
-            if (cutAll)
-            {
-                reHan = RegexChineseCutAll;
-                reSkip = RegexSkipCutAll;
-            }
-
-            if (cutAll)
-            {
-                cutMethod = CutAll;
-            }
-            else if (hmm)
-            {
-                cutMethod = CutDag;
-            }
-            else
-            {
-                cutMethod = CutDagWithoutHmm;
-            }
-
+            var reHan = cutAll ? RegexChineseCutAll : RegexChineseDefault;
+            var reSkip = cutAll ? RegexSkipCutAll : RegexSkipDefault;
+            var cutMethod = cutAll ? CutAll : hmm ? CutDag : (Func<string, IEnumerable<string>>)CutDagWithoutHmm;
             return CutIt(text, cutMethod, reHan, reSkip, cutAll);
+        }
+        
+        public IEnumerable<IEnumerable<string>> CutInParallel(IEnumerable<string> texts, bool cutAll = false, bool hmm = true)
+        {
+            var reHan = cutAll ? RegexChineseCutAll : RegexChineseDefault;
+            var reSkip = cutAll ? RegexSkipCutAll : RegexSkipDefault;
+            var cutMethod = cutAll ? CutAll : hmm ? CutDag : (Func<string, IEnumerable<string>>)CutDagWithoutHmm;
+
+            return texts.AsParallel().AsOrdered().Select(line => CutIt(line, cutMethod, reHan, reSkip, cutAll));
+        }
+        
+        public IEnumerable<string> CutInParallel(string text, bool cutAll = false, bool hmm = true)
+        {
+            var lines = text.SplitLines();
+            return CutInParallel(lines, cutAll, hmm).SelectMany(words => words);
         }
 
         public IEnumerable<string> CutForSearch(string text, bool hmm = true)
@@ -111,6 +106,17 @@ namespace JiebaNet.Segmenter
             }
 
             return result;
+        }
+        
+        public IEnumerable<IEnumerable<string>> CutForSearchInParallel(IEnumerable<string> texts, bool hmm = true)
+        {
+            return texts.AsParallel().AsOrdered().Select(line => CutForSearch(line, hmm));
+        }
+        
+        public IEnumerable<string> CutForSearchInParallel(string text, bool hmm = true)
+        {
+            var lines = text.SplitLines();
+            return CutForSearchInParallel(lines, hmm).SelectMany(words => words);
         }
 
         public IEnumerable<Token> Tokenize(string text, TokenizerMode mode = TokenizerMode.Default, bool hmm = true)
