@@ -197,7 +197,7 @@ namespace JiebaNet.Segmenter.Tests
                 Console.WriteLine(segment);
             }
 
-            seg.LoadUserDict(@"Resources\user_dict.txt");
+            seg.LoadUserDict(TestHelper.GetResourceFilePath("user_dict.txt"));
             s = "Steve Jobs重新定义了手机";
             segments = seg.Cut(s);
             foreach (var segment in segments)
@@ -254,7 +254,7 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestUserDict()
         {
-            var dict = @"Resources\user_dict.txt";
+            var dict = TestHelper.GetResourceFilePath("user_dict.txt");
             var seg = new JiebaSegmenter();
 
             TestCutThenPrint(seg, "小明最近在学习机器学习、自然语言处理、云计算和大数据");
@@ -312,10 +312,11 @@ namespace JiebaNet.Segmenter.Tests
             }
         }
 
-        [TestCase(TestName = "#42,#43")]
+        [TestCase]
         [Category("Issue")]
         public void TestChineseDot()
         {
+            // for #42, #43
             var seg = new JiebaSegmenter();
             seg.AddWord("艾尔肯·吐尼亚孜");
             seg.AddWord("短P-R间期");
@@ -326,10 +327,11 @@ namespace JiebaNet.Segmenter.Tests
             Assert.That(segments, Contains.Item("短P-R间期"));
         }
 
-        [TestCase(TestName = "#49")]
+        [TestCase]
         [Category("Issue")]
         public void TestIssue49()
         {
+            // for #49
             var seg = new JiebaSegmenter();
 
             var s = "简历名称 JAVA后端";
