@@ -214,34 +214,21 @@ namespace JiebaNet.Segmenter.Tests
         }
 
         [TestCase]
-        [Ignore("")]
         public void TestCutAllSpecialWords()
         {
-            // TODO: Enable this test case after confirming with jieba py.
             var seg = new JiebaSegmenter();
             seg.AddWord(".NET");
             seg.AddWord("U.S.A.");
             seg.AddWord("Steve Jobs");
-            seg.AddWord("Mac OS X");
 
             var s = ".NET平台是微软推出的, U.S.A.是美国的简写";
-            var segments = seg.Cut(s);
-            Console.WriteLine("Cut: {0}", string.Join("/ ", segments));
-            segments = seg.Cut(s, cutAll: true);
-            Console.WriteLine("Cut All: {0}", string.Join("/ ", segments));
+            var segments = seg.Cut(s).ToList();
+            Assert.That(segments,   Contains.Item(".NET"));
+            Assert.That(segments,   Contains.Item("U.S.A."));
 
             s = "Steve Jobs重新定义了手机";
-            segments = seg.Cut(s);
-            Console.WriteLine("Cut: {0}", string.Join("/ ", segments));
-            segments = seg.Cut(s, cutAll: true);
-            Console.WriteLine("Cut All: {0}", string.Join("/ ", segments));
-
-            s = "我们所熟悉的一个版本是Mac OS X 10.11 EI Capitan，在2015年推出。";
-
-            segments = seg.Cut(s);
-            Console.WriteLine("Cut: {0}", string.Join("/ ", segments));
-            segments = seg.Cut(s, cutAll: true);
-            Console.WriteLine("Cut All: {0}", string.Join("/ ", segments));
+            segments = seg.Cut(s).ToList();
+            Assert.That(segments,   Has.No.Member("Steve Jobs"));
         }
 
         [TestCase]

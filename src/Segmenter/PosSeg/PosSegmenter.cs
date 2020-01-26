@@ -19,7 +19,7 @@ namespace JiebaNet.Segmenter.PosSeg
 
         #region Regular Expressions
 
-        internal static readonly Regex RegexChineseInternal = new Regex(@"([\u4E00-\u9FD5a-zA-Z0-9+#&\._]+)", RegexOptions.Compiled);
+        internal static readonly Regex RegexChineseInternal = new Regex(@"([\u4E00-\u9FD5a-zA-Z0-9+#&\._%·\-]+)", RegexOptions.Compiled);
         internal static readonly Regex RegexSkipInternal = new Regex(@"(\r\n|\s)", RegexOptions.Compiled);
 
         internal static readonly Regex RegexChineseDetail = new Regex(@"([\u4E00-\u9FD5]+)", RegexOptions.Compiled);
@@ -94,6 +94,17 @@ namespace JiebaNet.Segmenter.PosSeg
         public IEnumerable<Pair> Cut(string text, bool hmm = true)
         {
             return CutInternal(text, hmm);
+        }
+        
+        public IEnumerable<IEnumerable<Pair>> CutInParallel(IEnumerable<string> texts, bool hmm = true)
+        {
+            return texts.AsParallel().AsOrdered().Select(text => CutInternal(text, hmm));
+        }
+        
+        public IEnumerable<IEnumerable<Pair>> CutInParallel(string text, bool hmm = true)
+        {
+            var lines = text.SplitLines();
+            return CutInParallel(lines, hmm);
         }
 
         #region Internal Cut Methods

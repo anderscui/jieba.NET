@@ -31,7 +31,7 @@ namespace JiebaNet.Segmenter.Tests
         [TestCase]
         public void TestCutLargeFile()
         {
-            var fileName = @"Resources\围城.txt";
+            var fileName = TestHelper.GetResourceFilePath("围城.txt");
             var weiCheng = File.ReadAllText(fileName);
             var fileSize = (new FileInfo(fileName)).Length;
 
@@ -39,7 +39,7 @@ namespace JiebaNet.Segmenter.Tests
             seg.Cut("热身一下");
 
             Console.WriteLine("Start to cut");
-            const int n = 20;
+            const int n = 2;
             var stopWatch = new Stopwatch();
 
             // Accurate mode
@@ -70,50 +70,7 @@ namespace JiebaNet.Segmenter.Tests
             Console.WriteLine("Full mode: {0} ms, average: {1} / second",
                                 timeConsumed, fileSize / timeConsumed);
         }
-
-        //[TestCase]
-        //public void TestCutLargeFileParallelly()
-        //{
-        //    var fileName = @"Resources\围城.txt";
-        //    var weiCheng = File.ReadAllText(fileName);
-        //    var fileSize = (new FileInfo(fileName)).Length;
-
-        //    var seg = new JiebaSegmenter(true);
-        //    seg.Cut("热身一下");
-
-        //    Console.WriteLine("Start to cut");
-        //    const int n = 20;
-        //    var stopWatch = new Stopwatch();
-
-        //    // Accurate mode
-        //    stopWatch.Start();
-
-        //    for (var i = 0; i < n; i++)
-        //    {
-        //        seg.Cut(weiCheng);
-        //    }
-
-        //    stopWatch.Stop();
-        //    var timeConsumed = (double)stopWatch.ElapsedMilliseconds / (1000 * n);
-        //    Console.WriteLine("Accurate mode: {0} ms, average: {1} / second",
-        //                        timeConsumed, fileSize / timeConsumed);
-
-        //    // Full mode
-        //    stopWatch.Reset();
-        //    stopWatch.Start();
-
-        //    for (var i = 0; i < n; i++)
-        //    {
-        //        seg.Cut(weiCheng, true);
-        //    }
-
-        //    stopWatch.Stop();
-
-        //    timeConsumed = (double)stopWatch.ElapsedMilliseconds / (1000 * n);
-        //    Console.WriteLine("Full mode: {0} ms, average: {1} / second",
-        //                        timeConsumed, fileSize / timeConsumed);
-        //}
-
+        
         [TestCase]
         public void TestCutManySentences()
         {
@@ -124,7 +81,7 @@ namespace JiebaNet.Segmenter.Tests
             seg.Cut("热身一下");
 
             Console.WriteLine("Start to cut");
-            const int n = 20;
+            const int n = 2;
             var stopWatch = new Stopwatch();
 
             // Accurate mode
@@ -155,47 +112,5 @@ namespace JiebaNet.Segmenter.Tests
             Console.WriteLine("Full mode: {0} ms, average: {1} / second",
                                 timeConsumed, fileSize / timeConsumed);
         }
-
-        //[TestCase]
-        //public void TestCutManySentencesParallelly()
-        //{
-        //    var text = GetTestSentences().Join(string.Empty);
-        //    var fileSize = 1532 * 100;
-
-        //    var seg = new JiebaSegmenter(true);
-        //    seg.Cut("热身一下");
-
-        //    Console.WriteLine("Start to cut");
-        //    const int n = 20;
-        //    var stopWatch = new Stopwatch();
-
-        //    // Accurate mode
-        //    stopWatch.Start();
-
-        //    for (var i = 0; i < n; i++)
-        //    {
-        //        seg.Cut(text);
-        //    }
-
-        //    stopWatch.Stop();
-        //    var timeConsumed = (double)stopWatch.ElapsedMilliseconds / (1000 * n);
-        //    Console.WriteLine("Accurate mode: {0} ms, average: {1} / second",
-        //                        timeConsumed, fileSize / timeConsumed);
-
-        //    // Full mode
-        //    stopWatch.Reset();
-        //    stopWatch.Start();
-
-        //    for (var i = 0; i < n; i++)
-        //    {
-        //        seg.Cut(text, true);
-        //    }
-
-        //    stopWatch.Stop();
-
-        //    timeConsumed = (double)stopWatch.ElapsedMilliseconds / (1000 * n);
-        //    Console.WriteLine("Full mode: {0} ms, average: {1} / second",
-        //                        timeConsumed, fileSize / timeConsumed);
-        //}
     }
 }

@@ -186,7 +186,12 @@ word 公司           start: 8   end: 10
 word 有限公司         start: 6   end: 10
 ```
 
-### 6. 并行分词（暂未实现）
+### 6. 并行分词
+
+使用如下方法：
+
+* `JiebaSegmenter.CutInParallel()`、`JiebaSegmenter.CutForSearchInParallel()`
+* `PosSegmenter.CutInParallel()`
 
 ### 7. 与Lucene.NET的集成
 
@@ -247,3 +252,4 @@ foreach (var pair in freqs.MostCommon(5))
 ```
 
 `Counter`类可通过`Add`，`Subtract`和`Union`方法进行修改，最后以`MostCommon`方法获得频率最高的若干词。具体用法可见测试用例。
+

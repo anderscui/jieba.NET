@@ -62,7 +62,7 @@ namespace JiebaNet.Segmenter
             var reSkip = cutAll ? RegexSkipCutAll : RegexSkipDefault;
             var cutMethod = cutAll ? CutAll : hmm ? CutDag : (Func<string, IEnumerable<string>>)CutDagWithoutHmm;
 
-            return texts.AsParallel().AsOrdered().Select(line => CutIt(line, cutMethod, reHan, reSkip, cutAll));
+            return texts.AsParallel().AsOrdered().Select(text => CutIt(text, cutMethod, reHan, reSkip, cutAll));
         }
         
         public IEnumerable<string> CutInParallel(string text, bool cutAll = false, bool hmm = true)
