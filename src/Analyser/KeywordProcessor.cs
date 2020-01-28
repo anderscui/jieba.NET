@@ -11,24 +11,20 @@ namespace JiebaNet.Analyser
         // java in javascript
         // c语言
         // 语法 tree
-        private readonly string _keyword = "_keyword_";
+        // private readonly string _keyword = "_keyword_";
         private readonly ISet<char> _whiteSpaceChars = new HashSet<char>(".\t\n\a ,");
         private readonly bool _caseSensitive;
-        private readonly IDictionary<string, string> _keywordTrieDict = new Dictionary<string, string>();
+        private readonly KeywordTrie _keywordTrieDict = new KeywordTrie();
 
         private readonly ISet<char> _nonWordBoundries =
             new HashSet<char>(
                 "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_");
-
-        private int _termsInTrie = 0;
-
+        
         public KeywordProcessor(bool caseSensitive = false)
         {
             _caseSensitive = caseSensitive;
         }
-
-        public int Length => this._termsInTrie;
-
+        
         public void AddKeyword(string keyword, string cleanName = null)
         {
             SetItem(keyword, cleanName);
@@ -42,7 +38,7 @@ namespace JiebaNet.Analyser
             }
         }
 
-        public string GetKeyword(string keyword, string cleanName = null)
+        public string GetKeyword(string keyword)
         {
             return GetItem(keyword);
         }
@@ -65,51 +61,52 @@ namespace JiebaNet.Analyser
                 sentence = sentence.ToLower();
             }
 
-            var start = 0;
-            var end = 0;
-            var idx = 0;
-            var idy = 0;
-            var sent_len = sentence.Length;
+            KeywordTrieNode cur_state = _keywordTrieDict;
+            var seq_start_pos = 0;
+            var seq_end_pos = 0;
             var reset_current_dict = false;
-
+            var idx = 0;
+            var sent_len = sentence.Length;
             while (idx < sent_len)
             {
                 var ch = sentence[idx];
-                var curSub = sentence.Sub(start, idx);
                 // when reaching a char that denote word end
                 if (!_nonWordBoundries.Contains(ch))
                 {
                     // if current prefix is in trie
-                    if (_keywordTrieDict.ContainsKey(curSub))
+                    if (cur_state.HasValue || cur_state.HasChild(ch))
                     {
                         string seq_found = null;
                         string longest_found = null;
                         var is_longer_found = false;
                         
-                        if (Contains(curSub))
+                        if (cur_state.HasValue)
                         {
-                            seq_found = _keywordTrieDict[curSub];
-                            longest_found = _keywordTrieDict[curSub];
-                            end = idx;
+                            seq_found = cur_state.Value;
+                            longest_found = cur_state.Value;
+                            seq_end_pos = idx;
                         }
 
                         // re look for longest seq from this position
-                        if (_keywordTrieDict.ContainsKey(curSub))
+                        if (cur_state.HasChild(ch))
                         {
-                            idy = idx + 1;
+                            var cur_state_continued = cur_state.GetChild(ch);
+                            var idy = idx + 1;
                             while (idy < sent_len)
                             {
-                                curSub = sentence.Sub(start, idy);
                                 var inner_ch = sentence[idy];
-                                if (!_nonWordBoundries.Contains(inner_ch) && Contains(curSub))
+                                if (!_nonWordBoundries.Contains(inner_ch) && cur_state_continued.HasValue)
                                 {
-                                    longest_found = _keywordTrieDict[curSub];
-                                    end = idy;
+                                    longest_found = cur_state_continued.Value;
+                                    seq_end_pos = idy;
                                     is_longer_found = true;
                                 }
 
-                                curSub = sentence.Sub(start, idy + 1);
-                                if(!_keywordTrieDict.ContainsKey(curSub))
+                                if(cur_state_continued.HasChild(inner_ch))
+                                {
+                                    cur_state_continued = cur_state_continued.GetChild(inner_ch);
+                                }
+                                else
                                 {
                                     break;
                                 }
@@ -117,17 +114,17 @@ namespace JiebaNet.Analyser
                                 idy += 1;
                             }
 
-                            if (idy == sent_len && Contains(curSub))
+                            if (idy == sent_len && cur_state_continued.HasValue)
                             {
-                                longest_found = _keywordTrieDict[curSub];
-                                end = idy;
+                                // end of sentence reached.
+                                longest_found = cur_state_continued.Value;
+                                seq_end_pos = idy;
                                 is_longer_found = true;
                             }
 
                             if (is_longer_found)
                             {
-                                idx = end;
-                                start = idx;
+                                idx = seq_end_pos;
                             }
                         }
                         
@@ -136,61 +133,44 @@ namespace JiebaNet.Analyser
                             keywords_extracted.Add(longest_found);
                         }
 
+                        cur_state = _keywordTrieDict;
                         reset_current_dict = true;
                     }
                     else
                     {
+                        cur_state = _keywordTrieDict;
                         reset_current_dict = true;
                     }
                 }
-                else if (_keywordTrieDict.ContainsKey(curSub))
+                else if (cur_state.HasChild(ch))
                 {
-                    // in a word and in trie, just continue
+                    cur_state = cur_state.GetChild(ch);
                 }
                 else
                 {
-                    // in a word and not in trie, reset 
+                    cur_state = _keywordTrieDict;
                     reset_current_dict = true;
                     
                     // skip to end of word
-                    idy = idx + 1;
-                    while (idy < sent_len && _nonWordBoundries.Contains(sentence[idy]))
+                    var idy = idx + 1;
+                    while (idy < sent_len)
                     {
+                        if (!_nonWordBoundries.Contains(sentence[idy]))
+                        {
+                            break;
+                        }
                         idy += 1;
                     }
 
                     idx = idy;
-                    
-                    // idy = idx;
-                    // while (idy < sent_len && _nonWordBoundries.Contains(sentence[idy]) && _keywordTrieDict.ContainsKey(sentence.Sub(start, idy + 1)))
-                    // {
-                    //     idy += 1;
-                    // }
-                    //
-                    // Console.WriteLine(idy);
-                    //
-                    // if (idy == sent_len)
-                    // {
-                    //     if (Contains(sentence.Sub(start, idy))))
-                    //     {
-                    //         keywords_extracted.Add(sentence.Sub(start, idy));
-                    //         //Console.WriteLine(sentence.Sub(start, idy));                            
-                    //     }
-                    // }
-                    // else if (!_keywordTrieDict.ContainsKey(sentence.Sub(start, idy + 1)))
-                    // {
-                    //     
-                    // }
-
-                    // in a word and in trie, just continue
                 }
 
                 if (idx + 1 >= sent_len)
                 {
-                    curSub = sentence.Sub(start, idx);
-                    if (Contains(curSub))
+                    if (cur_state.HasValue)
                     {
-                        keywords_extracted.Add(_keywordTrieDict[curSub]);
+                        var seq_found = cur_state.Value;
+                        keywords_extracted.Add(seq_found);
                     }
                 }
 
@@ -198,7 +178,7 @@ namespace JiebaNet.Analyser
                 if (reset_current_dict)
                 {
                     reset_current_dict = false;
-                    start = idx;
+                    seq_start_pos = idx;
                 }
             }
 
@@ -208,9 +188,8 @@ namespace JiebaNet.Analyser
         #region Private methods
 
         // TODO: C# idioms
-        private bool SetItem(string keyword, string cleanName)
+        private void SetItem(string keyword, string cleanName)
         {
-            var result = false;
             if (cleanName.IsEmpty() && keyword.IsNotEmpty())
             {
                 cleanName = keyword;
@@ -223,25 +202,8 @@ namespace JiebaNet.Analyser
                     keyword = keyword.ToLower();
                 }
 
-                var existing = GetItem(keyword);
-                if (existing.IsNull())
-                {
-                    _keywordTrieDict[keyword] = cleanName;
-                    for (var i = 0; i < keyword.Length; i++)
-                    {
-                        var wfrag = keyword.Substring(0, i + 1);
-                        if (!_keywordTrieDict.ContainsKey(wfrag))
-                        {
-                            _keywordTrieDict[wfrag] = null;
-                        }
-                    }
-
-                    result = true;
-                    _termsInTrie += 1;
-                }
+                _keywordTrieDict[keyword] = cleanName;
             }
-
-            return result;
         }
 
         private string GetItem(string word)
@@ -251,8 +213,7 @@ namespace JiebaNet.Analyser
                 word = word.ToLower();
             }
 
-            var result = _keywordTrieDict.GetDefault(word, null);
-            return result;
+            return _keywordTrieDict[word];
         }
 
         #endregion
