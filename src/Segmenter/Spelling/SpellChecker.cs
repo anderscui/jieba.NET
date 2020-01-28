@@ -77,7 +77,7 @@ namespace JiebaNet.Segmenter.Spelling
                     {
                         replaces.Add(word.Substring(0, i) + c + word.Substring(i + 1));
                     }
-                    node = node.Children.GetValueOrDefault(word[i]);
+                    node = node.Children.GetOrDefault(word[i]);
                 }
             }
 
@@ -93,7 +93,7 @@ namespace JiebaNet.Segmenter.Spelling
                     }
                 }
 
-                var node = WordTrie.Root.Children.GetValueOrDefault(word[0]);
+                var node = WordTrie.Root.Children.GetOrDefault(word[0]);
                 for (int i = 0; node.IsNotNull() && node.Children.IsNotEmpty() && i < word.Length; i++)
                 {
                     foreach (var c in node.Children.Keys)
@@ -103,7 +103,7 @@ namespace JiebaNet.Segmenter.Spelling
 
                     if (i < word.Length - 1)
                     {
-                        node = node.Children.GetValueOrDefault(word[i + 1]);
+                        node = node.Children.GetOrDefault(word[i + 1]);
                     }
                 }
             }

@@ -5,7 +5,7 @@
     <AssemblyName>JiebaNet.Segmenter.Tests</AssemblyName>
     <RootNamespace>JiebaNet.Segmenter.Tests</RootNamespace>
     <DebugType>portable</DebugType>
-    <Version>0.42.1</Version>
+    <Version>0.42.2</Version>
     <Description>JiebaNet.Segmenter.Tests</Description>
     <Company>andersc</Company>
     <Authors>andersc</Authors>

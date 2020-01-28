@@ -37,7 +37,7 @@ namespace JiebaNet.Segmenter.Common
             return (enumerable != null) && enumerable.Any();
         }
 
-        public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key)
+        public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> d, TKey key)
         {
             return d.ContainsKey(key) ? d[key] : default(TValue);
         }
@@ -49,6 +49,15 @@ namespace JiebaNet.Segmenter.Common
                 return dict[key];
             }
             return defaultValue;
+        }
+        
+        public static IDictionary<TKey, TValue> SetDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue defaultValue)
+        {
+            if (!dict.ContainsKey(key))
+            {
+                dict[key] = defaultValue;
+            }
+            return dict;
         }
 
         public static void Update<TKey, TValue>(this IDictionary<TKey, TValue> dict, IDictionary<TKey, TValue> other)

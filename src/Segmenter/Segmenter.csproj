@@ -4,7 +4,7 @@
     <TargetFrameworks>netstandard2.0;net40;net45</TargetFrameworks>
     <RootNamespace>JiebaNet.Segmenter</RootNamespace>
     <AssemblyName>JiebaNet.Segmenter</AssemblyName>
-    <Version>0.42.1</Version>
+    <Version>0.42.2</Version>
     <Description>JiebaNet.Segmenter.</Description>
     <Company>andersc</Company>
     <Authors>andersc</Authors>

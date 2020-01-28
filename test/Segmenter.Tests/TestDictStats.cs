@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using JiebaNet.Analyser;
+
 using NUnit.Framework;
 
 namespace JiebaNet.Segmenter.Tests
