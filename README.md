@@ -1,6 +1,8 @@
 jieba.NET是[jieba中文分词](https://github.com/fxsjy/jieba)的.NET版本（C#实现）。
 
-当前版本为0.42.1，基于jieba 0.42，提供与jieba**基本一致**的功能与接口，但不支持其最新的paddle模式。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+当前版本为0.42.2，基于jieba 0.42，提供与jieba**基本一致**的功能与接口，但不支持其最新的paddle模式。关于jieba的实现思路，可以看看[这篇wiki](https://github.com/anderscui/jieba.NET/wiki/%E7%90%86%E8%A7%A3%E7%BB%93%E5%B7%B4%E5%88%86%E8%AF%8D)里提到的资料。
+
+此外，也提供了 `KeywordProcessor`，参考 [FlashText](https://github.com/vi3k6i5/flashtext) 实现。`KeywordProcessor` 可以更灵活地从文本中提取**词典中的关键词**，比如忽略大小写、含空格的词等。
 
 如果您在开发中遇到与分词有关的需求或困难，请提交一个Issue，I see u:)
 
@@ -243,7 +245,9 @@ foreach (var pair in freqs.MostCommon(5))
 }
 ```
 
-```
+输出：
+
+```bash
 的: 4
 ，: 3
 算法: 3
@@ -252,4 +256,30 @@ foreach (var pair in freqs.MostCommon(5))
 ```
 
 `Counter`类可通过`Add`，`Subtract`和`Union`方法进行修改，最后以`MostCommon`方法获得频率最高的若干词。具体用法可见测试用例。
+
+### 12. KeywordProcessor
+
+可通过 `KeywordProcessor` 提取文本中的关键词，不过它的提取与 `KeywordExtractor`不同。`KeywordProcessor` 可理解为基于词典从文本中找出已知的词，仅仅如此。
+
+jieba分词当前的实现里，不能处理忽略大小写、含空格的词之类的情况，而在**文本提取**应用中，这是很常见的场景。因此 `KeywordProcessor` 主要是作为提取之用，而非分词，尽管通过其中的方法，可以实现另一种基于字典的分词模式。
+
+代码示例：
+
+```c#
+var kp = new KeywordProcessor();
+kp.AddKeywords(new []{".NET Core", "Java", "C语言", "字典 tree", "CET-4", "网络 编程"});
+
+var keywords = kp.ExtractKeywords("你需要通过cet-4考试，学习c语言、.NET core、网络 编程、JavaScript，掌握字典 tree的用法");
+
+// keywords 值为：
+// new List<string> { "CET-4", "C语言", ".NET Core", "网络 编程", "字典 tree"}
+
+// 可以看到，结果中的词与开始添加的关键词相同，与输入句子中的词则不尽相同。如果需要返回句中找到的原词，可以使用 `raw` 参数。
+
+var keywords = kp.ExtractKeywords("你需要通过cet-4考试，学习c语言、.NET core、网络 编程、JavaScript，掌握字典 tree的用法", raw: true);
+
+// keywords 值为：
+// new List<string> { "cet-4", "c语言", ".NET core", "网络 编程", "字典 tree"}
+```
+
 
