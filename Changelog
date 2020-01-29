@@ -1,3 +1,9 @@
+2020-01-30: version 0.42.2
+1. 添加 `KeywordProcessor`，可以更灵活地从文本中提取关键词；
+
+2020-01-18: version 0.42.1
+1. 修改 Target framework 为 .NET 4.0，.NET 4.5以及.NET Standard 2.0；
+
 2020-01-15: version 0.42.0
 1. 修改 `ConfigManager.ConfigFileBaseDir` 为可写的，可通过程序方式传入词典路径；
 2. 修改 Target framework 为 .NET 4.0；
