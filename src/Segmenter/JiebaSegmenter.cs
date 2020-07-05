@@ -442,7 +442,7 @@ namespace JiebaNet.Segmenter
 
         public void AddWord(string word, int freq = 0, string tag = null)
         {
-            if (freq <= 0)
+            if (freq < 0)
             {
                 freq = WordDict.SuggestFreq(word, Cut(word, hmm: false));
             }
